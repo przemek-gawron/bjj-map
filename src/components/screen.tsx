@@ -9,17 +9,22 @@ import { MaxContentWidth, Spacing } from '@/constants/theme';
 
 type Props = {
   title: string;
+  /** Rendered to the right of the title, e.g. an add button. */
+  action?: ReactNode;
   children?: ReactNode;
   /** false for screens that manage their own scrolling (e.g. the map canvas). */
   scroll?: boolean;
 };
 
 /** Tab screen shell: safe area, large title, content capped at MaxContentWidth for web. */
-export function Screen({ title, children, scroll = true }: Props) {
+export function Screen({ title, action, children, scroll = true }: Props) {
   const header = (
-    <ThemedText type="title" style={styles.title}>
-      {title}
-    </ThemedText>
+    <View style={styles.header}>
+      <ThemedText type="title" style={styles.title}>
+        {title}
+      </ThemedText>
+      {action}
+    </View>
   );
 
   return (
@@ -50,5 +55,6 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     paddingBottom: Spacing.six,
   },
-  title: { marginBottom: Spacing.three },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.three },
+  title: { flexShrink: 1 },
 });
