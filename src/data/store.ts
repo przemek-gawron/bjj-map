@@ -33,6 +33,8 @@ type Actions = {
   setPositionPhoto: (id: string, photoUri: string | undefined) => void;
 
   togglePlanned: (techniqueId: string) => void;
+  /** Replaces this week's plan (e.g. carrying over last week's). */
+  setPlan: (techniqueIds: string[]) => void;
 };
 
 const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -117,6 +119,7 @@ export const useStore = create<State & Actions>()(
             },
           };
         }),
+      setPlan: (techniqueIds) => set({ plan: { weekStart: weekStartOf(toDateKey()), techniqueIds } }),
     }),
     {
       name: 'bjj-map',
