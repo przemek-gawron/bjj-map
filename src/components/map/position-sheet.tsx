@@ -53,7 +53,8 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
   );
 
   return (
-    <ThemedView style={[styles.sheet, { bottom, shadowColor: '#000' }]}>
+    // border keeps the sheet visible in dark mode, where the shadow disappears
+    <ThemedView style={[styles.sheet, { bottom, shadowColor: '#000', borderColor: theme.backgroundSelected }]}>
       <View style={styles.head}>
         <PositionIllustration position={position} width={96} height={67} />
         <View style={styles.flex}>
@@ -119,6 +120,7 @@ const styles = StyleSheet.create({
     right: 8,
     maxHeight: '55%',
     borderRadius: 20,
+    borderWidth: 1,
     padding: Spacing.three,
     shadowOpacity: 0.15,
     shadowRadius: 16,
