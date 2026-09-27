@@ -43,7 +43,11 @@ export default function PlanPickScreen() {
           ),
         }}
       />
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
+        automaticallyAdjustKeyboardInsets>
         <ThemedText type="small" themeColor="textSecondary">
           Wybrane: {planned.length}. Najlepiej 3–5 technik na tydzień.
         </ThemedText>

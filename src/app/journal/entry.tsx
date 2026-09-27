@@ -71,7 +71,11 @@ export default function JournalEntryScreen() {
           ),
         }}
       />
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
+        automaticallyAdjustKeyboardInsets>
         <ThemedText type="smallBold" themeColor="textSecondary">
           Kiedy
         </ThemedText>
