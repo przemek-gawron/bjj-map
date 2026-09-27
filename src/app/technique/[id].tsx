@@ -50,7 +50,7 @@ export default function TechniqueScreen() {
             <Pressable
               hitSlop={10}
               style={styles.headerButton}
-              onPress={() => router.push({ pathname: '/techniques/form', params: { id: technique.id } })}>
+              onPress={() => router.push({ pathname: '/technique/form', params: { id: technique.id } })}>
               <ThemedText type="smallBold" themeColor="accent">
                 Edytuj
               </ThemedText>

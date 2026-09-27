@@ -57,7 +57,8 @@ export default function TechniqueFormScreen() {
     if (!existing) return;
     confirm('Usunąć technikę?', `„${existing.name}” zniknie też z dziennika i planu.`, 'Usuń', () => {
       removeTechnique(existing.id);
-      router.dismissTo('/techniques');
+      // back past the (now deleted) technique's detail screen
+      router.dismissAll();
     });
   };
 
@@ -84,7 +85,11 @@ export default function TechniqueFormScreen() {
           ),
         }}
       />
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
+        automaticallyAdjustKeyboardInsets>
         <Field label="Nazwa">
           <TextInput
             value={name}

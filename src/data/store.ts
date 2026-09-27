@@ -123,7 +123,7 @@ export const useStore = create<State & Actions>()(
     }),
     {
       name: 'bjj-map',
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => AsyncStorage),
       migrate: (persisted, version) => {
         const state = persisted as State;
@@ -139,6 +139,15 @@ export const useStore = create<State & Actions>()(
             ...state.techniques,
             ...seedTechniques.filter((t) => !state.techniques.some((x) => x.id === t.id)),
           ];
+        }
+        if (version < 3) {
+          // v3: v2 appended the open guard positions at the end; restore the seed order
+          // (bottom column, then top column) so lists and pickers read top-to-bottom
+          const rank = (id: string) => {
+            const i = seedPositions.findIndex((p) => p.id === id);
+            return i === -1 ? seedPositions.length : i;
+          };
+          state.positions = [...state.positions].sort((a, b) => rank(a.id) - rank(b.id));
         }
         return state;
       },

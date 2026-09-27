@@ -123,7 +123,7 @@ export default function PlanScreen() {
                 ]}>
                 {checked && <ThemedText style={styles.checkMark}>✓</ThemedText>}
               </Pressable>
-              <Pressable style={styles.flex} onPress={() => router.push({ pathname: '/techniques/[id]', params: { id: t.id } })}>
+              <Pressable style={styles.flex} onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}>
                 <ThemedText type="smallBold" style={styles.name}>
                   {t.name}
                 </ThemedText>

@@ -56,11 +56,13 @@ npx expo lint
 ```
 src/
   app/                  ekrany (każdy plik to trasa)
-    _layout.tsx         dolny pasek zakładek
-    index.tsx           Mapa
-    techniques/         lista, szczegóły ([id]), formularz (modal)
-    plan/               plan tygodnia, wybór technik (modal)
-    journal/            oś czasu, wpis treningu (modal)
+    _layout.tsx         główny stos: zakładki + ekrany techniki nad nimi
+    (tabs)/             dolny pasek zakładek
+      index.tsx         Mapa
+      techniques.tsx    lista technik
+      plan/             plan tygodnia, wybór technik (modal)
+      journal/          oś czasu, wpis treningu (modal)
+    technique/          szczegóły ([id]) i formularz (modal) — otwierane z każdej zakładki
   components/           wspólne komponenty (Screen, Chip, StatusChip, zakładki, PositionIllustration)
     map/                płótno mapy, geometria strzałek, panel pozycji
   data/

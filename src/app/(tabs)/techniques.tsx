@@ -40,7 +40,7 @@ export default function TechniquesScreen() {
       title="Techniki"
       action={
         <Pressable
-          onPress={() => router.push('/techniques/form')}
+          onPress={() => router.push('/technique/form')}
           hitSlop={10}
           style={[styles.addButton, { backgroundColor: theme.accent }]}>
           <ThemedText style={styles.addButtonText}>+</ThemedText>
@@ -105,7 +105,7 @@ export default function TechniquesScreen() {
                 return (
                   <Pressable
                     key={t.id}
-                    onPress={() => router.push({ pathname: '/techniques/[id]', params: { id: t.id } })}
+                    onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}
                     style={({ pressed }) => [styles.row, { borderColor: theme.backgroundSelected }, pressed && styles.pressed]}>
                       <View style={styles.flex}>
                         <ThemedText type="smallBold">{t.name}</ThemedText>
