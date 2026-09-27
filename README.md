@@ -1,56 +1,80 @@
-# Welcome to your Expo app 👋
+# BJJ Map
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Osobista mapa i dziennik treningowy do brazylijskiego jiu-jitsu. Notujesz techniki poznane na zajęciach, planujesz, co ćwiczyć w tygodniu, i widzisz, co i kiedy było trenowane. Aplikacja jest pisana z myślą o białych pasach — rośnie razem z Tobą, zamiast zasypywać Cię gotową encyklopedią.
 
-## Get started
+Aplikacja mobilna (iOS / Android) w Expo, działa też w przeglądarce.
 
-1. Install dependencies
+## Zakładki
 
-   ```bash
-   npm install
-   ```
+| Zakładka | Co robi | Status |
+|---|---|---|
+| **Mapa** | Graf pozycji i technik: pozycje to kafelki, techniki to strzałki między nimi. Filtry po typie techniki i grupie pozycji, przesuwane kafelki, ilustracje pozycji. | 🚧 w budowie |
+| **Techniki** | Lista technik pogrupowana po pozycji startowej. Filtry po statusie i typie, dodawanie i edycja, link do wideo, „Trenowałem dziś”, historia treningów. | ✅ |
+| **Plan** | Techniki wybrane na ten tydzień razem z wideo (lub wyszukiwaniem na YouTube), odhaczanie po treningu, postęp tygodnia, przeniesienie planu z poprzedniego tygodnia. | ✅ |
+| **Dziennik** | Oś czasu treningów pogrupowana tygodniami: data, przećwiczone techniki, notatka. Liczniki tygodnia i miesiąca. | ✅ |
 
-2. Start the app
+Każda technika ma status: **Widziałem → Ćwiczę → Działa w sparingu**.
 
-   ```bash
-   npx expo start
-   ```
+### Planowane
 
-In the output, you'll find options to open the app in a
+- wykresy: ile razy i kiedy trenowana była technika
+- przypomnienia o technikach, które nie są jeszcze opanowane
+- synchronizacja i konto
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Uruchomienie
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+W menu, które się pojawi:
 
-### Other setup steps
+- `i` — symulator iOS (przez Expo Go)
+- `a` — emulator Androida
+- `w` — przeglądarka
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Na telefonie: zeskanuj kod QR aplikacją Expo Go.
 
-## Learn more
+Przed commitem:
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npx tsc --noEmit
+npx expo lint
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Technologie
 
-## Join the community
+- [Expo](https://expo.dev) SDK 57, React Native, TypeScript, React Compiler
+- [Expo Router](https://docs.expo.dev/router/introduction/) — nawigacja oparta na plikach, natywny dolny pasek (`NativeTabs`)
+- [zustand](https://github.com/pmndrs/zustand) + AsyncStorage — stan zapisywany lokalnie na urządzeniu
+- react-native-svg — rysowanie mapy (etap w budowie)
 
-Join our community of developers creating universal apps.
+## Struktura
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```
+src/
+  app/                  ekrany (każdy plik to trasa)
+    _layout.tsx         dolny pasek zakładek
+    index.tsx           Mapa
+    techniques/         lista, szczegóły ([id]), formularz (modal)
+    plan/               plan tygodnia, wybór technik (modal)
+    journal/            oś czasu, wpis treningu (modal)
+  components/           wspólne komponenty (Screen, Chip, StatusChip, zakładki)
+  data/
+    types.ts            model: Position, Technique, Session, WeeklyPlan
+    store.ts            store zustand z akcjami i zapisem
+    seed.ts             startowa mapa białego pasa (9 pozycji, 18 technik)
+    stats.ts            statystyki treningów wyliczane z dziennika
+    dates.ts, labels.ts
+```
+
+### Model danych w skrócie
+
+- **Pozycja** ma grupę (stójka, closed guard, open guard, half guard, side control, mount, plecy) i stronę (góra / dół).
+- **Technika** prowadzi z jednej pozycji do drugiej; kończenie (submission) nie ma pozycji docelowej.
+- **Trening** (sesja) to jeden dzień: lista przećwiczonych technik i notatka. To jedyne źródło prawdy o tym, co i kiedy było trenowane — liczniki, „ostatnio trenowane” i przyszłe statystyki są z niego wyliczane. Jeden dzień = jeden wpis.
+
+## Prototyp
+
+Wczesny prototyp ekranu głównego (4 warianty do porównania) leży na gałęzi `prototype/main-screen` razem z wnioskiem, które warianty weszły do aplikacji.
