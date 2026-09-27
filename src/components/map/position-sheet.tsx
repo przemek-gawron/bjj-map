@@ -40,7 +40,7 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
   const row = (t: Technique, meta: string) => (
     <Pressable
       key={t.id}
-      onPress={() => router.push({ pathname: '/techniques/[id]', params: { id: t.id } })}
+      onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}
       style={({ pressed }) => [styles.row, { borderColor: theme.backgroundSelected }, pressed && styles.pressed]}>
       <View style={styles.flex}>
         <ThemedText type="smallBold">{t.name}</ThemedText>
@@ -91,7 +91,7 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
         </ThemedText>
         {from.map((t) => row(t, `${TYPE_LABEL[t.type]} ${t.to ? '→ ' + nameOf(t.to) : '· kończenie'}`))}
         <Pressable
-          onPress={() => router.push({ pathname: '/techniques/form', params: { from: position.id } })}
+          onPress={() => router.push({ pathname: '/technique/form', params: { from: position.id } })}
           style={styles.add}>
           <ThemedText type="smallBold" themeColor="accent">
             + Dodaj technikę z tej pozycji

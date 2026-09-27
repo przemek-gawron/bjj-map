@@ -1,15 +1,32 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { StyleSheet, useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import AppTabs from '@/components/app-tabs';
+import { useTheme } from '@/hooks/use-theme';
 
+/**
+ * Tabs live in the (tabs) group. Technique screens sit on the root stack so they open
+ * on top of whichever tab you came from (map, plan, list) and "back" returns there.
+ */
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const theme = useTheme();
+
   return (
     <GestureHandlerRootView style={styles.root}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <AppTabs />
+        <Stack
+          screenOptions={{
+            headerShadowVisible: false,
+            headerTintColor: theme.accent,
+            headerStyle: { backgroundColor: theme.background },
+            headerTitleStyle: { color: theme.text },
+            headerBackTitle: 'Wstecz',
+          }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="technique/[id]" options={{ title: '' }} />
+          <Stack.Screen name="technique/form" options={{ presentation: 'modal' }} />
+        </Stack>
       </ThemeProvider>
     </GestureHandlerRootView>
   );
