@@ -37,7 +37,7 @@ export function Screen({ title, action, children, scroll = true }: Props) {
           </ScrollView>
         ) : (
           <View style={styles.root}>
-            <View style={styles.content}>{header}</View>
+            <View style={[styles.content, styles.fixedHeader]}>{header}</View>
             {children}
           </View>
         )}
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     paddingBottom: Spacing.six,
   },
+  fixedHeader: { paddingBottom: 0 },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.three },
   title: { flexShrink: 1 },
 });

@@ -123,8 +123,25 @@ export const useStore = create<State & Actions>()(
     }),
     {
       name: 'bjj-map',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => AsyncStorage),
+      migrate: (persisted, version) => {
+        const state = persisted as State;
+        if (version < 2) {
+          // v2: open guard positions + techniques, and a re-spaced map layout for the seed positions
+          // (safe: v1 had no map screen, so no layout was ever user-edited)
+          const seedById = new Map(seedPositions.map((p) => [p.id, p]));
+          state.positions = [
+            ...state.positions.map((p) => ({ ...p, layout: seedById.get(p.id)?.layout ?? p.layout })),
+            ...seedPositions.filter((p) => !state.positions.some((x) => x.id === p.id)),
+          ];
+          state.techniques = [
+            ...state.techniques,
+            ...seedTechniques.filter((t) => !state.techniques.some((x) => x.id === t.id)),
+          ];
+        }
+        return state;
+      },
       partialize: ({ positions, techniques, sessions, plan }) => ({ positions, techniques, sessions, plan }),
     }
   )
