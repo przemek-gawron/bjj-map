@@ -43,6 +43,10 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
   }, [positions, drag]);
   const edges = useMemo(() => buildEdges(techniques, layout), [techniques, layout]);
   const size = canvasSize(layout);
+  const svgKey =
+    edges.map((e) => `${isTechniqueActive(e.technique) ? 1 : 0}${e.technique.status[0]}`).join('') +
+    selectedId +
+    positions.map((p) => `${Math.round(layout[p.id].x)},${Math.round(layout[p.id].y)}`).join(';');
 
   // ---- viewport transform (UI thread) ----
   const tx = useSharedValue(0);
@@ -118,8 +122,9 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
         <View style={styles.root} collapsable={false}>
           <Animated.View style={[{ width: size.width, height: size.height }, styles.origin, transform]}>
             <Svg
-              // react-native-svg (iOS, new arch) doesn't reliably re-render changed children; remount when styling changes
-              key={edges.map((e) => `${isTechniqueActive(e.technique) ? 1 : 0}${e.technique.status[0]}`).join('') + selectedId}
+              // react-native-svg (iOS, new arch) doesn't reliably redraw changed children — neither styling
+              // nor path geometry — so remount it whenever either changes (including every drag frame)
+              key={svgKey}
               width={size.width}
               height={size.height}
               style={StyleSheet.absoluteFill}>
