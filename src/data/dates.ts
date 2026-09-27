@@ -53,3 +53,10 @@ export function recentDays(n: number): string[] {
     return toDateKey(day);
   });
 }
+
+/** "22.09 – 28.09" for the week starting on `weekStart`. */
+export function weekRangeLabel(weekStart: string): string {
+  const end = fromDateKey(weekStart);
+  end.setDate(end.getDate() + 6);
+  return `${shortDate(weekStart)} – ${shortDate(toDateKey(end))}`;
+}

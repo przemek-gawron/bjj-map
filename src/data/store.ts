@@ -22,7 +22,11 @@ type Actions = {
   /** Marks techniques as trained on `date`, merging into that day's session. */
   logTraining: (date: string, techniqueIds: string[], note?: string) => void;
   unlogTraining: (date: string, techniqueId: string) => void;
-  updateSession: (id: string, patch: Partial<Omit<Session, 'id'>>) => void;
+  /**
+   * Creates or edits a session. Keeps one session per date: saving onto a date that
+   * already has another session merges into it (techniques unioned, notes joined).
+   */
+  saveSession: (session: Omit<Session, 'id'> & { id?: string }) => void;
   removeSession: (id: string) => void;
 
   movePosition: (id: string, layout: Position['layout']) => void;
@@ -79,8 +83,21 @@ export const useStore = create<State & Actions>()(
             x.date === date ? { ...x, techniqueIds: x.techniqueIds.filter((t) => t !== techniqueId) } : x
           ),
         })),
-      updateSession: (id, patch) =>
-        set((s) => ({ sessions: s.sessions.map((x) => (x.id === id ? { ...x, ...patch } : x)) })),
+      saveSession: ({ id, date, techniqueIds, note }) =>
+        set((s) => {
+          const rest = id ? s.sessions.filter((x) => x.id !== id) : s.sessions;
+          const other = rest.find((x) => x.date === date);
+          const saved: Session = other
+            ? {
+                ...other,
+                techniqueIds: [...new Set([...other.techniqueIds, ...techniqueIds])],
+                note: [other.note, note].filter(Boolean).join('\n\n') || undefined,
+              }
+            : { id: id ?? newId(), date, techniqueIds: [...new Set(techniqueIds)], note };
+          return {
+            sessions: [...rest.filter((x) => x !== other), saved].sort((a, b) => b.date.localeCompare(a.date)),
+          };
+        }),
       removeSession: (id) => set((s) => ({ sessions: s.sessions.filter((x) => x.id !== id) })),
 
       movePosition: (id, layout) =>
