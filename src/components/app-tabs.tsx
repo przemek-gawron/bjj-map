@@ -9,31 +9,29 @@ export default function AppTabs() {
 
   return (
     <NativeTabs
+      tintColor={colors.accent}
       backgroundColor={colors.background}
       indicatorColor={colors.backgroundElement}
-      labelStyle={{ selected: { color: colors.text } }}>
+      labelVisibilityMode="labeled"
+      minimizeBehavior="never">
       <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/home.png')}
-          renderingMode="template"
-        />
+        <NativeTabs.Trigger.Label>Mapa</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="point.3.connected.trianglepath.dotted" md="hub" />
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="explore">
-        <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/explore.png')}
-          renderingMode="template"
-        />
+      <NativeTabs.Trigger name="techniques">
+        <NativeTabs.Trigger.Label>Techniki</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="list.bullet" md="list" />
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="prototype">
-        <NativeTabs.Trigger.Label>Prototyp</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/explore.png')}
-          renderingMode="template"
-        />
+      <NativeTabs.Trigger name="plan">
+        <NativeTabs.Trigger.Label>Plan</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="target" md="track_changes" />
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="journal">
+        <NativeTabs.Trigger.Label>Dziennik</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'calendar', selected: 'calendar' }} md="calendar_month" />
       </NativeTabs.Trigger>
     </NativeTabs>
   );
