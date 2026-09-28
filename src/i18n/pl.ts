@@ -72,7 +72,8 @@ export const pl = {
     title: 'Techniki',
     add: 'Dodaj technikę',
     worksSummary: (works: number, total: number) => `${works} z ${total} technik działa w sparingu`,
-    positionSummary: (total: number, works: number) => `${total} technik · ${works} działa`,
+    positionSummary: (total: number, works: number) =>
+      `${total} ${plPlural(total, 'technika', 'techniki', 'technik')} · ${works} działa`,
     notTrained: 'nie trenowane',
     noneFromPosition: 'Brak technik z tej pozycji.',
     noneForFilters: 'Brak technik dla tych filtrów.',
