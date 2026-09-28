@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { Chip } from '@/components/chip';
+import { MonthCalendar } from '@/components/month-calendar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
@@ -26,9 +27,12 @@ export default function JournalEntryScreen() {
   const [picked, setPicked] = useState<string[]>(existing?.techniqueIds ?? []);
   const [note, setNote] = useState(existing?.note ?? '');
   const [query, setQuery] = useState('');
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [month, setMonth] = useState(date.slice(0, 7));
 
-  const days = recentDays(14);
-  if (existing && !days.includes(existing.date)) days.push(existing.date);
+  // quick picks for the last week; any other day comes from the calendar
+  const days = recentDays(7);
+  const trainingDays = new Set(sessions.map((s) => s.date));
 
   const clash = sessions.find((s) => s.date === date && s.id !== existing?.id);
   const canSave = picked.length > 0 || note.trim().length > 0;
@@ -76,14 +80,26 @@ export default function JournalEntryScreen() {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
         automaticallyAdjustKeyboardInsets>
-        <ThemedText type="smallBold" themeColor="textSecondary">
-          Kiedy
-        </ThemedText>
+        <View style={styles.dateHead}>
+          <ThemedText type="smallBold" themeColor="textSecondary">
+            Kiedy · {dayLabel(date)}
+          </ThemedText>
+          <Pressable onPress={() => setCalendarOpen(!calendarOpen)} hitSlop={10}>
+            <ThemedText type="smallBold" themeColor="accent">
+              {calendarOpen ? 'Ukryj kalendarz' : '📅 Kalendarz'}
+            </ThemedText>
+          </Pressable>
+        </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.days}>
           {days.map((d, i) => (
             <Chip key={d} label={i === 0 ? 'Dziś' : i === 1 ? 'Wczoraj' : dayLabel(d)} selected={date === d} onPress={() => setDate(d)} />
           ))}
         </ScrollView>
+        {calendarOpen && (
+          <ThemedView type="backgroundElement" style={styles.calendar}>
+            <MonthCalendar month={month} onMonthChange={setMonth} marked={trainingDays} selected={date} onSelect={setDate} />
+          </ThemedView>
+        )}
         {clash && (
           <ThemedText type="small" themeColor="textSecondary">
             Na ten dzień jest już trening — zapis połączy oba wpisy.
@@ -149,7 +165,9 @@ const styles = StyleSheet.create({
   // web headers have no side padding of their own
   headerButton: { paddingHorizontal: Platform.OS === 'web' ? Spacing.three : 0 },
   content: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', padding: Spacing.three, paddingBottom: Spacing.six, gap: Spacing.two },
+  dateHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   days: { gap: Spacing.two, paddingVertical: Spacing.one },
+  calendar: { borderRadius: 14, padding: Spacing.three },
   sectionHead: { marginTop: Spacing.three },
   input: { borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 16 },
   group: { gap: Spacing.one, marginTop: Spacing.one },

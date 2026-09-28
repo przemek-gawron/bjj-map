@@ -60,3 +60,39 @@ export function weekRangeLabel(weekStart: string): string {
   end.setDate(end.getDate() + 6);
   return `${shortDate(weekStart)} – ${shortDate(toDateKey(end))}`;
 }
+
+const MONTHS = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'];
+const MONTHS_SHORT = ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru'];
+
+/** "wrzesień 2026" for a YYYY-MM month key. */
+export function monthLabel(month: string): string {
+  return `${MONTHS[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
+}
+
+/** "wrz" for a YYYY-MM month key. */
+export function shortMonthLabel(month: string): string {
+  return MONTHS_SHORT[Number(month.slice(5, 7)) - 1];
+}
+
+/** YYYY-MM month key `delta` months away from `month`. */
+export function addMonths(month: string, delta: number): string {
+  const d = new Date(Number(month.slice(0, 4)), Number(month.slice(5, 7)) - 1 + delta, 1);
+  return toDateKey(d).slice(0, 7);
+}
+
+/** Date key `delta` days away from `key`. */
+export function addDays(key: string, delta: number): string {
+  const d = fromDateKey(key);
+  d.setDate(d.getDate() + delta);
+  return toDateKey(d);
+}
+
+/** Calendar grid of a YYYY-MM month in weeks starting on Monday; null pads days outside the month. */
+export function monthGrid(month: string): (string | null)[][] {
+  const first = fromDateKey(`${month}-01`);
+  const lead = (first.getDay() + 6) % 7;
+  const days = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+  const cells: (string | null)[] = [...Array<null>(lead).fill(null), ...Array.from({ length: days }, (_, i) => `${month}-${pad(i + 1)}`)];
+  while (cells.length % 7) cells.push(null);
+  return Array.from({ length: cells.length / 7 }, (_, w) => cells.slice(w * 7, w * 7 + 7));
+}
