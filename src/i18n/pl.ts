@@ -6,6 +6,7 @@ export const pl = {
     cancel: 'Anuluj',
     delete: 'Usuń',
     save: 'Zapisz',
+    searchYoutube: '🔍 Szukaj na YouTube',
     edit: 'Edytuj',
   },
   tabs: {
@@ -170,7 +171,6 @@ export const pl = {
     thisWeekCount: (n: number) => `${n}× w tym tygodniu`,
     notThisWeek: 'jeszcze nie w tym tygodniu',
     video: '▶ Wideo',
-    searchYoutube: '🔍 Szukaj na YouTube',
     remove: 'Usuń z planu',
     pickTitle: 'Plan na tydzień',
     done: 'Gotowe',

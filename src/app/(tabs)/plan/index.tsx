@@ -15,9 +15,7 @@ import { useStore } from '@/data/store';
 import type { Drill, Technique } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
-
-const youtubeSearch = (name: string) =>
-  'https://www.youtube.com/results?search_query=' + encodeURIComponent(`${name} bjj`);
+import { youtubeSearch } from '@/utils/youtube';
 
 export default function PlanScreen() {
   const theme = useTheme();
@@ -224,7 +222,7 @@ function PlanItem({ name, subtitle, checked, onCheck, onOpen, onRemove, videoUrl
             onPress={() => Linking.openURL(videoUrl ?? youtubeSearch(searchName ?? name))}
             style={({ pressed }) => [styles.videoButton, !videoUrl && styles.videoSearch, pressed && styles.pressed]}>
             <ThemedText type="smallBold" style={videoUrl ? styles.videoText : styles.videoSearchText}>
-              {videoUrl ? tr.plan.video : tr.plan.searchYoutube}
+              {videoUrl ? tr.plan.video : tr.common.searchYoutube}
             </ThemedText>
           </Pressable>
         </View>

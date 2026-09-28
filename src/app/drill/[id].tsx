@@ -12,6 +12,7 @@ import { drillIdsOf, trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
+import { youtubeSearch } from '@/utils/youtube';
 
 export default function DrillScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -90,15 +91,13 @@ export default function DrillScreen() {
           </View>
         )}
 
-        {drill.videoUrl && (
-          <Pressable
-            onPress={() => Linking.openURL(drill.videoUrl!)}
-            style={({ pressed }) => [styles.videoButton, pressed && styles.pressed]}>
-            <ThemedText type="smallBold" style={styles.videoText}>
-              {tr.drills.watchVideo}
-            </ThemedText>
-          </Pressable>
-        )}
+        <Pressable
+          onPress={() => Linking.openURL(drill.videoUrl ?? youtubeSearch(drill.name))}
+          style={({ pressed }) => [styles.videoButton, !drill.videoUrl && styles.videoSearch, pressed && styles.pressed]}>
+          <ThemedText type="smallBold" style={drill.videoUrl ? styles.videoText : styles.videoSearchText}>
+            {drill.videoUrl ? tr.drills.watchVideo : tr.common.searchYoutube}
+          </ThemedText>
+        </Pressable>
 
         <ThemedView type="backgroundElement" style={styles.card}>
           <ThemedText type="smallBold">{tr.drills.training}</ThemedText>
@@ -161,6 +160,9 @@ const styles = StyleSheet.create({
   links: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.one },
   videoButton: { backgroundColor: '#EF4444', borderRadius: 12, paddingVertical: 12, alignItems: 'center', marginTop: Spacing.two },
   videoText: { color: '#FFFFFF' },
+  // no video of its own: an outlined search button instead of a filled "watch" one
+  videoSearch: { backgroundColor: 'transparent', borderWidth: 1, borderColor: '#EF4444' },
+  videoSearchText: { color: '#EF4444' },
   card: { borderRadius: 14, padding: Spacing.three, gap: Spacing.one, marginTop: Spacing.two },
   todayButton: { borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: Spacing.two },
   todayText: { fontWeight: '700' },

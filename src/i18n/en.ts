@@ -7,6 +7,7 @@ export const en: Dict = {
     cancel: 'Cancel',
     delete: 'Delete',
     save: 'Save',
+    searchYoutube: '🔍 Search YouTube',
     edit: 'Edit',
   },
   tabs: {
@@ -168,7 +169,6 @@ export const en: Dict = {
     thisWeekCount: (n: number) => `${n}× this week`,
     notThisWeek: 'not yet this week',
     video: '▶ Video',
-    searchYoutube: '🔍 Search YouTube',
     remove: 'Remove from plan',
     pickTitle: 'Plan for the week',
     done: 'Done',
