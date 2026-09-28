@@ -164,7 +164,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
               <View
                 key={t.id}
                 pointerEvents="none"
-                style={[styles.edgeLabel, { left: label.x - 70, top: label.y - 10, opacity: isTechniqueActive(t) ? 1 : 0.15 }]}>
+                style={[styles.edgeLabel, { left: label.x - 70, top: label.y - 8, opacity: isTechniqueActive(t) ? 1 : 0.15 }]}>
                 <Text numberOfLines={1} style={[styles.edgeLabelText, { color: STATUS_COLOR[t.status], backgroundColor: theme.background }]}>
                   {t.name}
                 </Text>
