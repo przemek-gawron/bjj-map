@@ -15,9 +15,10 @@ Aplikacja mobilna (iOS / Android) w Expo, działa też w przeglądarce.
 
 Każda technika ma status: **Widziałem → Ćwiczę → Działa w sparingu**.
 
+**Ustawienia** (zębatka na Mapie): język (systemowy, polski, angielski), opis aplikacji i wersja, usunięcie wszystkich danych. Aplikacja jest po polsku i po angielsku — teksty są w `src/i18n/`.
+
 ### Planowane
 
-- wykresy: ile razy i kiedy trenowana była technika
 - przypomnienia o technikach, które nie są jeszcze opanowane
 - synchronizacja i konto
 
@@ -48,7 +49,8 @@ npx expo lint
 - [Expo](https://expo.dev) SDK 57, React Native, TypeScript, React Compiler
 - [Expo Router](https://docs.expo.dev/router/introduction/) — nawigacja oparta na plikach, natywny dolny pasek (`NativeTabs`)
 - [zustand](https://github.com/pmndrs/zustand) + AsyncStorage — stan zapisywany lokalnie na urządzeniu
-- react-native-svg, react-native-gesture-handler, Reanimated — mapa (rysowanie, przeciąganie, pinch-zoom)
+- react-native-svg, react-native-gesture-handler, Reanimated — mapa (rysowanie, przeciąganie, pinch-zoom), animacje, usuwanie przesunięciem
+- expo-localization — język urządzenia
 - expo-image-picker, expo-file-system — własne zdjęcia pozycji
 
 ## Struktura
@@ -63,14 +65,17 @@ src/
       plan/             plan tygodnia, wybór technik (modal)
       journal/          oś czasu, wpis treningu (modal)
     technique/          szczegóły ([id]) i formularz (modal) — otwierane z każdej zakładki
+    settings.tsx        ustawienia
   components/           wspólne komponenty (Screen, Chip, StatusChip, zakładki, PositionIllustration)
     map/                płótno mapy, geometria strzałek, panel pozycji
+    stats/              statystyki dziennika (mapa roku, wykres godzin)
   data/
     types.ts            model: Position, Technique, Session, WeeklyPlan
     store.ts            store zustand z akcjami i zapisem
     seed.ts             startowa mapa białego pasa (11 pozycji, 21 technik)
     stats.ts            statystyki treningów wyliczane z dziennika
     dates.ts, labels.ts
+  i18n/                 teksty PL/EN (pl.ts, en.ts), wybór języka, nazwy startowej mapy
 ```
 
 ### Model danych w skrócie
