@@ -110,8 +110,8 @@ export default function TechniquesScreen() {
                     style={[styles.rowContainer, { borderColor: theme.backgroundSelected }]}>
                     <Pressable
                       onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}
-                      // opaque, so the delete button stays hidden until swiped
-                      style={({ pressed }) => [styles.row, { backgroundColor: theme.backgroundElement }, pressed && styles.pressed]}>
+                      // opaque (also when pressed), so the delete button stays hidden until swiped
+                      style={({ pressed }) => [styles.row, { backgroundColor: pressed ? theme.backgroundSelected : theme.backgroundElement }]}>
                       <View style={styles.flex}>
                         <ThemedText type="smallBold">{t.name}</ThemedText>
                         <ThemedText type="small" themeColor="textSecondary">
@@ -154,6 +154,5 @@ const styles = StyleSheet.create({
   positionName: { fontSize: 17 },
   rowContainer: { borderTopWidth: StyleSheet.hairlineWidth },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two, paddingHorizontal: 14, paddingVertical: 10 },
-  pressed: { opacity: 0.6 },
   empty: { paddingHorizontal: 14, paddingBottom: 14 },
 });

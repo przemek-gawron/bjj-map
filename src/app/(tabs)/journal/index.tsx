@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AddButton } from '@/components/add-button';
 import { Chip } from '@/components/chip';
 import { Screen } from '@/components/screen';
+import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
@@ -12,11 +13,13 @@ import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Session } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
+import { confirm } from '@/utils/confirm';
 
 export default function JournalScreen() {
   const theme = useTheme();
   const sessions = useStore((s) => s.sessions);
   const techniques = useStore((s) => s.techniques);
+  const removeSession = useStore((s) => s.removeSession);
 
   const today = toDateKey();
   const thisWeek = weekStartOf(today);
@@ -33,6 +36,8 @@ export default function JournalScreen() {
 
   // "+" edits today's entry if there already is one — one session per day
   const todaySession = sessions.find((s) => s.date === today);
+  const remove = (s: Session) =>
+    confirm('Usunąć trening?', `Trening z ${dayLabel(s.date)} zniknie z dziennika.`, 'Usuń', () => removeSession(s.id));
   const openEntry = (id?: string) => router.push(id ? { pathname: '/journal/entry', params: { id } } : '/journal/entry');
 
   return (
@@ -63,33 +68,38 @@ export default function JournalScreen() {
           </ThemedText>
 
           {list.map((s) => (
-            <Pressable key={s.id} onPress={() => openEntry(s.id)} style={({ pressed }) => pressed && styles.pressed}>
-              <ThemedView type="backgroundElement" style={styles.card}>
-                <View style={styles.cardHead}>
-                  <ThemedText type="smallBold" style={styles.date}>
-                    {dayLabel(s.date)}
-                  </ThemedText>
-                  <ThemedText type="small" themeColor="textSecondary">
-                    {relativeDay(s.date)}
-                  </ThemedText>
-                </View>
+            <SwipeToDelete key={s.id} onDelete={() => remove(s)} style={styles.swipeable}>
+              <Pressable onPress={() => openEntry(s.id)}>
+                {({ pressed }) => (
+                  // pressed state tints instead of fading, which would reveal the delete button
+                  <ThemedView type={pressed ? 'backgroundSelected' : 'backgroundElement'} style={styles.card}>
+                    <View style={styles.cardHead}>
+                      <ThemedText type="smallBold" style={styles.date}>
+                        {dayLabel(s.date)}
+                      </ThemedText>
+                      <ThemedText type="small" themeColor="textSecondary">
+                        {relativeDay(s.date)}
+                      </ThemedText>
+                    </View>
 
-                {s.techniqueIds.length > 0 && (
-                  <View style={styles.chips}>
-                    {s.techniqueIds.map((id) => {
-                      const t = techniques.find((x) => x.id === id);
-                      return t && <Chip key={id} small selected label={t.name} color={STATUS_COLOR[t.status]} />;
-                    })}
-                  </View>
-                )}
+                    {s.techniqueIds.length > 0 && (
+                      <View style={styles.chips}>
+                        {s.techniqueIds.map((id) => {
+                          const t = techniques.find((x) => x.id === id);
+                          return t && <Chip key={id} small selected label={t.name} color={STATUS_COLOR[t.status]} />;
+                        })}
+                      </View>
+                    )}
 
-                {s.note && (
-                  <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
-                    {s.note}
-                  </ThemedText>
+                    {s.note && (
+                      <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
+                        {s.note}
+                      </ThemedText>
+                    )}
+                  </ThemedView>
                 )}
-              </ThemedView>
-            </Pressable>
+              </Pressable>
+            </SwipeToDelete>
           ))}
         </View>
       ))}
@@ -115,10 +125,10 @@ const styles = StyleSheet.create({
   statLabel: { fontSize: 12, textAlign: 'center' },
   empty: { borderRadius: 14, padding: Spacing.three, gap: Spacing.one, marginTop: Spacing.three },
   weekHead: { marginTop: Spacing.four, marginBottom: Spacing.two, textTransform: 'uppercase', fontSize: 12 },
-  card: { borderRadius: 14, padding: 14, marginBottom: Spacing.two, gap: Spacing.two },
+  swipeable: { borderRadius: 14, marginBottom: Spacing.two },
+  card: { padding: 14, gap: Spacing.two },
   cardHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
   date: { fontSize: 17 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.one },
   note: { fontStyle: 'italic' },
-  pressed: { opacity: 0.7 },
 });
