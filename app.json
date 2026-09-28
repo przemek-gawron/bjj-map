@@ -57,6 +57,12 @@
         "projectId": "ce86c732-dbec-4d7e-bbad-942746a10d94"
       }
     },
-    "owner": "przemek-gawron-dev"
+    "owner": "przemek-gawron-dev",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ce86c732-dbec-4d7e-bbad-942746a10d94"
+    }
   }
 }
