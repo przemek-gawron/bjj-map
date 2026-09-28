@@ -9,22 +9,22 @@ import { Platform } from 'react-native';
 
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-    accent: '#7C3AED',
+    text: '#1E1B4B',
+    background: '#F7F5FF',
+    backgroundElement: '#FFFFFF',
+    backgroundSelected: '#ECE8FB',
+    textSecondary: '#6B6893',
+    accent: '#6D28D9',
     /** Text and icons drawn on the accent color. */
     onAccent: '#FFFFFF',
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-    accent: '#A78BFA',
+    text: '#F5F3FF',
+    background: '#0F0B1F',
+    backgroundElement: '#1B1631',
+    backgroundSelected: '#2A2347',
+    textSecondary: '#B4AED6',
+    accent: '#8B5CF6',
     onAccent: '#FFFFFF',
   },
 } as const;
@@ -36,8 +36,8 @@ type Gradient = readonly [string, string];
  * the round add buttons. null keeps the flat colors above.
  */
 export const Gradients: Record<keyof typeof Colors, { header: Gradient; button: Gradient } | null> = {
-  light: null,
-  dark: null,
+  light: { header: ['#DDD3FF', '#F7F5FF'], button: ['#7C3AED', '#2563EB'] },
+  dark: { header: ['#2E1065', '#0F0B1F'], button: ['#8B5CF6', '#3B82F6'] },
 };
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
