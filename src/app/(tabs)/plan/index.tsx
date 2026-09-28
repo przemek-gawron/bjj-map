@@ -4,6 +4,7 @@ import { Linking, Pressable, StyleSheet, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
 import { StatusChip } from '@/components/status-chip';
+import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
@@ -110,45 +111,42 @@ export default function PlanScreen() {
         const count = weekCounts.get(t.id) ?? 0;
         const checked = trainedToday.has(t.id);
         return (
-          <ThemedView key={t.id} type="backgroundElement" style={styles.card}>
-            <View style={styles.row}>
-              <Pressable
-                onPress={() => toggleToday(t.id)}
-                hitSlop={8}
-                accessibilityLabel={checked ? `${t.name}: odznacz dzisiejszy trening` : `${t.name}: trenowałem dziś`}
-                style={[
-                  styles.check,
-                  { borderColor: checked ? STATUS_COLOR.works : theme.textSecondary },
-                  checked && { backgroundColor: STATUS_COLOR.works },
-                ]}>
-                {checked && <ThemedText style={styles.checkMark}>✓</ThemedText>}
-              </Pressable>
-              <Pressable style={styles.flex} onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}>
-                <ThemedText type="smallBold" style={styles.name}>
-                  {t.name}
-                </ThemedText>
-                <ThemedText type="small" themeColor="textSecondary">
-                  {positionName(t.from)} · {count ? `${count}× w tym tygodniu` : 'jeszcze nie w tym tygodniu'}
-                </ThemedText>
-              </Pressable>
-              <StatusChip small status={t.status} onChange={(next) => setStatus(t.id, next)} />
-            </View>
+          <SwipeToDelete key={t.id} label="Usuń z planu" onDelete={() => togglePlanned(t.id)} style={styles.swipeable}>
+            <ThemedView type="backgroundElement" style={styles.plannedCard}>
+              <View style={styles.row}>
+                <Pressable
+                  onPress={() => toggleToday(t.id)}
+                  hitSlop={8}
+                  accessibilityLabel={checked ? `${t.name}: odznacz dzisiejszy trening` : `${t.name}: trenowałem dziś`}
+                  style={[
+                    styles.check,
+                    { borderColor: checked ? STATUS_COLOR.works : theme.textSecondary },
+                    checked && { backgroundColor: STATUS_COLOR.works },
+                  ]}>
+                  {checked && <ThemedText style={styles.checkMark}>✓</ThemedText>}
+                </Pressable>
+                <Pressable style={styles.flex} onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}>
+                  <ThemedText type="smallBold" style={styles.name}>
+                    {t.name}
+                  </ThemedText>
+                  <ThemedText type="small" themeColor="textSecondary">
+                    {positionName(t.from)} · {count ? `${count}× w tym tygodniu` : 'jeszcze nie w tym tygodniu'}
+                  </ThemedText>
+                </Pressable>
+                <StatusChip small status={t.status} onChange={(next) => setStatus(t.id, next)} />
+              </View>
 
-            <View style={styles.actions}>
-              <Pressable
-                onPress={() => Linking.openURL(t.videoUrl ?? youtubeSearch(t))}
-                style={({ pressed }) => [styles.videoButton, !t.videoUrl && styles.videoSearch, pressed && styles.pressed]}>
-                <ThemedText type="smallBold" style={t.videoUrl ? styles.videoText : styles.videoSearchText}>
-                  {t.videoUrl ? '▶ Wideo' : '🔍 Szukaj na YouTube'}
-                </ThemedText>
-              </Pressable>
-              <Pressable onPress={() => togglePlanned(t.id)} hitSlop={8}>
-                <ThemedText type="small" themeColor="textSecondary">
-                  Usuń z planu
-                </ThemedText>
-              </Pressable>
-            </View>
-          </ThemedView>
+              <View style={styles.actions}>
+                <Pressable
+                  onPress={() => Linking.openURL(t.videoUrl ?? youtubeSearch(t))}
+                  style={({ pressed }) => [styles.videoButton, !t.videoUrl && styles.videoSearch, pressed && styles.pressed]}>
+                  <ThemedText type="smallBold" style={t.videoUrl ? styles.videoText : styles.videoSearchText}>
+                    {t.videoUrl ? '▶ Wideo' : '🔍 Szukaj na YouTube'}
+                  </ThemedText>
+                </Pressable>
+              </View>
+            </ThemedView>
+          </SwipeToDelete>
         );
       })}
     </Screen>
@@ -162,11 +160,13 @@ const styles = StyleSheet.create({
   progressBox: { gap: Spacing.two, marginTop: Spacing.three, marginBottom: Spacing.one },
   progress: { flexDirection: 'row', height: 8, borderRadius: 4, overflow: 'hidden' },
   card: { borderRadius: 14, padding: 14, gap: Spacing.two, marginTop: Spacing.three },
+  swipeable: { borderRadius: 14, marginTop: Spacing.three },
+  plannedCard: { padding: 14, gap: Spacing.two },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   check: { width: 28, height: 28, borderRadius: 14, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   checkMark: { color: '#FFFFFF', fontWeight: '800', fontSize: 15, lineHeight: 18 },
   name: { fontSize: 17 },
-  actions: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: Spacing.three },
+  actions: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   videoButton: { backgroundColor: '#EF4444', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 8 },
   videoSearch: { backgroundColor: 'transparent', borderWidth: 1, borderColor: '#EF4444' },
   videoText: { color: '#FFFFFF' },
