@@ -3,6 +3,9 @@ export type PositionGroup =
   | 'closed_guard'
   | 'open_guard'
   | 'half_guard'
+  | 'turtle'
+  | 'knee_on_belly'
+  | 'north_south'
   | 'side_control'
   | 'mount'
   | 'back';

@@ -151,7 +151,18 @@ export function canvasBounds(layout: Layout) {
 }
 
 /** Rows of the tidy layout, top to bottom; positions of other groups go last. */
-const GROUP_ROWS: PositionGroup[] = ['standing', 'open_guard', 'closed_guard', 'half_guard', 'side_control', 'mount', 'back'];
+const GROUP_ROWS: PositionGroup[] = [
+  'standing',
+  'open_guard',
+  'closed_guard',
+  'half_guard',
+  'turtle',
+  'side_control',
+  'knee_on_belly',
+  'north_south',
+  'mount',
+  'back',
+];
 /** Wide enough for the arrows between the two columns to keep their labels apart. */
 const COL_GAP = 200;
 const ROW_GAP = 120;

@@ -31,6 +31,18 @@ const DRAWINGS: Record<PositionGroup, Drawing> = {
     bottom: { head: [12, 58], lines: 'M18 59 L46 59 M46 59 L66 62 M46 59 L60 52 L74 56' },
     top: { head: [26, 42], lines: 'M32 44 L60 50 M60 50 L68 58 L86 60 M60 50 L80 48 L90 58 M36 46 L28 56' },
   },
+  turtle: {
+    bottom: { head: [30, 46], lines: 'M36 46 L62 42 M38 48 L36 63 M62 42 L64 63 L80 63' },
+    top: { head: [62, 18], lines: 'M62 25 L66 44 M66 44 L60 63 M66 44 L78 63 M63 30 L46 40' },
+  },
+  knee_on_belly: {
+    bottom: { head: [12, 58], lines: 'M18 59 L58 59 M58 59 L84 60 M58 59 L80 54' },
+    top: { head: [50, 14], lines: 'M50 21 L54 40 M54 40 L42 55 M54 40 L70 50 L72 63 M51 27 L38 38' },
+  },
+  north_south: {
+    bottom: { head: [76, 58], lines: 'M70 59 L30 59 M30 59 L6 60 M30 59 L10 54' },
+    top: { head: [38, 46], lines: 'M44 48 L74 46 M74 46 L88 63 M74 46 L96 58 M48 50 L46 60' },
+  },
   side_control: {
     bottom: { head: [12, 58], lines: 'M18 59 L58 59 M58 59 L84 60 M58 59 L80 54' },
     top: { head: [34, 44], lines: 'M40 44 L56 36 M56 36 L64 58 M56 36 L72 50 L70 60 M42 46 L36 56' },

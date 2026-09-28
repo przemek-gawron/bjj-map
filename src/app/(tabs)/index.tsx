@@ -15,7 +15,18 @@ import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 
 const TYPES: TechniqueType[] = ['submission', 'sweep', 'escape', 'pass', 'takedown', 'transition'];
-const GROUPS: PositionGroup[] = ['standing', 'closed_guard', 'open_guard', 'half_guard', 'side_control', 'mount', 'back'];
+const GROUPS: PositionGroup[] = [
+  'standing',
+  'closed_guard',
+  'open_guard',
+  'half_guard',
+  'turtle',
+  'side_control',
+  'knee_on_belly',
+  'north_south',
+  'mount',
+  'back',
+];
 
 export default function MapScreen() {
   const theme = useTheme();
@@ -65,7 +76,7 @@ export default function MapScreen() {
         ))}
       </ScrollView>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filters} contentContainerStyle={styles.chips}>
-        {GROUPS.map((group) => (
+        {GROUPS.filter((g) => positions.some((p) => p.group === g)).map((group) => (
           <Chip
             key={group}
             small
