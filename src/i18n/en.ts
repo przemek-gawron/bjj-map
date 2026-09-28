@@ -70,6 +70,9 @@ export const en: Dict = {
     addFromHere: '+ Add a technique from this position',
     howToGetHere: (n: number) => `How to get here · ${n}`,
     fromPosition: (name: string) => `from ${name}`,
+    drills: (n: number) => `Drills · ${n}`,
+    addDrill: '+ Add a drill for this position',
+    drillBadge: (n: number) => `${n} ${enPlural(n, 'drill', 'drills')}`,
   },
   techniques: {
     title: 'Techniques',

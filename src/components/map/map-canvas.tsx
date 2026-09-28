@@ -7,6 +7,7 @@ import Svg, { Defs, Marker, Path } from 'react-native-svg';
 import { buildEdges, canvasBounds, NODE_H, NODE_W, tidyLayout } from './geometry';
 
 import { PositionIllustration } from '@/components/position-illustration';
+import { drillsForPosition } from '@/data/drills';
 import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Position, Status, Technique } from '@/data/types';
@@ -37,6 +38,7 @@ type Drag = { id: string; x: number; y: number };
 export function MapCanvas({ positions, techniques, selectedId, onSelect, isPositionActive, isTechniqueActive, controlsBottom }: Props) {
   const theme = useTheme();
   const tr = useT();
+  const drills = useStore((s) => s.drills);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [viewport, setViewport] = useState<{ width: number; height: number } | null>(null);
 
@@ -213,6 +215,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
                 active={isPositionActive(p)}
                 selected={p.id === selectedId}
                 submissions={techniques.filter((t) => t.from === p.id && !t.to)}
+                drillCount={drillsForPosition(p.id, drills, techniques).length}
                 isTechniqueActive={isTechniqueActive}
                 scale={scale}
                 canvasGesture={canvasPan}
@@ -269,6 +272,7 @@ type NodeProps = {
   active: boolean;
   selected: boolean;
   submissions: Technique[];
+  drillCount: number;
   isTechniqueActive: (t: Technique) => boolean;
   scale: SharedValue<number>;
   canvasGesture: GestureType;
@@ -276,8 +280,9 @@ type NodeProps = {
   onDrag: (drag: Drag | null) => void;
 };
 
-function MapNode({ position, x, y, active, selected, submissions, isTechniqueActive, scale, canvasGesture, onSelect, onDrag }: NodeProps) {
+function MapNode({ position, x, y, active, selected, submissions, drillCount, isTechniqueActive, scale, canvasGesture, onSelect, onDrag }: NodeProps) {
   const theme = useTheme();
+  const tr = useT();
   const { id } = position;
   const origin = useSharedValue({ x: 0, y: 0 });
   const fade = useFade(active, 0.3);
@@ -332,7 +337,7 @@ function MapNode({ position, x, y, active, selected, submissions, isTechniqueAct
           <Text numberOfLines={2} style={[styles.nodeName, { color: theme.text }]}>
             {position.name}
           </Text>
-          {submissions.length > 0 && (
+          {(submissions.length > 0 || drillCount > 0) && (
             <View style={styles.subs}>
               {submissions.map((t) => (
                 <View
@@ -340,7 +345,14 @@ function MapNode({ position, x, y, active, selected, submissions, isTechniqueAct
                   style={[styles.subDot, { backgroundColor: STATUS_COLOR[t.status], opacity: isTechniqueActive(t) ? 1 : 0.25 }]}
                 />
               ))}
-              <Text style={[styles.subsText, { color: theme.textSecondary }]}>🔒 {submissions.length}</Text>
+              {submissions.length > 0 && (
+                <Text style={[styles.subsText, { color: theme.textSecondary }]}>🔒 {submissions.length}</Text>
+              )}
+              {drillCount > 0 && (
+                <Text accessibilityLabel={tr.map.drillBadge(drillCount)} style={[styles.subsText, { color: theme.accent }]}>
+                  🔁 {drillCount}
+                </Text>
+              )}
             </View>
           )}
         </View>

@@ -6,6 +6,7 @@ import { PositionIllustration } from '@/components/position-illustration';
 import { StatusChip } from '@/components/status-chip';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
+import { drillsForPosition } from '@/data/drills';
 import { useStore } from '@/data/store';
 import type { Position, Technique } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
@@ -25,11 +26,13 @@ export function PositionSheet({ position, bottom, onClose, onHeight }: Props) {
   const tr = useT();
   const positions = useStore((s) => s.positions);
   const techniques = useStore((s) => s.techniques);
+  const allDrills = useStore((s) => s.drills);
   const setStatus = useStore((s) => s.setStatus);
   const setPositionPhoto = useStore((s) => s.setPositionPhoto);
 
   const from = techniques.filter((t) => t.from === position.id);
   const into = techniques.filter((t) => t.to === position.id);
+  const drills = drillsForPosition(position.id, allDrills, techniques);
   const nameOf = (id: string | null) => positions.find((p) => p.id === id)?.name;
 
   const changePhoto = async () => {
@@ -107,6 +110,32 @@ export function PositionSheet({ position, bottom, onClose, onHeight }: Props) {
           style={styles.add}>
           <ThemedText type="smallBold" themeColor="accent">
             {tr.map.addFromHere}
+          </ThemedText>
+        </Pressable>
+
+        <ThemedText type="smallBold" themeColor="textSecondary" style={styles.section}>
+          {tr.map.drills(drills.length)}
+        </ThemedText>
+        {drills.map((d) => (
+          <Pressable
+            key={d.id}
+            onPress={() => router.push({ pathname: '/drill/[id]', params: { id: d.id } })}
+            style={({ pressed }) => [styles.row, { borderColor: theme.backgroundSelected }, pressed && styles.pressed]}>
+            <ThemedText type="smallBold" style={styles.flex}>
+              {d.name}
+            </ThemedText>
+            {d.dose && (
+              <ThemedText type="small" themeColor="accent">
+                {d.dose}
+              </ThemedText>
+            )}
+          </Pressable>
+        ))}
+        <Pressable
+          onPress={() => router.push({ pathname: '/drill/form', params: { position: position.id } })}
+          style={styles.add}>
+          <ThemedText type="smallBold" themeColor="accent">
+            {tr.map.addDrill}
           </ThemedText>
         </Pressable>
 

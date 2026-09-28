@@ -71,6 +71,9 @@ export const pl = {
     addFromHere: '+ Dodaj technikę z tej pozycji',
     howToGetHere: (n: number) => `Jak tu trafić · ${n}`,
     fromPosition: (name: string) => `z ${name}`,
+    drills: (n: number) => `Drille · ${n}`,
+    addDrill: '+ Dodaj drill do tej pozycji',
+    drillBadge: (n: number) => `${n} ${plPlural(n, 'drill', 'drille', 'drilli')}`,
   },
   techniques: {
     title: 'Techniki',
