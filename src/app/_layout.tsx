@@ -1,6 +1,6 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { useEffect } from 'react';
-import { Appearance, StyleSheet } from 'react-native';
+import { Appearance, Platform, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useSettings } from '@/data/settings';
@@ -20,8 +20,10 @@ export default function RootLayout() {
   const language = useLanguage();
   const appearance = useSettings((s) => s.appearance);
 
-  // native chrome (status bar, alerts, keyboard, tab bar) follows the chosen appearance too
+  // native chrome (status bar, alerts, keyboard, tab bar) follows the chosen appearance too;
+  // react-native-web has no setColorScheme, and web has no native chrome to recolor
   useEffect(() => {
+    if (Platform.OS === 'web') return;
     Appearance.setColorScheme(appearance === 'system' ? 'unspecified' : appearance);
   }, [appearance]);
 
