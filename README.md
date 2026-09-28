@@ -17,6 +17,10 @@ Każda technika ma status: **Widziałem → Ćwiczę → Działa w sparingu**.
 
 **Drille** to ćwiczenia solo (shrimp, mostek, technical stand-up, granby roll…) przypięte do dowolnych pozycji i technik. Na start aplikacja ma 12 klasycznych drilli. Każdy ma opcjonalną dawkę („3×10”), wideo i opis, a na jego ekranie odhaczasz „Zrobiłem dziś”. Drill widać przy pozycji, do której jest przypięty, i przy pozycji, z której startuje jego technika.
 
+**Pozycje** mają opis (cel, kluczowe detale, typowe błędy), widoczny i edytowalny w panelu pozycji na mapie. Techniki i drille bez własnego wideo mają przycisk „Szukaj na YouTube”.
+
+**Przykładowa biblioteka** (Ustawienia → Dane): około 20 pozycji (m.in. butterfly, De La Riva, spider/lasso, turtle, knee on belly, north-south), 78 technik i 22 drille z opisami po polsku i angielsku — podstawy dla białego i niebieskiego pasa. Dokłada tylko to, czego brakuje, i dopisuje opisy startowym elementom; nic nie usuwa.
+
 **Ustawienia** (zębatka na Mapie): wygląd (domyślnie ciemny, można przełączyć na jasny albo systemowy), język (systemowy, polski, angielski), opis aplikacji i wersja, usunięcie wszystkich danych. Aplikacja jest po polsku i po angielsku — teksty są w `src/i18n/`.
 
 ### Planowane
@@ -68,6 +72,7 @@ src/
       journal/          oś czasu, wpis treningu (modal)
     technique/          szczegóły ([id]) i formularz (modal) — otwierane z każdej zakładki
     drill/              to samo dla drilli
+    position/           edycja nazwy i opisu pozycji (modal)
     settings.tsx        ustawienia
   components/           wspólne komponenty (Screen, Chip, StatusChip, zakładki, PositionIllustration)
     map/                płótno mapy, geometria strzałek, panel pozycji
@@ -76,6 +81,7 @@ src/
     types.ts            model: Position, Technique, Drill, Session, WeeklyPlan
     store.ts            store zustand z akcjami i zapisem
     seed.ts             startowa mapa białego pasa (11 pozycji, 21 technik, 12 drilli)
+    library.ts          przykładowa biblioteka z opisami PL/EN (wczytywana z Ustawień)
     stats.ts            statystyki treningów wyliczane z dziennika
     drills.ts           które drille pokazać przy pozycji
     dates.ts, labels.ts
