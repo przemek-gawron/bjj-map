@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useMemo } from 'react';
 import { Linking, Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, LinearTransition, ZoomIn } from 'react-native-reanimated';
 
 import { Screen } from '@/components/screen';
 import { StatusChip } from '@/components/status-chip';
@@ -134,7 +134,11 @@ export default function PlanScreen() {
                     { borderColor: checked ? STATUS_COLOR.works : theme.textSecondary },
                     checked && { backgroundColor: STATUS_COLOR.works },
                   ]}>
-                  {checked && <ThemedText style={styles.checkMark}>✓</ThemedText>}
+                  {checked && (
+                    <Animated.View entering={ZoomIn.duration(180)}>
+                      <ThemedText style={styles.checkMark}>✓</ThemedText>
+                    </Animated.View>
+                  )}
                 </Pressable>
                 <Pressable style={styles.flex} onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}>
                   <ThemedText type="smallBold" style={styles.name}>

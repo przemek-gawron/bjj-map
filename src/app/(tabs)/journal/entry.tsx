@@ -1,6 +1,7 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Chip } from '@/components/chip';
 import { MonthCalendar } from '@/components/month-calendar';
@@ -98,9 +99,12 @@ export default function JournalEntryScreen() {
           ))}
         </ScrollView>
         {calendarOpen && (
-          <ThemedView type="backgroundElement" style={styles.calendar}>
+          <Animated.View
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(150)}
+            style={[styles.calendar, { backgroundColor: theme.backgroundElement }]}>
             <MonthCalendar month={month} onMonthChange={setMonth} marked={trainingDays} selected={date} onSelect={setDate} />
-          </ThemedView>
+          </Animated.View>
         )}
         {clash && (
           <ThemedText type="small" themeColor="textSecondary">

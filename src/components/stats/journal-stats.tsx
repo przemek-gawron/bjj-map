@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { BarChart } from './bar-chart';
 import { YearHeatmap } from './year-heatmap';
@@ -70,9 +71,11 @@ export function JournalStats() {
 
       <ThemedView type="backgroundElement" style={styles.card}>
         {period === 'month' ? (
-          <MonthCalendar month={month} onMonthChange={setMonth} marked={trainingDays} onSelect={openDay} />
+          <Animated.View key="month" entering={FadeIn.duration(200)}>
+            <MonthCalendar month={month} onMonthChange={setMonth} marked={trainingDays} onSelect={openDay} />
+          </Animated.View>
         ) : (
-          <>
+          <Animated.View key="year" entering={FadeIn.duration(200)}>
             <View style={styles.yearHead}>
               <Pressable onPress={() => setYear(year - 1)} hitSlop={10} accessibilityLabel={tr.dates.previousYear}>
                 <ThemedText themeColor="accent" style={styles.arrow}>
@@ -92,7 +95,7 @@ export function JournalStats() {
               </Pressable>
             </View>
             <YearHeatmap year={year} sessions={sessions} />
-          </>
+          </Animated.View>
         )}
       </ThemedView>
 
@@ -122,21 +125,22 @@ export function JournalStats() {
         const t = techniques.find((x) => x.id === id);
         if (!t) return null;
         return (
-          <Pressable
-            key={id}
-            onPress={() => router.push({ pathname: '/technique/[id]', params: { id } })}
-            style={({ pressed }) => [styles.rank, pressed && styles.pressed]}>
-            <View style={styles.rankHead}>
-              <ThemedText type="small" numberOfLines={1} style={styles.flex}>
-                {t.name}
-              </ThemedText>
-              <ThemedText type="smallBold">{count}×</ThemedText>
-            </View>
-            <View style={[styles.rankTrack, { backgroundColor: theme.backgroundElement }]}>
-              <View style={{ flex: count, backgroundColor: theme.accent, borderRadius: 3 }} />
-              <View style={{ flex: maxCount - count }} />
-            </View>
-          </Pressable>
+          <Animated.View key={id} entering={FadeIn.duration(200)} exiting={FadeOut.duration(150)} layout={LinearTransition.duration(220)}>
+            <Pressable
+              onPress={() => router.push({ pathname: '/technique/[id]', params: { id } })}
+              style={({ pressed }) => [styles.rank, pressed && styles.pressed]}>
+              <View style={styles.rankHead}>
+                <ThemedText type="small" numberOfLines={1} style={styles.flex}>
+                  {t.name}
+                </ThemedText>
+                <ThemedText type="smallBold">{count}×</ThemedText>
+              </View>
+              <View style={[styles.rankTrack, { backgroundColor: theme.backgroundElement }]}>
+                <View style={{ flex: count, backgroundColor: theme.accent, borderRadius: 3 }} />
+                <View style={{ flex: maxCount - count }} />
+              </View>
+            </Pressable>
+          </Animated.View>
         );
       })}
     </View>

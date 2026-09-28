@@ -63,9 +63,11 @@ export default function JournalScreen() {
       />
 
       {view === 'stats' ? (
-        <JournalStats />
+        <Animated.View key="stats" entering={FadeIn.duration(200)}>
+          <JournalStats />
+        </Animated.View>
       ) : (
-        <>
+        <Animated.View key="list" entering={FadeIn.duration(200)}>
           <View style={[styles.stats, { borderColor: theme.backgroundSelected }]}>
             <Stat value={weekCount} label={tr.journal.thisWeek} />
             <Stat value={monthCount} label={tr.journal.thisMonth} />
@@ -127,7 +129,7 @@ export default function JournalScreen() {
               ))}
             </Animated.View>
           ))}
-        </>
+        </Animated.View>
       )}
     </Screen>
   );
