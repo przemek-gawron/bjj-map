@@ -64,7 +64,6 @@ export const pl = {
     changePhoto: 'Zmień zdjęcie',
     removePhoto: 'Usuń zdjęcie',
     fromHere: (n: number) => `Z tej pozycji · ${n}`,
-    submission: 'kończenie',
     addFromHere: '+ Dodaj technikę z tej pozycji',
     howToGetHere: (n: number) => `Jak tu trafić · ${n}`,
     fromPosition: (name: string) => `z ${name}`,

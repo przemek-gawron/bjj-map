@@ -94,7 +94,7 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
         <ThemedText type="smallBold" themeColor="textSecondary" style={styles.section}>
           {tr.map.fromHere(from.length)}
         </ThemedText>
-        {from.map((t) => row(t, `${tr.type[t.type]} ${t.to ? '→ ' + nameOf(t.to) : '· ' + tr.map.submission}`))}
+        {from.map((t) => row(t, t.to ? `${tr.type[t.type]} → ${nameOf(t.to)}` : tr.type[t.type]))}
         <Pressable
           onPress={() => router.push({ pathname: '/technique/form', params: { from: position.id } })}
           style={styles.add}>
