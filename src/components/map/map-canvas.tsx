@@ -4,7 +4,7 @@ import { Gesture, GestureDetector, type GestureType } from 'react-native-gesture
 import Animated, { type SharedValue, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import Svg, { Defs, Marker, Path } from 'react-native-svg';
 
-import { buildEdges, canvasSize, NODE_H, NODE_W } from './geometry';
+import { buildEdges, canvasBounds, NODE_H, NODE_W } from './geometry';
 
 import { PositionIllustration } from '@/components/position-illustration';
 import { STATUS_COLOR } from '@/data/labels';
@@ -42,7 +42,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
     return l;
   }, [positions, drag]);
   const edges = useMemo(() => buildEdges(techniques, layout), [techniques, layout]);
-  const size = canvasSize(layout);
+  const bounds = canvasBounds(layout);
   const svgKey =
     edges.map((e) => `${isTechniqueActive(e.technique) ? 1 : 0}${e.technique.status[0]}`).join('') +
     selectedId +
@@ -91,12 +91,11 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
 
   const fit = (vp = viewport, animate = true) => {
     if (!vp) return;
-    const s = Math.min(1, Math.max(MIN_SCALE, Math.min(vp.width / size.width, (vp.height - controlsBottom) / size.height)));
-    const x = (vp.width - size.width * s) / 2;
+    const s = Math.min(1, Math.max(MIN_SCALE, Math.min(vp.width / bounds.width, (vp.height - controlsBottom) / bounds.height)));
     const set = (v: SharedValue<number>, to: number) => v.set(animate ? withTiming(to) : to);
     set(scale, s);
-    set(tx, x);
-    set(ty, 0);
+    set(tx, (vp.width - bounds.width * s) / 2 - bounds.x * s);
+    set(ty, -bounds.y * s);
   };
 
   const zoomBy = (k: number) => {
@@ -120,14 +119,21 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
     <View style={styles.root} onLayout={onLayout}>
       <GestureDetector gesture={canvasGesture}>
         <View style={styles.root} collapsable={false}>
-          <Animated.View style={[{ width: size.width, height: size.height }, styles.origin, transform]}>
+          {/* canvas coordinates start at this view's top-left; nodes dragged up or left go negative and overflow it */}
+          <Animated.View
+            style={[
+              { width: Math.max(1, bounds.x + bounds.width), height: Math.max(1, bounds.y + bounds.height) },
+              styles.origin,
+              transform,
+            ]}>
             <Svg
               // react-native-svg (iOS, new arch) doesn't reliably redraw changed children — neither styling
               // nor path geometry — so remount it whenever either changes (including every drag frame)
               key={svgKey}
-              width={size.width}
-              height={size.height}
-              style={StyleSheet.absoluteFill}>
+              width={bounds.width}
+              height={bounds.height}
+              viewBox={`${bounds.x} ${bounds.y} ${bounds.width} ${bounds.height}`}
+              style={[styles.svg, { left: bounds.x, top: bounds.y }]}>
               <Defs>
                 {STATUSES.map((s) => (
                   <Marker key={s} id={`arrow-${s}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
@@ -227,8 +233,8 @@ function MapNode({ position, x, y, active, selected, submissions, isTechniqueAct
     const at = (e: { translationX: number; translationY: number }) => {
       const s = scale.get();
       return {
-        x: Math.max(0, origin.get().x + e.translationX / s),
-        y: Math.max(0, origin.get().y + e.translationY / s),
+        x: origin.get().x + e.translationX / s,
+        y: origin.get().y + e.translationY / s,
       };
     };
     const pan = Gesture.Pan()
@@ -293,6 +299,7 @@ function MapNode({ position, x, y, active, selected, submissions, isTechniqueAct
 const styles = StyleSheet.create({
   root: { flex: 1, overflow: 'hidden' },
   origin: { transformOrigin: 'left top' },
+  svg: { position: 'absolute' },
   node: {
     position: 'absolute',
     width: NODE_W,

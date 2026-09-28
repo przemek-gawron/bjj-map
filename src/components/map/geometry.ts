@@ -58,10 +58,19 @@ export function buildEdges(techniques: Technique[], layout: Layout): Edge[] {
   return edges;
 }
 
-export function canvasSize(layout: Layout) {
+/**
+ * Canvas area covering all nodes plus padding. Nodes may be dragged to negative
+ * coordinates, so the origin isn't pinned to 0,0.
+ */
+export function canvasBounds(layout: Layout) {
   const points = Object.values(layout);
+  if (points.length === 0) return { x: 0, y: 0, width: CANVAS_PAD * 2, height: CANVAS_PAD * 2 };
+  const x = Math.min(...points.map((p) => p.x)) - CANVAS_PAD;
+  const y = Math.min(...points.map((p) => p.y)) - CANVAS_PAD;
   return {
-    width: Math.max(...points.map((p) => p.x), 0) + NODE_W + CANVAS_PAD,
-    height: Math.max(...points.map((p) => p.y), 0) + NODE_H + CANVAS_PAD,
+    x,
+    y,
+    width: Math.max(...points.map((p) => p.x)) + NODE_W + CANVAS_PAD - x,
+    height: Math.max(...points.map((p) => p.y)) + NODE_H + CANVAS_PAD - y,
   };
 }
