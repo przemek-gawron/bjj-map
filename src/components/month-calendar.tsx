@@ -5,8 +5,7 @@ import { ThemedText } from './themed-text';
 import { Spacing } from '@/constants/theme';
 import { addMonths, monthGrid, monthLabel, toDateKey } from '@/data/dates';
 import { useTheme } from '@/hooks/use-theme';
-
-const WEEKDAYS = ['pn', 'wt', 'śr', 'cz', 'pt', 'so', 'nd'];
+import { useT } from '@/i18n';
 
 type Props = {
   /** YYYY-MM */
@@ -22,6 +21,7 @@ type Props = {
 /** Month grid (Monday first) with arrows to page through months, up to the current one. */
 export function MonthCalendar({ month, onMonthChange, marked, selected, onSelect }: Props) {
   const theme = useTheme();
+  const tr = useT();
   const today = toDateKey();
   const isCurrentMonth = month >= today.slice(0, 7);
 
@@ -41,15 +41,15 @@ export function MonthCalendar({ month, onMonthChange, marked, selected, onSelect
   return (
     <View>
       <View style={styles.head}>
-        {arrow('‹', 'Poprzedni miesiąc', -1)}
+        {arrow('‹', tr.dates.previousMonth, -1)}
         <ThemedText type="smallBold" style={styles.title}>
           {monthLabel(month)}
         </ThemedText>
-        {arrow('›', 'Następny miesiąc', 1, isCurrentMonth)}
+        {arrow('›', tr.dates.nextMonth, 1, isCurrentMonth)}
       </View>
 
       <View style={styles.week}>
-        {WEEKDAYS.map((d) => (
+        {tr.dates.calendarWeekdays.map((d) => (
           <Text key={d} style={[styles.cell, styles.weekday, { color: theme.textSecondary }]}>
             {d}
           </Text>

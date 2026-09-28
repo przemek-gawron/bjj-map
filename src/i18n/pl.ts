@@ -10,6 +10,43 @@ export const pl = {
     plan: 'Plan',
     journal: 'Dziennik',
   },
+  group: {
+    standing: 'Stójka',
+    closed_guard: 'Closed guard',
+    open_guard: 'Open guard',
+    half_guard: 'Half guard',
+    side_control: 'Side control',
+    mount: 'Mount',
+    back: 'Plecy',
+  },
+  type: {
+    submission: 'Kończenia',
+    sweep: 'Sweepy',
+    escape: 'Ucieczki',
+    pass: 'Przejścia gardy',
+    takedown: 'Obalenia',
+    transition: 'Przejścia',
+  },
+  status: {
+    seen: 'Widziałem',
+    drilling: 'Ćwiczę',
+    works: 'Działa w sparingu',
+  },
+  dates: {
+    today: 'dziś',
+    yesterday: 'wczoraj',
+    daysAgo: (n: number) => `${n} dni temu`,
+    /** Sunday first, as Date.getDay(). */
+    weekdays: ['nd', 'pn', 'wt', 'śr', 'czw', 'pt', 'sob'],
+    /** Monday first, for calendar headers. */
+    calendarWeekdays: ['pn', 'wt', 'śr', 'cz', 'pt', 'so', 'nd'],
+    months: ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'],
+    monthsShort: ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru'],
+    previousMonth: 'Poprzedni miesiąc',
+    nextMonth: 'Następny miesiąc',
+    previousYear: 'Poprzedni rok',
+    nextYear: 'Następny rok',
+  },
   settings: {
     title: 'Ustawienia',
     about: 'O aplikacji',

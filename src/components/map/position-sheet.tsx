@@ -6,16 +6,17 @@ import { StatusChip } from '@/components/status-chip';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { GROUP_LABEL, TYPE_LABEL } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Position, Technique } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
 import { deletePositionPhoto, pickPositionPhoto } from '@/utils/pick-photo';
+import { useT } from '@/i18n';
 
 type Props = { position: Position; bottom: number; onClose: () => void };
 
 export function PositionSheet({ position, bottom, onClose }: Props) {
   const theme = useTheme();
+  const tr = useT();
   const positions = useStore((s) => s.positions);
   const techniques = useStore((s) => s.techniques);
   const setStatus = useStore((s) => s.setStatus);
@@ -62,7 +63,7 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
             {position.name}
           </ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            {GROUP_LABEL[position.group]} · {position.side === 'top' ? 'jesteś na górze' : position.side === 'bottom' ? 'jesteś na dole' : 'neutralna'}
+            {tr.group[position.group]} · {position.side === 'top' ? 'jesteś na górze' : position.side === 'bottom' ? 'jesteś na dole' : 'neutralna'}
           </ThemedText>
           <View style={styles.photoActions}>
             <Pressable onPress={changePhoto} hitSlop={6}>
@@ -90,7 +91,7 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
         <ThemedText type="smallBold" themeColor="textSecondary" style={styles.section}>
           Z tej pozycji · {from.length}
         </ThemedText>
-        {from.map((t) => row(t, `${TYPE_LABEL[t.type]} ${t.to ? '→ ' + nameOf(t.to) : '· kończenie'}`))}
+        {from.map((t) => row(t, `${tr.type[t.type]} ${t.to ? '→ ' + nameOf(t.to) : '· kończenie'}`))}
         <Pressable
           onPress={() => router.push({ pathname: '/technique/form', params: { from: position.id } })}
           style={styles.add}>

@@ -6,11 +6,12 @@ import { Chip } from '@/components/chip';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
-import { STATUS_COLOR, STATUS_LABEL, TYPE_LABEL } from '@/data/labels';
+import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Status, TechniqueType } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
+import { useT } from '@/i18n';
 
 const TYPES: TechniqueType[] = ['submission', 'sweep', 'escape', 'pass', 'takedown', 'transition'];
 const STATUSES: Status[] = ['seen', 'drilling', 'works'];
@@ -19,6 +20,7 @@ const STATUSES: Status[] = ['seen', 'drilling', 'works'];
 export default function TechniqueFormScreen() {
   const { id, from: fromParam } = useLocalSearchParams<{ id?: string; from?: string }>();
   const theme = useTheme();
+  const tr = useT();
   const positions = useStore((s) => s.positions);
   const existing = useStore((s) => s.techniques.find((t) => t.id === id));
   const addTechnique = useStore((s) => s.addTechnique);
@@ -104,7 +106,7 @@ export default function TechniqueFormScreen() {
         <Field label="Typ">
           <View style={styles.chips}>
             {TYPES.map((t) => (
-              <Chip key={t} label={TYPE_LABEL[t]} selected={type === t} onPress={() => setType(t)} />
+              <Chip key={t} label={tr.type[t]} selected={type === t} onPress={() => setType(t)} />
             ))}
           </View>
         </Field>
@@ -135,7 +137,7 @@ export default function TechniqueFormScreen() {
         <Field label="Status">
           <View style={styles.chips}>
             {STATUSES.map((s) => (
-              <Chip key={s} label={STATUS_LABEL[s]} color={STATUS_COLOR[s]} selected={status === s} onPress={() => setStatus(s)} />
+              <Chip key={s} label={tr.status[s]} color={STATUS_COLOR[s]} selected={status === s} onPress={() => setStatus(s)} />
             ))}
           </View>
         </Field>

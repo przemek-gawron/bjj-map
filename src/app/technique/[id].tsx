@@ -8,14 +8,16 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { dayLabel, recentDays, relativeDay, toDateKey } from '@/data/dates';
-import { STATUS_COLOR, TYPE_LABEL } from '@/data/labels';
+import { STATUS_COLOR } from '@/data/labels';
 import { trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 export default function TechniqueScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const theme = useTheme();
+  const tr = useT();
   const technique = useStore((s) => s.techniques.find((t) => t.id === id));
   const positions = useStore((s) => s.positions);
   const sessions = useStore((s) => s.sessions);
@@ -60,7 +62,7 @@ export default function TechniqueScreen() {
       />
       <ScrollView contentContainerStyle={styles.content}>
         <ThemedText type="small" themeColor="textSecondary">
-          {TYPE_LABEL[technique.type]}
+          {tr.type[technique.type]}
         </ThemedText>
         <ThemedText type="subtitle" style={styles.path}>
           {positionName(technique.from)}

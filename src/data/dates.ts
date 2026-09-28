@@ -1,3 +1,5 @@
+import { currentT } from '@/i18n';
+
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /** Local calendar date as YYYY-MM-DD (not UTC — training "today" is the user's today). */
@@ -17,8 +19,6 @@ export function weekStartOf(key: string): string {
   return toDateKey(d);
 }
 
-const WEEKDAYS = ['nd', 'pn', 'wt', 'śr', 'czw', 'pt', 'sob'];
-
 /** Number of calendar days from `key` to today (0 = today). */
 export function daysAgo(key: string): number {
   const today = fromDateKey(toDateKey());
@@ -27,10 +27,11 @@ export function daysAgo(key: string): number {
 
 /** "dziś", "wczoraj", "3 dni temu", or "12.09" for older dates. */
 export function relativeDay(key: string): string {
+  const t = currentT().dates;
   const n = daysAgo(key);
-  if (n === 0) return 'dziś';
-  if (n === 1) return 'wczoraj';
-  if (n < 7) return `${n} dni temu`;
+  if (n === 0) return t.today;
+  if (n === 1) return t.yesterday;
+  if (n < 7) return t.daysAgo(n);
   return shortDate(key);
 }
 
@@ -41,7 +42,7 @@ export function shortDate(key: string): string {
 
 /** "sob 27.09" */
 export function dayLabel(key: string): string {
-  return `${WEEKDAYS[fromDateKey(key).getDay()]} ${shortDate(key)}`;
+  return `${currentT().dates.weekdays[fromDateKey(key).getDay()]} ${shortDate(key)}`;
 }
 
 /** The last `n` days as date keys, today first. */
@@ -61,17 +62,14 @@ export function weekRangeLabel(weekStart: string): string {
   return `${shortDate(weekStart)} – ${shortDate(toDateKey(end))}`;
 }
 
-const MONTHS = ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'];
-const MONTHS_SHORT = ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru'];
-
 /** "wrzesień 2026" for a YYYY-MM month key. */
 export function monthLabel(month: string): string {
-  return `${MONTHS[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
+  return `${currentT().dates.months[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
 }
 
 /** "wrz" for a YYYY-MM month key. */
 export function shortMonthLabel(month: string): string {
-  return MONTHS_SHORT[Number(month.slice(5, 7)) - 1];
+  return currentT().dates.monthsShort[Number(month.slice(5, 7)) - 1];
 }
 
 /** YYYY-MM month key `delta` months away from `month`. */

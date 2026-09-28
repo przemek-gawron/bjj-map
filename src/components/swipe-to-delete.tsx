@@ -2,10 +2,12 @@ import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, type StyleProp, type ViewStyle } from 'react-native';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 
+import { useT } from '@/i18n';
+
 type Props = {
   children: ReactNode;
   onDelete: () => void;
-  /** Label of the revealed button, e.g. "Usuń z planu". */
+  /** Label of the revealed button; defaults to "Delete". */
   label?: string;
   /** Outer container, e.g. margins and the rounded corners of a card. */
   style?: StyleProp<ViewStyle>;
@@ -17,7 +19,10 @@ const ACTION_WIDTH = 96;
  * Swipe the row left to reveal a delete button. Children need an opaque
  * background, otherwise the button shows through before the swipe.
  */
-export function SwipeToDelete({ children, onDelete, label = 'Usuń', style }: Props) {
+export function SwipeToDelete({ children, onDelete, label, style }: Props) {
+  const tr = useT();
+  const text = label ?? tr.common.delete;
+
   return (
     <ReanimatedSwipeable
       friction={1.5}
@@ -31,9 +36,9 @@ export function SwipeToDelete({ children, onDelete, label = 'Usuń', style }: Pr
             onDelete();
           }}
           accessibilityRole="button"
-          accessibilityLabel={label}
+          accessibilityLabel={text}
           style={({ pressed }) => [styles.action, pressed && styles.pressed]}>
-          <Text style={styles.label}>{label}</Text>
+          <Text style={styles.label}>{text}</Text>
         </Pressable>
       )}>
       {children}

@@ -11,12 +11,13 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { relativeDay } from '@/data/dates';
-import { STATUS_COLOR, STATUS_LABEL, TYPE_LABEL } from '@/data/labels';
+import { STATUS_COLOR } from '@/data/labels';
 import { trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import type { Status, TechniqueType } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
+import { useT } from '@/i18n';
 
 const STATUSES: Status[] = ['works', 'drilling', 'seen'];
 const TYPES: TechniqueType[] = ['submission', 'sweep', 'escape', 'pass', 'takedown', 'transition'];
@@ -24,6 +25,7 @@ const SIDE_COLOR = { top: '#3B82F6', bottom: '#8B5CF6', neutral: '#9CA3AF' };
 
 export default function TechniquesScreen() {
   const theme = useTheme();
+  const tr = useT();
   const positions = useStore((s) => s.positions);
   const techniques = useStore((s) => s.techniques);
   const sessions = useStore((s) => s.sessions);
@@ -58,7 +60,7 @@ export default function TechniquesScreen() {
         {counts.map(({ status, n }) => (
           <Chip
             key={status}
-            label={`${STATUS_LABEL[status]} · ${n}`}
+            label={`${tr.status[status]} · ${n}`}
             color={STATUS_COLOR[status]}
             selected={statusFilter === status}
             onPress={() => setStatusFilter(statusFilter === status ? null : status)}
@@ -70,7 +72,7 @@ export default function TechniquesScreen() {
           <Chip
             key={type}
             small
-            label={TYPE_LABEL[type]}
+            label={tr.type[type]}
             selected={typeFilter === type}
             onPress={() => setTypeFilter(typeFilter === type ? null : type)}
           />
@@ -115,7 +117,7 @@ export default function TechniquesScreen() {
                       <View style={styles.flex}>
                         <ThemedText type="smallBold">{t.name}</ThemedText>
                         <ThemedText type="small" themeColor="textSecondary">
-                          {TYPE_LABEL[t.type]}
+                          {tr.type[t.type]}
                           {t.to ? ' → ' + positions.find((x) => x.id === t.to)?.name : ''}
                           {s ? ` · ${s.count}× · ${relativeDay(s.lastDate!)}` : ' · nie trenowane'}
                         </ThemedText>

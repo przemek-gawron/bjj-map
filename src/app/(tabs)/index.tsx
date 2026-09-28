@@ -9,7 +9,6 @@ import { MapCanvas } from '@/components/map/map-canvas';
 import { PositionSheet } from '@/components/map/position-sheet';
 import { Screen } from '@/components/screen';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { GROUP_LABEL, TYPE_LABEL } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Position, PositionGroup, Technique, TechniqueType } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
@@ -63,7 +62,7 @@ export default function MapScreen() {
       }>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filters} contentContainerStyle={styles.chips}>
         {TYPES.map((type) => (
-          <Chip key={type} small label={TYPE_LABEL[type]} selected={typeFilter === type} onPress={() => setTypeFilter(typeFilter === type ? null : type)} />
+          <Chip key={type} small label={tr.type[type]} selected={typeFilter === type} onPress={() => setTypeFilter(typeFilter === type ? null : type)} />
         ))}
       </ScrollView>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filters} contentContainerStyle={styles.chips}>
@@ -71,7 +70,7 @@ export default function MapScreen() {
           <Chip
             key={group}
             small
-            label={GROUP_LABEL[group]}
+            label={tr.group[group]}
             selected={groupFilter === group}
             onPress={() => setGroupFilter(groupFilter === group ? null : group)}
           />
