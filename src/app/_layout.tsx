@@ -3,6 +3,7 @@ import { StyleSheet, useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 /**
  * Tabs live in the (tabs) group. Technique screens sit on the root stack so they open
@@ -11,6 +12,7 @@ import { useTheme } from '@/hooks/use-theme';
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = useTheme();
+  const tr = useT();
 
   return (
     <GestureHandlerRootView style={styles.root}>
@@ -21,12 +23,12 @@ export default function RootLayout() {
             headerTintColor: theme.accent,
             headerStyle: { backgroundColor: theme.background },
             headerTitleStyle: { color: theme.text },
-            headerBackTitle: 'Wstecz',
+            headerBackTitle: tr.common.back,
           }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="technique/[id]" options={{ title: '' }} />
           <Stack.Screen name="technique/form" options={{ presentation: 'modal' }} />
-          <Stack.Screen name="settings" options={{ title: 'Ustawienia' }} />
+          <Stack.Screen name="settings" options={{ title: tr.settings.title }} />
         </Stack>
       </ThemeProvider>
     </GestureHandlerRootView>

@@ -5,25 +5,28 @@ import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
 import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { useT } from '@/i18n';
 
 // Web: plain bottom bar mirroring the native tabs.
 export default function AppTabs() {
+  const tr = useT();
+
   return (
     <Tabs style={styles.tabs}>
       <TabSlot style={styles.slot} />
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="index" href="/" asChild>
-            <TabButton>Mapa</TabButton>
+            <TabButton>{tr.tabs.map}</TabButton>
           </TabTrigger>
           <TabTrigger name="techniques" href="/techniques" asChild>
-            <TabButton>Techniki</TabButton>
+            <TabButton>{tr.tabs.techniques}</TabButton>
           </TabTrigger>
           <TabTrigger name="plan" href="/plan" asChild>
-            <TabButton>Plan</TabButton>
+            <TabButton>{tr.tabs.plan}</TabButton>
           </TabTrigger>
           <TabTrigger name="journal" href="/journal" asChild>
-            <TabButton>Dziennik</TabButton>
+            <TabButton>{tr.tabs.journal}</TabButton>
           </TabTrigger>
         </CustomTabList>
       </TabList>

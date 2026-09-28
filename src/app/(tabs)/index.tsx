@@ -13,12 +13,14 @@ import { GROUP_LABEL, TYPE_LABEL } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Position, PositionGroup, Technique, TechniqueType } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 const TYPES: TechniqueType[] = ['submission', 'sweep', 'escape', 'pass', 'takedown', 'transition'];
 const GROUPS: PositionGroup[] = ['standing', 'closed_guard', 'open_guard', 'half_guard', 'side_control', 'mount', 'back'];
 
 export default function MapScreen() {
   const theme = useTheme();
+  const tr = useT();
   const insets = useSafeAreaInsets();
   const positions = useStore((s) => s.positions);
   const techniques = useStore((s) => s.techniques);
@@ -54,7 +56,7 @@ export default function MapScreen() {
           onPress={() => router.push('/settings')}
           hitSlop={10}
           accessibilityRole="button"
-          accessibilityLabel="Ustawienia"
+          accessibilityLabel={tr.settings.title}
           style={({ pressed }) => [styles.settings, { backgroundColor: theme.backgroundElement }, pressed && styles.pressed]}>
           <SymbolView name={{ ios: 'gearshape', android: 'settings', web: 'settings' }} tintColor={theme.text} size={22} />
         </Pressable>
