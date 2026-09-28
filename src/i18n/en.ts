@@ -95,6 +95,8 @@ export const en: Dict = {
     trainToday: 'I trained this today',
     otherDay: 'Another day:',
     history: 'History',
+    drills: 'Drills for this technique',
+    addDrill: '+ Add drill',
     notes: 'Notes',
     newTitle: 'New technique',
     editTitle: 'Edit technique',

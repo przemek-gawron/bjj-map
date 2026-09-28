@@ -97,6 +97,8 @@ export const pl = {
     trainToday: 'Trenowałem dziś',
     otherDay: 'Inny dzień:',
     history: 'Historia',
+    drills: 'Drille do tej techniki',
+    addDrill: '+ Dodaj drill',
     notes: 'Notatki',
     newTitle: 'Nowa technika',
     editTitle: 'Edytuj technikę',
