@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { AddButton } from '@/components/add-button';
 import { Chip } from '@/components/chip';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
@@ -38,12 +39,7 @@ export default function JournalScreen() {
     <Screen
       title="Dziennik"
       action={
-        <Pressable
-          onPress={() => openEntry(todaySession?.id)}
-          hitSlop={10}
-          style={[styles.addButton, { backgroundColor: theme.accent }]}>
-          <ThemedText style={styles.addButtonText}>+</ThemedText>
-        </Pressable>
+        <AddButton onPress={() => openEntry(todaySession?.id)} accessibilityLabel="Dodaj trening" />
       }>
       <View style={[styles.stats, { borderColor: theme.backgroundSelected }]}>
         <Stat value={weekCount} label="w tym tygodniu" />
@@ -113,8 +109,6 @@ function Stat({ value, label }: { value: number; label: string }) {
 }
 
 const styles = StyleSheet.create({
-  addButton: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  addButtonText: { color: '#FFFFFF', fontSize: 26, lineHeight: 30, fontWeight: '600' },
   stats: { flexDirection: 'row', borderTopWidth: 1, borderBottomWidth: 1, marginBottom: Spacing.two },
   stat: { flex: 1, alignItems: 'center', paddingVertical: Spacing.three },
   statValue: { fontSize: 26, lineHeight: 32, fontWeight: '800' },

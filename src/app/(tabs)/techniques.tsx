@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { AddButton } from '@/components/add-button';
 import { Chip } from '@/components/chip';
 import { Screen } from '@/components/screen';
 import { StatusChip } from '@/components/status-chip';
@@ -39,12 +40,7 @@ export default function TechniquesScreen() {
     <Screen
       title="Techniki"
       action={
-        <Pressable
-          onPress={() => router.push('/technique/form')}
-          hitSlop={10}
-          style={[styles.addButton, { backgroundColor: theme.accent }]}>
-          <ThemedText style={styles.addButtonText}>+</ThemedText>
-        </Pressable>
+        <AddButton onPress={() => router.push('/technique/form')} accessibilityLabel="Dodaj technikę" />
       }>
       <View style={styles.progress}>
         {counts.map(({ status, n }) => (
@@ -139,8 +135,6 @@ export default function TechniquesScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  addButton: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  addButtonText: { color: '#FFFFFF', fontSize: 26, lineHeight: 30, fontWeight: '600' },
   progress: { flexDirection: 'row', height: 8, borderRadius: 4, overflow: 'hidden' },
   summary: { marginTop: Spacing.two, marginBottom: Spacing.three },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, marginBottom: Spacing.two },
