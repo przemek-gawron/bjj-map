@@ -26,6 +26,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="technique/[id]" options={{ title: '' }} />
           <Stack.Screen name="technique/form" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="settings" options={{ title: 'Ustawienia' }} />
         </Stack>
       </ThemeProvider>
     </GestureHandlerRootView>

@@ -35,6 +35,9 @@ type Actions = {
   togglePlanned: (techniqueId: string) => void;
   /** Replaces this week's plan (e.g. carrying over last week's). */
   setPlan: (techniqueIds: string[]) => void;
+
+  /** Back to the starting positions and techniques; sessions, plan and photos are dropped. */
+  resetAll: () => void;
 };
 
 const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -120,6 +123,8 @@ export const useStore = create<State & Actions>()(
           };
         }),
       setPlan: (techniqueIds) => set({ plan: { weekStart: weekStartOf(toDateKey()), techniqueIds } }),
+
+      resetAll: () => set({ positions: seedPositions, techniques: seedTechniques, sessions: [], plan: emptyPlan() }),
     }),
     {
       name: 'bjj-map',
