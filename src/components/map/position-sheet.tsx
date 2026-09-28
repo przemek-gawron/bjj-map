@@ -79,6 +79,11 @@ export function PositionSheet({ position, bottom, onClose, onHeight }: Props) {
             {tr.group[position.group]} · {position.side === 'top' ? tr.map.sideTop : position.side === 'bottom' ? tr.map.sideBottom : tr.map.sideNeutral}
           </ThemedText>
           <View style={styles.photoActions}>
+            <Pressable onPress={() => router.push({ pathname: '/position/form', params: { id: position.id } })} hitSlop={6}>
+              <ThemedText type="small" themeColor="accent">
+                {position.notes ? tr.map.editPosition : tr.map.addNotes}
+              </ThemedText>
+            </Pressable>
             <Pressable onPress={changePhoto} hitSlop={6}>
               <ThemedText type="small" themeColor="accent">
                 {position.photoUri ? tr.map.changePhoto : tr.map.addPhoto}
@@ -101,6 +106,11 @@ export function PositionSheet({ position, bottom, onClose, onHeight }: Props) {
       </View>
 
       <ScrollView style={styles.list}>
+        {position.notes && (
+          <ThemedText type="small" themeColor="textSecondary" style={styles.notes}>
+            {position.notes}
+          </ThemedText>
+        )}
         <ThemedText type="smallBold" themeColor="textSecondary" style={styles.section}>
           {tr.map.fromHere(from.length)}
         </ThemedText>
@@ -169,7 +179,8 @@ const styles = StyleSheet.create({
   },
   head: { flexDirection: 'row', gap: Spacing.three, alignItems: 'flex-start' },
   title: { fontSize: 18 },
-  photoActions: { flexDirection: 'row', gap: Spacing.three, marginTop: Spacing.one },
+  photoActions: { flexDirection: 'row', flexWrap: 'wrap', columnGap: Spacing.three, marginTop: Spacing.one },
+  notes: { marginBottom: Spacing.one },
   close: { fontSize: 18 },
   list: { marginTop: Spacing.two },
   section: { marginTop: Spacing.two, marginBottom: Spacing.one, fontSize: 12, textTransform: 'uppercase' },

@@ -52,6 +52,7 @@ export default function RootLayout() {
           <Stack.Screen name="technique/form" options={{ presentation: 'modal' }} />
           <Stack.Screen name="drill/[id]" options={{ title: '' }} />
           <Stack.Screen name="drill/form" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="position/form" options={{ presentation: 'modal' }} />
           <Stack.Screen name="settings" options={{ title: tr.settings.title }} />
         </Stack>
       </ThemeProvider>

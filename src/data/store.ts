@@ -44,6 +44,7 @@ type Actions = {
   /** Moves several positions at once, e.g. to a tidy layout. */
   setLayouts: (layouts: Record<string, Position['layout']>) => void;
   setPositionPhoto: (id: string, photoUri: string | undefined) => void;
+  updatePosition: (id: string, patch: Partial<Pick<Position, 'name' | 'notes'>>) => void;
 
   togglePlanned: (techniqueId: string) => void;
   togglePlannedDrill: (drillId: string) => void;
@@ -177,6 +178,7 @@ export const useStore = create<State & Actions>()(
         set((s) => ({ positions: s.positions.map((p) => (p.id === id ? { ...p, layout } : p)) })),
       setLayouts: (layouts) =>
         set((s) => ({ positions: s.positions.map((p) => (layouts[p.id] ? { ...p, layout: layouts[p.id] } : p)) })),
+      updatePosition: (id, patch) => set((s) => ({ positions: s.positions.map((p) => (p.id === id ? { ...p, ...patch } : p)) })),
       setPositionPhoto: (id, photoUri) =>
         set((s) => ({ positions: s.positions.map((p) => (p.id === id ? { ...p, photoUri } : p)) })),
 

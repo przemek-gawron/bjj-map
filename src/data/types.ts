@@ -18,6 +18,8 @@ export type Position = {
   layout: { x: number; y: number };
   /** Own photo replacing the default illustration. */
   photoUri?: string;
+  /** What the position is about: goals, key details, common mistakes. */
+  notes?: string;
 };
 
 export type TechniqueType = 'submission' | 'sweep' | 'escape' | 'pass' | 'takedown' | 'transition';
