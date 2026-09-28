@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 
 type Props = {
   title: string;
@@ -18,6 +18,10 @@ type Props = {
 
 /** Tab screen shell: safe area, large title, content capped at MaxContentWidth for web. */
 export function Screen({ title, action, children, scroll = true }: Props) {
+  const insets = useSafeAreaInsets();
+  // the native tab bar floats over the content; on web it sits below it
+  const bottom = Platform.OS === 'web' ? Spacing.six : insets.bottom + BottomTabInset + Spacing.four;
+
   const header = (
     <View style={styles.header}>
       <ThemedText type="title" style={styles.title}>
@@ -31,7 +35,7 @@ export function Screen({ title, action, children, scroll = true }: Props) {
     <ThemedView style={styles.root}>
       <SafeAreaView edges={['top']} style={styles.root}>
         {scroll ? (
-          <ScrollView contentContainerStyle={styles.content}>
+          <ScrollView contentContainerStyle={[styles.content, { paddingBottom: bottom }]}>
             {header}
             {children}
           </ScrollView>
@@ -53,7 +57,6 @@ const styles = StyleSheet.create({
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
     padding: Spacing.three,
-    paddingBottom: Spacing.six,
   },
   fixedHeader: { paddingBottom: 0 },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.three },
