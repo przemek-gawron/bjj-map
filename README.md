@@ -8,12 +8,14 @@ Aplikacja mobilna (iOS / Android) w Expo, działa też w przeglądarce.
 
 | Zakładka | Co robi | Status |
 |---|---|---|
-| **Mapa** | Graf pozycji i technik: pozycje to kafelki z ilustracją (lub własnym zdjęciem), techniki to strzałki między nimi. Filtry po typie techniki i grupie pozycji, przesuwanie kafelków, przesuwanie i przybliżanie mapy, panel pozycji z technikami „z tej pozycji” i „jak tu trafić”. | ✅ |
-| **Techniki** | Lista technik pogrupowana po pozycji startowej. Filtry po statusie i typie, dodawanie, edycja i usuwanie przesunięciem, link do wideo, „Trenowałem dziś”, historia treningów. | ✅ |
-| **Plan** | Techniki wybrane na ten tydzień razem z wideo (lub wyszukiwaniem na YouTube), odhaczanie po treningu, usuwanie z planu przesunięciem, postęp tygodnia, przeniesienie planu z poprzedniego tygodnia. | ✅ |
-| **Dziennik** | Oś czasu treningów pogrupowana tygodniami: data (dowolny dzień z kalendarza), przećwiczone techniki, notatka. Usuwanie przesunięciem. Statystyki miesiąca i roku: kalendarz lub mapa treningów w stylu GitHuba, godziny na macie (1,5 h na trening), najczęściej trenowane techniki. | ✅ |
+| **Mapa** | Graf pozycji i technik: pozycje to kafelki z ilustracją (lub własnym zdjęciem), techniki to strzałki między nimi. Filtry po typie techniki i grupie pozycji, przesuwanie kafelków, przesuwanie i przybliżanie mapy, panel pozycji z technikami „z tej pozycji”, „jak tu trafić” i drillami. Plakietka 🔁 na kafelku pokazuje liczbę drilli. | ✅ |
+| **Techniki** | Lista technik pogrupowana po pozycji startowej. Filtry po statusie i typie, dodawanie, edycja i usuwanie przesunięciem, link do wideo, „Trenowałem dziś”, historia treningów. Przełącznik **Techniki / Drille**: zbiór drilli solo z wyszukiwarką. | ✅ |
+| **Plan** | Techniki i drille wybrane na ten tydzień razem z wideo (lub wyszukiwaniem na YouTube), odhaczanie po treningu, usuwanie z planu przesunięciem, postęp tygodnia, przeniesienie planu z poprzedniego tygodnia. | ✅ |
+| **Dziennik** | Oś czasu treningów pogrupowana tygodniami: data (dowolny dzień z kalendarza), przećwiczone techniki i drille, notatka. Usuwanie przesunięciem. Statystyki miesiąca i roku: kalendarz lub mapa treningów w stylu GitHuba, godziny na macie (1,5 h na trening), najczęściej trenowane techniki i drille. | ✅ |
 
 Każda technika ma status: **Widziałem → Ćwiczę → Działa w sparingu**.
+
+**Drille** to ćwiczenia solo (shrimp, mostek, technical stand-up, granby roll…) przypięte do dowolnych pozycji i technik. Na start aplikacja ma 12 klasycznych drilli. Każdy ma opcjonalną dawkę („3×10”), wideo i opis, a na jego ekranie odhaczasz „Zrobiłem dziś”. Drill widać przy pozycji, do której jest przypięty, i przy pozycji, z której startuje jego technika.
 
 **Ustawienia** (zębatka na Mapie): wygląd (domyślnie ciemny, można przełączyć na jasny albo systemowy), język (systemowy, polski, angielski), opis aplikacji i wersja, usunięcie wszystkich danych. Aplikacja jest po polsku i po angielsku — teksty są w `src/i18n/`.
 
@@ -65,15 +67,17 @@ src/
       plan/             plan tygodnia, wybór technik (modal)
       journal/          oś czasu, wpis treningu (modal)
     technique/          szczegóły ([id]) i formularz (modal) — otwierane z każdej zakładki
+    drill/              to samo dla drilli
     settings.tsx        ustawienia
   components/           wspólne komponenty (Screen, Chip, StatusChip, zakładki, PositionIllustration)
     map/                płótno mapy, geometria strzałek, panel pozycji
     stats/              statystyki dziennika (mapa roku, wykres godzin)
   data/
-    types.ts            model: Position, Technique, Session, WeeklyPlan
+    types.ts            model: Position, Technique, Drill, Session, WeeklyPlan
     store.ts            store zustand z akcjami i zapisem
-    seed.ts             startowa mapa białego pasa (11 pozycji, 21 technik)
+    seed.ts             startowa mapa białego pasa (11 pozycji, 21 technik, 12 drilli)
     stats.ts            statystyki treningów wyliczane z dziennika
+    drills.ts           które drille pokazać przy pozycji
     dates.ts, labels.ts
   i18n/                 teksty PL/EN (pl.ts, en.ts), wybór języka, nazwy startowej mapy
 ```
