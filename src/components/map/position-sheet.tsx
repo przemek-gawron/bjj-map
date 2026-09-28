@@ -12,9 +12,15 @@ import { useTheme } from '@/hooks/use-theme';
 import { deletePositionPhoto, pickPositionPhoto } from '@/utils/pick-photo';
 import { useT } from '@/i18n';
 
-type Props = { position: Position; bottom: number; onClose: () => void };
+type Props = {
+  position: Position;
+  bottom: number;
+  onClose: () => void;
+  /** Reports the sheet's height so the map can keep its controls above it. */
+  onHeight: (height: number) => void;
+};
 
-export function PositionSheet({ position, bottom, onClose }: Props) {
+export function PositionSheet({ position, bottom, onClose, onHeight }: Props) {
   const theme = useTheme();
   const tr = useT();
   const positions = useStore((s) => s.positions);
@@ -58,6 +64,7 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
     <Animated.View
       entering={FadeInDown.duration(220)}
       exiting={FadeOutDown.duration(180)}
+      onLayout={(e) => onHeight(e.nativeEvent.layout.height)}
       style={[styles.sheet, { bottom, shadowColor: '#000', borderColor: theme.backgroundSelected, backgroundColor: theme.background }]}>
       <View style={styles.head}>
         <PositionIllustration position={position} width={96} height={67} />

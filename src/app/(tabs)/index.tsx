@@ -26,6 +26,7 @@ export default function MapScreen() {
   const [typeFilter, setTypeFilter] = useState<TechniqueType | null>(null);
   const [groupFilter, setGroupFilter] = useState<PositionGroup | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [sheetHeight, setSheetHeight] = useState(0);
 
   const groupOf = (id: string) => positions.find((p) => p.id === id)?.group;
   const selected = positions.find((p) => p.id === selectedId);
@@ -82,10 +83,10 @@ export default function MapScreen() {
         onSelect={(id) => setSelectedId((cur) => (cur === id ? null : id))}
         isPositionActive={isPositionActive}
         isTechniqueActive={isTechniqueActive}
-        controlsBottom={selected ? bottom + 260 : bottom}
+        controlsBottom={selected ? bottom + sheetHeight : bottom}
       />
 
-      {selected && <PositionSheet position={selected} bottom={bottom} onClose={() => setSelectedId(null)} />}
+      {selected && <PositionSheet position={selected} bottom={bottom} onClose={() => setSelectedId(null)} onHeight={setSheetHeight} />}
     </Screen>
   );
 }
