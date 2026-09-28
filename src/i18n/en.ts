@@ -240,6 +240,16 @@ export const en: Dict = {
     logout: 'Log out',
     noAccount: 'There are no accounts yet. Your data is stored only on this device.',
     data: 'Data',
+    loadLibrary: 'Load the sample library',
+    loadLibraryHint:
+      'About 20 positions, 80 techniques and 20 drills with descriptions — fundamentals for white and blue belts. Your techniques, trainings and plan stay.',
+    loadLibraryTitle: 'Load the sample library?',
+    loadLibraryMessage:
+      'Missing positions, techniques and drills are added and the starter ones get descriptions. Nothing is deleted, but the map is tidied up again.',
+    loadLibraryConfirm: 'Load',
+    libraryLoaded: (p: number, t: number, d: number) =>
+      `Added ${p} ${enPlural(p, 'position', 'positions')}, ${t} ${enPlural(t, 'technique', 'techniques')} and ${d} ${enPlural(d, 'drill', 'drills')}.`,
+    libraryUpToDate: 'The library is already loaded — nothing new to add.',
     deleteAll: 'Delete all data',
     deleteAllTitle: 'Delete all data?',
     deleteAllMessage:

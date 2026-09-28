@@ -3,11 +3,13 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { toDateKey, weekStartOf } from './dates';
+import { LIBRARY_POSITION_ORDER, libraryDrills, libraryPositions, libraryTechniques, starterNotes } from './library';
 import { seedDrills, seedPositions, seedTechniques } from './seed';
 import type { Drill, Position, Session, Status, Technique, WeeklyPlan } from './types';
 
 import { currentLanguage, type Language } from '@/i18n';
 import { localizeSeedNames } from '@/i18n/seed-names';
+import { tidyLayout } from '@/components/map/geometry';
 
 type State = {
   positions: Position[];
@@ -53,6 +55,12 @@ type Actions = {
 
   /** Back to the starting positions, techniques and drills; sessions, plan and photos are dropped. */
   resetAll: () => void;
+  /**
+   * Adds the sample library's missing positions, techniques and drills (in `language`),
+   * fills in descriptions of starter items that have none, and tidies the map.
+   * Returns how many items were added.
+   */
+  loadLibrary: (language: Language) => { positions: number; techniques: number; drills: number };
   /** Switches the starter positions', techniques' and drills' names to `language` (user-renamed ones stay). */
   localizeSeed: (language: Language) => void;
 };
@@ -202,6 +210,45 @@ export const useStore = create<State & Actions>()(
           sessions: [],
           plan: emptyPlan(),
         }),
+      loadLibrary: (language) => {
+        const s = get();
+        const withNotes = <T extends { id: string; notes?: string }>(x: T): T =>
+          x.notes || !starterNotes[x.id] ? x : { ...x, notes: starterNotes[x.id][language] };
+        const has = (list: { id: string }[], id: string) => list.some((x) => x.id === id);
+
+        const newPositions: Position[] = libraryPositions
+          .filter((p) => !has(s.positions, p.id))
+          .map(({ name, notes, ...p }) => ({ ...p, name: name[language], notes: notes[language], layout: { x: 0, y: 0 } }));
+        const rank = (id: string) => {
+          const i = LIBRARY_POSITION_ORDER.indexOf(id);
+          return i === -1 ? LIBRARY_POSITION_ORDER.length : i;
+        };
+        const positions = [...s.positions.map(withNotes), ...newPositions].sort((a, b) => rank(a.id) - rank(b.id));
+        const layouts = tidyLayout(positions);
+
+        const exists = (id: string | null) => id === null || has(positions, id);
+        const newTechniques: Technique[] = libraryTechniques
+          .filter((t) => !has(s.techniques, t.id) && exists(t.from) && exists(t.to))
+          .map(({ name, notes, ...t }) => ({ ...t, name: name[language], notes: notes[language], status: 'seen' }));
+        const techniques = [...s.techniques.map(withNotes), ...newTechniques];
+
+        const newDrills: Drill[] = libraryDrills
+          .filter((d) => !has(s.drills, d.id))
+          .map(({ name, notes, ...d }) => ({
+            ...d,
+            name: name[language],
+            notes: notes[language],
+            positionIds: d.positionIds.filter((id) => has(positions, id)),
+            techniqueIds: d.techniqueIds.filter((id) => has(techniques, id)),
+          }));
+
+        set({
+          positions: positions.map((p) => ({ ...p, layout: layouts[p.id] ?? p.layout })),
+          techniques,
+          drills: [...s.drills.map(withNotes), ...newDrills],
+        });
+        return { positions: newPositions.length, techniques: newTechniques.length, drills: newDrills.length };
+      },
       localizeSeed: (language) =>
         set((s) => ({
           positions: localizeSeedNames(s.positions, language),

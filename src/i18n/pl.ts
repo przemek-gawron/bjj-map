@@ -243,6 +243,16 @@ export const pl = {
     logout: 'Wyloguj',
     noAccount: 'Konta jeszcze nie ma. Dane są zapisane tylko na tym urządzeniu.',
     data: 'Dane',
+    loadLibrary: 'Wczytaj przykładową bibliotekę',
+    loadLibraryHint:
+      'Około 20 pozycji, 80 technik i 20 drilli z opisami — podstawy dla białego i niebieskiego pasa. Twoje techniki, treningi i plan zostają.',
+    loadLibraryTitle: 'Wczytać przykładową bibliotekę?',
+    loadLibraryMessage:
+      'Dojdą brakujące pozycje, techniki i drille, a startowe dostaną opisy. Nic nie zostanie usunięte, ale mapa zostanie uporządkowana od nowa.',
+    loadLibraryConfirm: 'Wczytaj',
+    libraryLoaded: (p: number, t: number, d: number) =>
+      `Dodano ${p} ${plPlural(p, 'pozycję', 'pozycje', 'pozycji')}, ${t} ${plPlural(t, 'technikę', 'techniki', 'technik')} i ${d} ${plPlural(d, 'drill', 'drille', 'drilli')}.`,
+    libraryUpToDate: 'Biblioteka jest już wczytana — nic nowego do dodania.',
     deleteAll: 'Usuń wszystkie dane',
     deleteAllTitle: 'Usunąć wszystkie dane?',
     deleteAllMessage:

@@ -1,5 +1,6 @@
 import type { Language } from '.';
 
+import { libraryDrills, libraryPositions, libraryTechniques } from '@/data/library';
 import { seedDrills, seedPositions, seedTechniques } from '@/data/seed';
 
 const en: Record<string, string> = {
@@ -55,10 +56,16 @@ const en: Record<string, string> = {
 // the seed itself is written in Polish
 const pl: Record<string, string> = Object.fromEntries([...seedPositions, ...seedTechniques, ...seedDrills].map((x) => [x.id, x.name]));
 
+// the sample library (Settings) carries both languages
+for (const x of [...libraryPositions, ...libraryTechniques, ...libraryDrills]) {
+  pl[x.id] = x.name.pl;
+  en[x.id] = x.name.en;
+}
+
 const NAMES: Record<Language, Record<string, string>> = { pl, en };
 
 /**
- * Starter positions, techniques and drills in `language`. Only names still matching a seed
+ * Starter and sample-library positions, techniques and drills in `language`. Only names still matching a seed
  * name in either language are switched, so anything the user renamed stays as is.
  */
 export function localizeSeedNames<T extends { id: string; name: string }>(items: T[], language: Language): T[] {

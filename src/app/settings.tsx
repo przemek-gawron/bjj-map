@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -10,7 +10,7 @@ import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
 import { type AppearanceSetting, type LanguageSetting, useSettings } from '@/data/settings';
-import { useT } from '@/i18n';
+import { useLanguage, useT } from '@/i18n';
 import { confirm } from '@/utils/confirm';
 import { deletePositionPhoto } from '@/utils/pick-photo';
 
@@ -21,6 +21,16 @@ export default function SettingsScreen() {
   const appearance = useSettings((s) => s.appearance);
   const setAppearance = useSettings((s) => s.setAppearance);
   const resetAll = useStore((s) => s.resetAll);
+  const loadLibrary = useStore((s) => s.loadLibrary);
+  const currentLanguage = useLanguage();
+  const [libraryResult, setLibraryResult] = useState<string | null>(null);
+
+  const load = () =>
+    confirm(tr.settings.loadLibraryTitle, tr.settings.loadLibraryMessage, tr.settings.loadLibraryConfirm, () => {
+      const added = loadLibrary(currentLanguage);
+      const any = added.positions + added.techniques + added.drills > 0;
+      setLibraryResult(any ? tr.settings.libraryLoaded(added.positions, added.techniques, added.drills) : tr.settings.libraryUpToDate);
+    });
 
   const deleteAll = () =>
     confirm(tr.settings.deleteAllTitle, tr.settings.deleteAllMessage, tr.settings.deleteAllConfirm, () => {
@@ -76,6 +86,10 @@ export default function SettingsScreen() {
         </Section>
 
         <Section title={tr.settings.data}>
+          <Row label={tr.settings.loadLibrary} onPress={load} />
+          <ThemedText type="small" themeColor={libraryResult ? 'accent' : 'textSecondary'}>
+            {libraryResult ?? tr.settings.loadLibraryHint}
+          </ThemedText>
           <Row label={tr.settings.deleteAll} destructive onPress={deleteAll} />
         </Section>
       </ScrollView>
