@@ -50,10 +50,8 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
   }, [positions, drag]);
   const edges = useMemo(() => buildEdges(techniques, layout), [techniques, layout]);
   const bounds = canvasBounds(layout);
-  const svgKey =
-    edges.map((e) => `${isTechniqueActive(e.technique) ? 1 : 0}${e.technique.status[0]}`).join('') +
-    selectedId +
-    positions.map((p) => `${Math.round(layout[p.id].x)},${Math.round(layout[p.id].y)}`).join(';');
+  // the paths themselves are in the key: any change in routing (moved tile, edited technique) redraws
+  const svgKey = edges.map((e) => `${isTechniqueActive(e.technique) ? 1 : 0}${e.technique.status[0]}${e.d}`).join('') + selectedId + Object.values(bounds).join(',');
 
   // ---- viewport transform (UI thread) ----
   const tx = useSharedValue(0);
