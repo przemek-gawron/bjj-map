@@ -11,6 +11,7 @@ import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Position, Status, Technique } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 const MIN_SCALE = 0.3;
 const MAX_SCALE = 2.5;
@@ -32,6 +33,7 @@ type Drag = { id: string; x: number; y: number };
 
 export function MapCanvas({ positions, techniques, selectedId, onSelect, isPositionActive, isTechniqueActive, controlsBottom }: Props) {
   const theme = useTheme();
+  const tr = useT();
   const [drag, setDrag] = useState<Drag | null>(null);
   const [viewport, setViewport] = useState<{ width: number; height: number } | null>(null);
 
@@ -193,9 +195,9 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
 
       <View style={[styles.controls, { bottom: controlsBottom + 12 }]}>
         {[
-          { label: '+', a11y: 'Przybliż', onPress: () => zoomBy(1.3) },
-          { label: '−', a11y: 'Oddal', onPress: () => zoomBy(1 / 1.3) },
-          { label: '⤢', a11y: 'Dopasuj mapę', onPress: () => fit() },
+          { label: '+', a11y: tr.map.zoomIn, onPress: () => zoomBy(1.3) },
+          { label: '−', a11y: tr.map.zoomOut, onPress: () => zoomBy(1 / 1.3) },
+          { label: '⤢', a11y: tr.map.fit, onPress: () => fit() },
         ].map((b) => (
           <Pressable
             key={b.label}

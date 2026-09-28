@@ -63,24 +63,24 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
             {position.name}
           </ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            {tr.group[position.group]} · {position.side === 'top' ? 'jesteś na górze' : position.side === 'bottom' ? 'jesteś na dole' : 'neutralna'}
+            {tr.group[position.group]} · {position.side === 'top' ? tr.map.sideTop : position.side === 'bottom' ? tr.map.sideBottom : tr.map.sideNeutral}
           </ThemedText>
           <View style={styles.photoActions}>
             <Pressable onPress={changePhoto} hitSlop={6}>
               <ThemedText type="small" themeColor="accent">
-                {position.photoUri ? 'Zmień zdjęcie' : 'Dodaj zdjęcie'}
+                {position.photoUri ? tr.map.changePhoto : tr.map.addPhoto}
               </ThemedText>
             </Pressable>
             {position.photoUri && (
               <Pressable onPress={removePhoto} hitSlop={6}>
                 <ThemedText type="small" themeColor="textSecondary">
-                  Usuń zdjęcie
+                  {tr.map.removePhoto}
                 </ThemedText>
               </Pressable>
             )}
           </View>
         </View>
-        <Pressable onPress={onClose} hitSlop={12} accessibilityLabel="Zamknij">
+        <Pressable onPress={onClose} hitSlop={12} accessibilityLabel={tr.map.close}>
           <ThemedText themeColor="textSecondary" style={styles.close}>
             ✕
           </ThemedText>
@@ -89,23 +89,23 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
 
       <ScrollView style={styles.list}>
         <ThemedText type="smallBold" themeColor="textSecondary" style={styles.section}>
-          Z tej pozycji · {from.length}
+          {tr.map.fromHere(from.length)}
         </ThemedText>
-        {from.map((t) => row(t, `${tr.type[t.type]} ${t.to ? '→ ' + nameOf(t.to) : '· kończenie'}`))}
+        {from.map((t) => row(t, `${tr.type[t.type]} ${t.to ? '→ ' + nameOf(t.to) : '· ' + tr.map.submission}`))}
         <Pressable
           onPress={() => router.push({ pathname: '/technique/form', params: { from: position.id } })}
           style={styles.add}>
           <ThemedText type="smallBold" themeColor="accent">
-            + Dodaj technikę z tej pozycji
+            {tr.map.addFromHere}
           </ThemedText>
         </Pressable>
 
         {into.length > 0 && (
           <>
             <ThemedText type="smallBold" themeColor="textSecondary" style={styles.section}>
-              Jak tu trafić · {into.length}
+              {tr.map.howToGetHere(into.length)}
             </ThemedText>
-            {into.map((t) => row(t, `z ${nameOf(t.from)}`))}
+            {into.map((t) => row(t, tr.map.fromPosition(nameOf(t.from) ?? '')))}
           </>
         )}
       </ScrollView>

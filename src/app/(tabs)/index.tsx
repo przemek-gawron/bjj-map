@@ -48,7 +48,7 @@ export default function MapScreen() {
 
   return (
     <Screen
-      title="Mapa"
+      title={tr.map.title}
       scroll={false}
       action={
         <Pressable
