@@ -1,3 +1,5 @@
+import { plPlural } from './plural';
+
 export const pl = {
   common: {
     back: 'Wstecz',
@@ -100,6 +102,30 @@ export const pl = {
     video: 'Link do wideo (opcjonalnie)',
     notesOptional: 'Notatki (opcjonalnie)',
     notesPlaceholder: 'Detale, na co uważać…',
+  },
+  plan: {
+    title: 'Plan',
+    edit: 'Edytuj',
+    choose: 'Wybierz',
+    week: (range: string) => `Tydzień ${range}`,
+    progress: (done: number, total: number) => `${done} z ${total} przećwiczone w tym tygodniu`,
+    lastWeek: 'Plan z poprzedniego tygodnia',
+    lastWeekWaiting: (n: number) => `${n} ${plPlural(n, 'technika czekała', 'techniki czekały', 'technik czekało')} na przećwiczenie.`,
+    carryOver: 'Przenieś na ten tydzień',
+    emptyTitle: 'Co chcesz ćwiczyć w tym tygodniu?',
+    emptyText: 'Wybierz kilka technik — zobaczysz je tu razem z wideo, a po treningu odhaczysz jednym tapnięciem.',
+    uncheckToday: (name: string) => `${name}: odznacz dzisiejszy trening`,
+    checkToday: (name: string) => `${name}: trenowałem dziś`,
+    thisWeekCount: (n: number) => `${n}× w tym tygodniu`,
+    notThisWeek: 'jeszcze nie w tym tygodniu',
+    video: '▶ Wideo',
+    searchYoutube: '🔍 Szukaj na YouTube',
+    remove: 'Usuń z planu',
+    pickTitle: 'Plan na tydzień',
+    done: 'Gotowe',
+    picked: (n: number) => `Wybrane: ${n}. Najlepiej 3–5 technik na tydzień.`,
+    search: 'Szukaj techniki…',
+    drillingNow: 'Teraz ćwiczysz',
   },
   settings: {
     title: 'Ustawienia',

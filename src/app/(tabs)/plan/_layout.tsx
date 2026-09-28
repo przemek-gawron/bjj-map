@@ -1,9 +1,11 @@
 import { Stack } from 'expo-router';
 
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 export default function PlanLayout() {
   const theme = useTheme();
+  const tr = useT();
 
   return (
     <Stack
@@ -14,7 +16,7 @@ export default function PlanLayout() {
         headerTitleStyle: { color: theme.text },
       }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="pick" options={{ presentation: 'modal', title: 'Plan na tydzień' }} />
+      <Stack.Screen name="pick" options={{ presentation: 'modal', title: tr.plan.pickTitle }} />
     </Stack>
   );
 }

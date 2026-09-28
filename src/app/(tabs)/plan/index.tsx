@@ -13,12 +13,14 @@ import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Technique } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 const youtubeSearch = (t: Technique) =>
   'https://www.youtube.com/results?search_query=' + encodeURIComponent(`${t.name} bjj`);
 
 export default function PlanScreen() {
   const theme = useTheme();
+  const tr = useT();
   const plan = useStore((s) => s.plan);
   const techniques = useStore((s) => s.techniques);
   const positions = useStore((s) => s.positions);
@@ -57,25 +59,25 @@ export default function PlanScreen() {
 
   return (
     <Screen
-      title="Plan"
+      title={tr.plan.title}
       action={
         <Pressable
           onPress={() => router.push('/plan/pick')}
           hitSlop={10}
           style={[styles.editButton, { backgroundColor: theme.accent }]}>
           <ThemedText type="smallBold" style={styles.editButtonText}>
-            {planned.length ? 'Edytuj' : 'Wybierz'}
+            {planned.length ? tr.plan.edit : tr.plan.choose}
           </ThemedText>
         </Pressable>
       }>
       <ThemedText type="small" themeColor="textSecondary">
-        Tydzień {weekRangeLabel(thisWeek)}
+        {tr.plan.week(weekRangeLabel(thisWeek))}
       </ThemedText>
 
       {planned.length > 0 && (
         <View style={styles.progressBox}>
           <ThemedText type="smallBold">
-            {done} z {planned.length} przećwiczone w tym tygodniu
+            {tr.plan.progress(done, planned.length)}
           </ThemedText>
           <View style={[styles.progress, { backgroundColor: theme.backgroundElement }]}>
             <View style={{ flex: done, backgroundColor: STATUS_COLOR.works }} />
@@ -86,13 +88,13 @@ export default function PlanScreen() {
 
       {carryOver.length > 0 && (
         <ThemedView type="backgroundElement" style={styles.card}>
-          <ThemedText type="smallBold">Plan z poprzedniego tygodnia</ThemedText>
+          <ThemedText type="smallBold">{tr.plan.lastWeek}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            {carryOver.length} technik czekało na przećwiczenie.
+            {tr.plan.lastWeekWaiting(carryOver.length)}
           </ThemedText>
           <Pressable onPress={() => setPlan(carryOver)} style={[styles.secondaryButton, { borderColor: theme.accent }]}>
             <ThemedText type="smallBold" themeColor="accent">
-              Przenieś na ten tydzień
+              {tr.plan.carryOver}
             </ThemedText>
           </Pressable>
         </ThemedView>
@@ -100,9 +102,9 @@ export default function PlanScreen() {
 
       {planned.length === 0 && (
         <ThemedView type="backgroundElement" style={styles.card}>
-          <ThemedText type="smallBold">Co chcesz ćwiczyć w tym tygodniu?</ThemedText>
+          <ThemedText type="smallBold">{tr.plan.emptyTitle}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            Wybierz kilka technik — zobaczysz je tu razem z wideo, a po treningu odhaczysz jednym tapnięciem.
+            {tr.plan.emptyText}
           </ThemedText>
         </ThemedView>
       )}
@@ -111,13 +113,13 @@ export default function PlanScreen() {
         const count = weekCounts.get(t.id) ?? 0;
         const checked = trainedToday.has(t.id);
         return (
-          <SwipeToDelete key={t.id} label="Usuń z planu" onDelete={() => togglePlanned(t.id)} style={styles.swipeable}>
+          <SwipeToDelete key={t.id} label={tr.plan.remove} onDelete={() => togglePlanned(t.id)} style={styles.swipeable}>
             <ThemedView type="backgroundElement" style={styles.plannedCard}>
               <View style={styles.row}>
                 <Pressable
                   onPress={() => toggleToday(t.id)}
                   hitSlop={8}
-                  accessibilityLabel={checked ? `${t.name}: odznacz dzisiejszy trening` : `${t.name}: trenowałem dziś`}
+                  accessibilityLabel={checked ? tr.plan.uncheckToday(t.name) : tr.plan.checkToday(t.name)}
                   style={[
                     styles.check,
                     { borderColor: checked ? STATUS_COLOR.works : theme.textSecondary },
@@ -130,7 +132,7 @@ export default function PlanScreen() {
                     {t.name}
                   </ThemedText>
                   <ThemedText type="small" themeColor="textSecondary">
-                    {positionName(t.from)} · {count ? `${count}× w tym tygodniu` : 'jeszcze nie w tym tygodniu'}
+                    {positionName(t.from)} · {count ? tr.plan.thisWeekCount(count) : tr.plan.notThisWeek}
                   </ThemedText>
                 </Pressable>
                 <StatusChip small status={t.status} onChange={(next) => setStatus(t.id, next)} />
@@ -141,7 +143,7 @@ export default function PlanScreen() {
                   onPress={() => Linking.openURL(t.videoUrl ?? youtubeSearch(t))}
                   style={({ pressed }) => [styles.videoButton, !t.videoUrl && styles.videoSearch, pressed && styles.pressed]}>
                   <ThemedText type="smallBold" style={t.videoUrl ? styles.videoText : styles.videoSearchText}>
-                    {t.videoUrl ? '▶ Wideo' : '🔍 Szukaj na YouTube'}
+                    {t.videoUrl ? tr.plan.video : tr.plan.searchYoutube}
                   </ThemedText>
                 </Pressable>
               </View>

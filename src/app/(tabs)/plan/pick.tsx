@@ -11,10 +11,12 @@ import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Technique } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 /** Toggles techniques in this week's plan; changes apply immediately. */
 export default function PlanPickScreen() {
   const theme = useTheme();
+  const tr = useT();
   const plan = useStore((s) => s.plan);
   const positions = useStore((s) => s.positions);
   const techniques = useStore((s) => s.techniques);
@@ -37,7 +39,7 @@ export default function PlanPickScreen() {
           headerRight: () => (
             <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerButton}>
               <ThemedText type="smallBold" themeColor="accent">
-                Gotowe
+                {tr.plan.done}
               </ThemedText>
             </Pressable>
           ),
@@ -49,12 +51,12 @@ export default function PlanPickScreen() {
         keyboardDismissMode="interactive"
         automaticallyAdjustKeyboardInsets>
         <ThemedText type="small" themeColor="textSecondary">
-          Wybrane: {planned.length}. Najlepiej 3–5 technik na tydzień.
+          {tr.plan.picked(planned.length)}
         </ThemedText>
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder="Szukaj techniki…"
+          placeholder={tr.plan.search}
           placeholderTextColor={theme.textSecondary}
           autoCorrect={false}
           style={[styles.input, { backgroundColor: theme.backgroundElement, color: theme.text }]}
@@ -63,7 +65,7 @@ export default function PlanPickScreen() {
         {drilling.length > 0 && (
           <View style={styles.group}>
             <ThemedText type="smallBold" style={{ color: STATUS_COLOR.drilling }}>
-              Teraz ćwiczysz
+              {tr.plan.drillingNow}
             </ThemedText>
             <View style={styles.chips}>{drilling.map(chip)}</View>
           </View>
