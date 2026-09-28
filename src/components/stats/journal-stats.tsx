@@ -12,7 +12,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { monthGrid, shortDate, shortMonthLabel, toDateKey } from '@/data/dates';
-import { formatHours, HOURS_PER_SESSION, periodStats } from '@/data/stats';
+import { DEFAULT_SESSION_MINUTES, formatHours, periodStats, totalHours } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
@@ -38,7 +38,7 @@ export function JournalStats() {
   const total = periodStats(sessions, '');
   const firstDate = sessions.reduce<string | undefined>((min, s) => (!min || s.date < min ? s.date : min), undefined);
   const trainingDays = new Set(sessions.map((s) => s.date));
-  const hoursOn = (days: (string | null)[]) => days.filter((d) => d && trainingDays.has(d)).length * HOURS_PER_SESSION;
+  const hoursOn = (days: string[]) => totalHours(sessions.filter((s) => days.includes(s.date)));
 
   const bars =
     period === 'month'
@@ -130,7 +130,7 @@ export function JournalStats() {
       </ThemedText>
       <BarChart bars={bars} format={formatHours} />
       <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
-        {tr.journal.hoursNote(formatHours(HOURS_PER_SESSION))}
+        {tr.journal.hoursNote(formatHours(DEFAULT_SESSION_MINUTES / 60))}
       </ThemedText>
 
       <ThemedText type="smallBold" themeColor="textSecondary" style={styles.section}>

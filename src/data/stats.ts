@@ -20,8 +20,19 @@ export function trainingStats(sessions: Session[]): Map<string, TrainingStats> {
   return stats;
 }
 
-/** Assumed length of one training, until sessions record their own duration. */
-export const HOURS_PER_SESSION = 1.5;
+/** Length assumed for trainings logged without one (e.g. ticked off in Techniki or Plan). */
+export const DEFAULT_SESSION_MINUTES = 90;
+
+/** Durations offered in the journal entry form. */
+export const SESSION_MINUTES = [60, 90, 120, 150, 180];
+
+export function sessionHours(s: Session): number {
+  return (s.durationMin ?? DEFAULT_SESSION_MINUTES) / 60;
+}
+
+export function totalHours(sessions: Session[]): number {
+  return sessions.reduce((sum, s) => sum + sessionHours(s), 0);
+}
 
 export type PeriodStats = {
   sessions: number;
@@ -37,7 +48,7 @@ export function periodStats(sessions: Session[], prefix: string): PeriodStats {
   for (const s of inPeriod) for (const id of s.techniqueIds) counts.set(id, (counts.get(id) ?? 0) + 1);
   return {
     sessions: inPeriod.length,
-    hours: inPeriod.length * HOURS_PER_SESSION,
+    hours: totalHours(inPeriod),
     techniques: [...counts].map(([id, count]) => ({ id, count })).sort((a, b) => b.count - a.count),
   };
 }

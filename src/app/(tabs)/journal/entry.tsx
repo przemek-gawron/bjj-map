@@ -9,6 +9,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { dayLabel, recentDays, toDateKey } from '@/data/dates';
+import { DEFAULT_SESSION_MINUTES, formatHours, SESSION_MINUTES } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
@@ -29,6 +30,7 @@ export default function JournalEntryScreen() {
   const [date, setDate] = useState(existing?.date ?? toDateKey());
   const [picked, setPicked] = useState<string[]>(existing?.techniqueIds ?? []);
   const [note, setNote] = useState(existing?.note ?? '');
+  const [duration, setDuration] = useState(existing?.durationMin ?? DEFAULT_SESSION_MINUTES);
   const [query, setQuery] = useState('');
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [month, setMonth] = useState(date.slice(0, 7));
@@ -45,7 +47,7 @@ export default function JournalEntryScreen() {
 
   const save = () => {
     if (!canSave) return;
-    saveSession({ id: existing?.id, date, techniqueIds: picked, note: note.trim() || undefined });
+    saveSession({ id: existing?.id, date, techniqueIds: picked, note: note.trim() || undefined, durationMin: duration });
     router.back();
   };
 
@@ -111,6 +113,15 @@ export default function JournalEntryScreen() {
             {tr.journal.clash}
           </ThemedText>
         )}
+
+        <ThemedText type="smallBold" themeColor="textSecondary" style={styles.sectionHead}>
+          {tr.journal.duration}
+        </ThemedText>
+        <View style={styles.chips}>
+          {SESSION_MINUTES.map((m) => (
+            <Chip key={m} label={`${formatHours(m / 60)} h`} selected={duration === m} onPress={() => setDuration(m)} />
+          ))}
+        </View>
 
         <View style={styles.sectionHead}>
           <ThemedText type="smallBold" themeColor="textSecondary">

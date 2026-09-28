@@ -14,6 +14,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { dayLabel, relativeDay, toDateKey, weekRangeLabel, weekStartOf } from '@/data/dates';
 import { STATUS_COLOR } from '@/data/labels';
+import { formatHours, sessionHours } from '@/data/stats';
 import { useStore } from '@/data/store';
 import type { Session } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
@@ -104,7 +105,7 @@ export default function JournalScreen() {
                             {dayLabel(s.date)}
                           </ThemedText>
                           <ThemedText type="small" themeColor="textSecondary">
-                            {relativeDay(s.date)}
+                            {formatHours(sessionHours(s))} h · {relativeDay(s.date)}
                           </ThemedText>
                         </View>
 

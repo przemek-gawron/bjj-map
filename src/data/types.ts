@@ -46,6 +46,8 @@ export type Session = {
   date: string;
   techniqueIds: string[];
   note?: string;
+  /** Length of the training in minutes; unset counts as DEFAULT_SESSION_MINUTES. */
+  durationMin?: number;
 };
 
 export type WeeklyPlan = {

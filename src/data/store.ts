@@ -96,7 +96,7 @@ export const useStore = create<State & Actions>()(
             s.sessions.map((x) => (x.date === date ? { ...x, techniqueIds: x.techniqueIds.filter((t) => t !== techniqueId) } : x))
           ),
         })),
-      saveSession: ({ id, date, techniqueIds, note }) =>
+      saveSession: ({ id, date, techniqueIds, note, durationMin }) =>
         set((s) => {
           const rest = id ? s.sessions.filter((x) => x.id !== id) : s.sessions;
           const other = rest.find((x) => x.date === date);
@@ -105,8 +105,9 @@ export const useStore = create<State & Actions>()(
                 ...other,
                 techniqueIds: [...new Set([...other.techniqueIds, ...techniqueIds])],
                 note: [other.note, note].filter(Boolean).join('\n\n') || undefined,
+                durationMin: durationMin ?? other.durationMin,
               }
-            : { id: id ?? newId(), date, techniqueIds: [...new Set(techniqueIds)], note };
+            : { id: id ?? newId(), date, techniqueIds: [...new Set(techniqueIds)], note, durationMin };
           return {
             sessions: [...rest.filter((x) => x !== other), saved].sort((a, b) => b.date.localeCompare(a.date)),
           };
