@@ -13,20 +13,25 @@ import type { Technique } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 
-/** Toggles techniques in this week's plan; changes apply immediately. */
+/** Toggles techniques and drills in this week's plan; changes apply immediately. */
 export default function PlanPickScreen() {
   const theme = useTheme();
   const tr = useT();
   const plan = useStore((s) => s.plan);
   const positions = useStore((s) => s.positions);
   const techniques = useStore((s) => s.techniques);
+  const drills = useStore((s) => s.drills);
   const togglePlanned = useStore((s) => s.togglePlanned);
+  const togglePlannedDrill = useStore((s) => s.togglePlannedDrill);
   const [query, setQuery] = useState('');
 
-  const planned = plan.weekStart === weekStartOf(toDateKey()) ? plan.techniqueIds : [];
+  const isCurrent = plan.weekStart === weekStartOf(toDateKey());
+  const planned = isCurrent ? plan.techniqueIds : [];
+  const plannedDrills = isCurrent ? (plan.drillIds ?? []) : [];
   const q = query.trim().toLowerCase();
   const matches = (t: Technique) => !q || t.name.toLowerCase().includes(q);
   const drilling = techniques.filter((t) => t.status === 'drilling' && matches(t));
+  const visibleDrills = drills.filter((d) => !q || d.name.toLowerCase().includes(q));
 
   const chip = (t: Technique) => (
     <Chip key={t.id} label={t.name} selected={planned.includes(t.id)} onPress={() => togglePlanned(t.id)} />
@@ -51,7 +56,7 @@ export default function PlanPickScreen() {
         keyboardDismissMode="interactive"
         automaticallyAdjustKeyboardInsets>
         <ThemedText type="small" themeColor="textSecondary">
-          {tr.plan.picked(planned.length)}
+          {tr.plan.picked(planned.length + plannedDrills.length)}
         </ThemedText>
         <TextInput
           value={query}
@@ -83,6 +88,19 @@ export default function PlanPickScreen() {
             </View>
           );
         })}
+
+        {visibleDrills.length > 0 && (
+          <View style={styles.group}>
+            <ThemedText type="smallBold" themeColor="accent">
+              {tr.plan.drills}
+            </ThemedText>
+            <View style={styles.chips}>
+              {visibleDrills.map((d) => (
+                <Chip key={d.id} label={d.name} selected={plannedDrills.includes(d.id)} onPress={() => togglePlannedDrill(d.id)} />
+              ))}
+            </View>
+          </View>
+        )}
       </ScrollView>
     </ThemedView>
   );
