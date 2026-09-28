@@ -9,7 +9,8 @@ import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
-import { type LanguageSetting, useSettings, useT } from '@/i18n';
+import { type LanguageSetting, useSettings } from '@/data/settings';
+import { useT } from '@/i18n';
 import { confirm } from '@/utils/confirm';
 import { deletePositionPhoto } from '@/utils/pick-photo';
 

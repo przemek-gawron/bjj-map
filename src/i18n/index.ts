@@ -1,24 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLocales } from 'expo-localization';
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { en } from './en';
 import { type Dict, pl } from './pl';
 
+import { type LanguageSetting, useSettings } from '@/data/settings';
+
 export type Language = 'pl' | 'en';
-export type LanguageSetting = Language | 'system';
 
 const DICTS: Record<Language, Dict> = { pl, en };
-
-/** App preferences, kept apart from the training data so "delete all data" leaves them alone. */
-export const useSettings = create<{ language: LanguageSetting; setLanguage: (l: LanguageSetting) => void }>()(
-  persist((set) => ({ language: 'system', setLanguage: (language) => set({ language }) }), {
-    name: 'bjj-map-settings',
-    storage: createJSONStorage(() => AsyncStorage),
-    partialize: ({ language }) => ({ language }),
-  })
-);
 
 /** Polish for Polish devices, English for everything else. */
 function resolve(setting: LanguageSetting): Language {
