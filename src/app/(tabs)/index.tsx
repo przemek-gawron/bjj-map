@@ -1,16 +1,16 @@
 import { SymbolView } from 'expo-symbols';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
 import { Chip } from '@/components/chip';
 import { MapCanvas } from '@/components/map/map-canvas';
 import { PositionSheet } from '@/components/map/position-sheet';
 import { Screen } from '@/components/screen';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useStore } from '@/data/store';
 import type { Position, PositionGroup, Technique, TechniqueType } from '@/data/types';
+import { useTabBarInset } from '@/hooks/use-tab-bar-inset';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 
@@ -20,7 +20,6 @@ const GROUPS: PositionGroup[] = ['standing', 'closed_guard', 'open_guard', 'half
 export default function MapScreen() {
   const theme = useTheme();
   const tr = useT();
-  const insets = useSafeAreaInsets();
   const positions = useStore((s) => s.positions);
   const techniques = useStore((s) => s.techniques);
 
@@ -43,8 +42,7 @@ export default function MapScreen() {
     (!!groupFilter && !typeFilter && !selectedId && p.group === groupFilter) ||
     techniques.some((t) => isTechniqueActive(t) && (t.from === p.id || t.to === p.id));
 
-  // on iOS the native tab bar floats over the content
-  const bottom = Platform.OS === 'web' ? Spacing.two : insets.bottom + BottomTabInset;
+  const bottom = useTabBarInset() + Spacing.two;
 
   return (
     <Screen

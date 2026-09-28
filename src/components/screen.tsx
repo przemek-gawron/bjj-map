@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { useTabBarInset } from '@/hooks/use-tab-bar-inset';
 
 type Props = {
   title: string;
@@ -18,9 +19,7 @@ type Props = {
 
 /** Tab screen shell: safe area, large title, content capped at MaxContentWidth for web. */
 export function Screen({ title, action, children, scroll = true }: Props) {
-  const insets = useSafeAreaInsets();
-  // the native tab bar floats over the content; on web it sits below it
-  const bottom = Platform.OS === 'web' ? Spacing.six : insets.bottom + BottomTabInset + Spacing.four;
+  const bottom = useTabBarInset() + Spacing.six;
 
   const header = (
     <View style={styles.header}>
