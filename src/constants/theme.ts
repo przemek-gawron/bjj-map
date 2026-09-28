@@ -29,6 +29,17 @@ export const Colors = {
   },
 } as const;
 
+type Gradient = readonly [string, string];
+
+/**
+ * Optional gradients per scheme: a glow behind tab screen headers and the fill of
+ * the round add buttons. null keeps the flat colors above.
+ */
+export const Gradients: Record<keyof typeof Colors, { header: Gradient; button: Gradient } | null> = {
+  light: null,
+  dark: null,
+};
+
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
 export const Fonts = Platform.select({

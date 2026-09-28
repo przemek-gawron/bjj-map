@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from './themed-text';
@@ -7,6 +8,7 @@ import { ThemedView } from './themed-view';
 
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTabBarInset } from '@/hooks/use-tab-bar-inset';
+import { useGradients } from '@/hooks/use-theme';
 
 type Props = {
   title: string;
@@ -20,6 +22,7 @@ type Props = {
 /** Tab screen shell: safe area, large title, content capped at MaxContentWidth for web. */
 export function Screen({ title, action, children, scroll = true }: Props) {
   const bottom = useTabBarInset() + Spacing.six;
+  const gradients = useGradients();
 
   const header = (
     <View style={styles.header}>
@@ -32,6 +35,7 @@ export function Screen({ title, action, children, scroll = true }: Props) {
 
   return (
     <ThemedView style={styles.root}>
+      {gradients && <LinearGradient colors={gradients.header} style={styles.glow} pointerEvents="none" />}
       <SafeAreaView edges={['top']} style={styles.root}>
         {scroll ? (
           <ScrollView contentContainerStyle={[styles.content, { paddingBottom: bottom }]}>
@@ -51,6 +55,7 @@ export function Screen({ title, action, children, scroll = true }: Props) {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  glow: { position: 'absolute', top: 0, left: 0, right: 0, height: 360 },
   content: {
     width: '100%',
     maxWidth: MaxContentWidth,
