@@ -9,9 +9,9 @@ Aplikacja mobilna (iOS / Android) w Expo, działa też w przeglądarce.
 | Zakładka | Co robi | Status |
 |---|---|---|
 | **Mapa** | Graf pozycji i technik: pozycje to kafelki z ilustracją (lub własnym zdjęciem), techniki to strzałki między nimi. Filtry po typie techniki i grupie pozycji, przesuwanie kafelków, przesuwanie i przybliżanie mapy, panel pozycji z technikami „z tej pozycji” i „jak tu trafić”. | ✅ |
-| **Techniki** | Lista technik pogrupowana po pozycji startowej. Filtry po statusie i typie, dodawanie i edycja, link do wideo, „Trenowałem dziś”, historia treningów. | ✅ |
-| **Plan** | Techniki wybrane na ten tydzień razem z wideo (lub wyszukiwaniem na YouTube), odhaczanie po treningu, postęp tygodnia, przeniesienie planu z poprzedniego tygodnia. | ✅ |
-| **Dziennik** | Oś czasu treningów pogrupowana tygodniami: data, przećwiczone techniki, notatka. Liczniki tygodnia i miesiąca. | ✅ |
+| **Techniki** | Lista technik pogrupowana po pozycji startowej. Filtry po statusie i typie, dodawanie, edycja i usuwanie przesunięciem, link do wideo, „Trenowałem dziś”, historia treningów. | ✅ |
+| **Plan** | Techniki wybrane na ten tydzień razem z wideo (lub wyszukiwaniem na YouTube), odhaczanie po treningu, usuwanie z planu przesunięciem, postęp tygodnia, przeniesienie planu z poprzedniego tygodnia. | ✅ |
+| **Dziennik** | Oś czasu treningów pogrupowana tygodniami: data (dowolny dzień z kalendarza), przećwiczone techniki, notatka. Usuwanie przesunięciem. Statystyki miesiąca i roku: kalendarz lub mapa treningów w stylu GitHuba, godziny na macie (1,5 h na trening), najczęściej trenowane techniki. | ✅ |
 
 Każda technika ma status: **Widziałem → Ćwiczę → Działa w sparingu**.
 
