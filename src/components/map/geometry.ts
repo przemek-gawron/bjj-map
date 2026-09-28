@@ -1,4 +1,4 @@
-import type { Technique } from '@/data/types';
+import type { Position, PositionGroup, Technique } from '@/data/types';
 
 export const NODE_W = 184;
 export const NODE_H = 76;
@@ -104,4 +104,40 @@ export function canvasBounds(layout: Layout) {
     width: Math.max(...points.map((p) => p.x)) + NODE_W + CANVAS_PAD - x,
     height: Math.max(...points.map((p) => p.y)) + NODE_H + CANVAS_PAD - y,
   };
+}
+
+/** Rows of the tidy layout, top to bottom; positions of other groups go last. */
+const GROUP_ROWS: PositionGroup[] = ['standing', 'open_guard', 'closed_guard', 'half_guard', 'side_control', 'mount', 'back'];
+const COL_GAP = 100;
+const ROW_GAP = 80;
+
+/**
+ * A clean layout: neutral positions centred on top, then one row per position group with
+ * "you're at the bottom" on the left and "you're on top" on the right, so a group's two
+ * sides sit side by side and most arrows run across or down instead of criss-crossing.
+ */
+export function tidyLayout(positions: Pick<Position, 'id' | 'group' | 'side'>[]): Layout {
+  const rank = (g: PositionGroup) => (GROUP_ROWS.includes(g) ? GROUP_ROWS.indexOf(g) : GROUP_ROWS.length);
+  const width = NODE_W * 2 + COL_GAP;
+  const layout: Layout = {};
+  let y = 0;
+
+  const neutral = positions.filter((p) => p.side === 'neutral');
+  neutral.forEach((p, i) => {
+    const rowWidth = neutral.length * NODE_W + (neutral.length - 1) * COL_GAP;
+    layout[p.id] = { x: (width - rowWidth) / 2 + i * (NODE_W + COL_GAP), y };
+  });
+  if (neutral.length) y += NODE_H + ROW_GAP;
+
+  const groups = [...new Set(positions.filter((p) => p.side !== 'neutral').map((p) => p.group))].sort((a, b) => rank(a) - rank(b));
+  for (const g of groups) {
+    const bottom = positions.filter((p) => p.group === g && p.side === 'bottom');
+    const top = positions.filter((p) => p.group === g && p.side === 'top');
+    for (let i = 0; i < Math.max(bottom.length, top.length); i++) {
+      if (bottom[i]) layout[bottom[i].id] = { x: 0, y };
+      if (top[i]) layout[top[i].id] = { x: NODE_W + COL_GAP, y };
+      y += NODE_H + ROW_GAP;
+    }
+  }
+  return layout;
 }

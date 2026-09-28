@@ -4,7 +4,7 @@ import { Gesture, GestureDetector, type GestureType } from 'react-native-gesture
 import Animated, { type SharedValue, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import Svg, { Defs, Marker, Path } from 'react-native-svg';
 
-import { buildEdges, canvasBounds, NODE_H, NODE_W } from './geometry';
+import { buildEdges, canvasBounds, NODE_H, NODE_W, tidyLayout } from './geometry';
 
 import { PositionIllustration } from '@/components/position-illustration';
 import { STATUS_COLOR } from '@/data/labels';
@@ -12,6 +12,7 @@ import { useStore } from '@/data/store';
 import type { Position, Status, Technique } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
+import { confirm } from '@/utils/confirm';
 
 const MIN_SCALE = 0.3;
 const MAX_SCALE = 2.5;
@@ -109,14 +110,21 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
     transform: [{ translateX: tx.get() }, { translateY: ty.get() }, { scale: scale.get() }],
   }));
 
-  const fit = (vp = viewport, animate = true) => {
+  const fit = (vp = viewport, animate = true, b = bounds) => {
     if (!vp) return;
-    const s = Math.min(1, Math.max(MIN_SCALE, Math.min(vp.width / bounds.width, (vp.height - controlsBottom) / bounds.height)));
+    const s = Math.min(1, Math.max(MIN_SCALE, Math.min(vp.width / b.width, (vp.height - controlsBottom) / b.height)));
     const set = (v: SharedValue<number>, to: number) => v.set(animate ? withTiming(to) : to);
     set(scale, s);
-    set(tx, (vp.width - bounds.width * s) / 2 - bounds.x * s);
-    set(ty, -bounds.y * s);
+    set(tx, (vp.width - b.width * s) / 2 - b.x * s);
+    set(ty, -b.y * s);
   };
+
+  const tidy = () =>
+    confirm(tr.map.tidyTitle, tr.map.tidyMessage, tr.map.tidyConfirm, () => {
+      const next = tidyLayout(positions);
+      useStore.getState().setLayouts(next);
+      fit(viewport, true, canvasBounds(next));
+    });
 
   const zoomBy = (k: number) => {
     if (!viewport) return;
@@ -209,6 +217,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
           { label: '+', a11y: tr.map.zoomIn, onPress: () => zoomBy(1.3) },
           { label: '−', a11y: tr.map.zoomOut, onPress: () => zoomBy(1 / 1.3) },
           { label: '⤢', a11y: tr.map.fit, onPress: () => fit() },
+          { label: '▦', a11y: tr.map.tidy, onPress: tidy },
         ].map((b) => (
           <Pressable
             key={b.label}
