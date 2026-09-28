@@ -17,3 +17,30 @@ export function trainingStats(sessions: Session[]): Map<string, TrainingStats> {
   }
   return stats;
 }
+
+/** Assumed length of one training, until sessions record their own duration. */
+export const HOURS_PER_SESSION = 1.5;
+
+export type PeriodStats = {
+  sessions: number;
+  hours: number;
+  /** Techniques trained in the period, most trained first. */
+  techniques: { id: string; count: number }[];
+};
+
+/** Totals for sessions whose date starts with `prefix` (YYYY for a year, YYYY-MM for a month). */
+export function periodStats(sessions: Session[], prefix: string): PeriodStats {
+  const inPeriod = sessions.filter((s) => s.date.startsWith(prefix));
+  const counts = new Map<string, number>();
+  for (const s of inPeriod) for (const id of s.techniqueIds) counts.set(id, (counts.get(id) ?? 0) + 1);
+  return {
+    sessions: inPeriod.length,
+    hours: inPeriod.length * HOURS_PER_SESSION,
+    techniques: [...counts].map(([id, count]) => ({ id, count })).sort((a, b) => b.count - a.count),
+  };
+}
+
+/** "4,5" — hours with a Polish decimal comma. */
+export function formatHours(h: number): string {
+  return Number.isInteger(h) ? String(h) : h.toFixed(1).replace('.', ',');
+}

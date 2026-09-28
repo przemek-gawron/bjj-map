@@ -1,9 +1,12 @@
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AddButton } from '@/components/add-button';
 import { Chip } from '@/components/chip';
 import { Screen } from '@/components/screen';
+import { Segmented } from '@/components/segmented';
+import { JournalStats } from '@/components/stats/journal-stats';
 import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -20,6 +23,7 @@ export default function JournalScreen() {
   const sessions = useStore((s) => s.sessions);
   const techniques = useStore((s) => s.techniques);
   const removeSession = useStore((s) => s.removeSession);
+  const [view, setView] = useState<'list' | 'stats'>('list');
 
   const today = toDateKey();
   const thisWeek = weekStartOf(today);
@@ -46,63 +50,78 @@ export default function JournalScreen() {
       action={
         <AddButton onPress={() => openEntry(todaySession?.id)} accessibilityLabel="Dodaj trening" />
       }>
-      <View style={[styles.stats, { borderColor: theme.backgroundSelected }]}>
-        <Stat value={weekCount} label="w tym tygodniu" />
-        <Stat value={monthCount} label="w tym miesiącu" />
-        <Stat value={monthTechniques} label="technik w miesiącu" />
-      </View>
+      <Segmented
+        options={[
+          { value: 'list', label: 'Treningi' },
+          { value: 'stats', label: 'Statystyki' },
+        ]}
+        value={view}
+        onChange={setView}
+      />
 
-      {sessions.length === 0 && (
-        <ThemedView type="backgroundElement" style={styles.empty}>
-          <ThemedText type="smallBold">Brak treningów</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            Po treningu dotknij +, zaznacz co ćwiczyłeś i dopisz notatkę. Treningi z zakładki Techniki też tu trafiają.
-          </ThemedText>
-        </ThemedView>
-      )}
-
-      {[...weeks.entries()].map(([weekStart, list]) => (
-        <View key={weekStart}>
-          <ThemedText type="smallBold" themeColor="textSecondary" style={styles.weekHead}>
-            {weekStart === thisWeek ? 'Ten tydzień' : weekRangeLabel(weekStart)} · {list.length}×
-          </ThemedText>
-
-          {list.map((s) => (
-            <SwipeToDelete key={s.id} onDelete={() => remove(s)} style={styles.swipeable}>
-              <Pressable onPress={() => openEntry(s.id)}>
-                {({ pressed }) => (
-                  // pressed state tints instead of fading, which would reveal the delete button
-                  <ThemedView type={pressed ? 'backgroundSelected' : 'backgroundElement'} style={styles.card}>
-                    <View style={styles.cardHead}>
-                      <ThemedText type="smallBold" style={styles.date}>
-                        {dayLabel(s.date)}
-                      </ThemedText>
-                      <ThemedText type="small" themeColor="textSecondary">
-                        {relativeDay(s.date)}
-                      </ThemedText>
-                    </View>
-
-                    {s.techniqueIds.length > 0 && (
-                      <View style={styles.chips}>
-                        {s.techniqueIds.map((id) => {
-                          const t = techniques.find((x) => x.id === id);
-                          return t && <Chip key={id} small selected label={t.name} color={STATUS_COLOR[t.status]} />;
-                        })}
-                      </View>
-                    )}
-
-                    {s.note && (
-                      <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
-                        {s.note}
-                      </ThemedText>
-                    )}
-                  </ThemedView>
-                )}
-              </Pressable>
-            </SwipeToDelete>
-          ))}
+      {view === 'stats' ? (
+        <JournalStats />
+      ) : (
+        <>
+        <View style={[styles.stats, { borderColor: theme.backgroundSelected }]}>
+          <Stat value={weekCount} label="w tym tygodniu" />
+          <Stat value={monthCount} label="w tym miesiącu" />
+          <Stat value={monthTechniques} label="technik w miesiącu" />
         </View>
-      ))}
+
+        {sessions.length === 0 && (
+          <ThemedView type="backgroundElement" style={styles.empty}>
+            <ThemedText type="smallBold">Brak treningów</ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              Po treningu dotknij +, zaznacz co ćwiczyłeś i dopisz notatkę. Treningi z zakładki Techniki też tu trafiają.
+            </ThemedText>
+          </ThemedView>
+        )}
+
+        {[...weeks.entries()].map(([weekStart, list]) => (
+          <View key={weekStart}>
+            <ThemedText type="smallBold" themeColor="textSecondary" style={styles.weekHead}>
+              {weekStart === thisWeek ? 'Ten tydzień' : weekRangeLabel(weekStart)} · {list.length}×
+            </ThemedText>
+
+            {list.map((s) => (
+              <SwipeToDelete key={s.id} onDelete={() => remove(s)} style={styles.swipeable}>
+                <Pressable onPress={() => openEntry(s.id)}>
+                  {({ pressed }) => (
+                    // pressed state tints instead of fading, which would reveal the delete button
+                    <ThemedView type={pressed ? 'backgroundSelected' : 'backgroundElement'} style={styles.card}>
+                      <View style={styles.cardHead}>
+                        <ThemedText type="smallBold" style={styles.date}>
+                          {dayLabel(s.date)}
+                        </ThemedText>
+                        <ThemedText type="small" themeColor="textSecondary">
+                          {relativeDay(s.date)}
+                        </ThemedText>
+                      </View>
+
+                      {s.techniqueIds.length > 0 && (
+                        <View style={styles.chips}>
+                          {s.techniqueIds.map((id) => {
+                            const t = techniques.find((x) => x.id === id);
+                            return t && <Chip key={id} small selected label={t.name} color={STATUS_COLOR[t.status]} />;
+                          })}
+                        </View>
+                      )}
+
+                      {s.note && (
+                        <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
+                          {s.note}
+                        </ThemedText>
+                      )}
+                    </ThemedView>
+                  )}
+                </Pressable>
+              </SwipeToDelete>
+            ))}
+          </View>
+        ))}
+        </>
+      )}
     </Screen>
   );
 }
@@ -119,7 +138,7 @@ function Stat({ value, label }: { value: number; label: string }) {
 }
 
 const styles = StyleSheet.create({
-  stats: { flexDirection: 'row', borderTopWidth: 1, borderBottomWidth: 1, marginBottom: Spacing.two },
+  stats: { flexDirection: 'row', borderTopWidth: 1, borderBottomWidth: 1, marginTop: Spacing.three, marginBottom: Spacing.two },
   stat: { flex: 1, alignItems: 'center', paddingVertical: Spacing.three },
   statValue: { fontSize: 26, lineHeight: 32, fontWeight: '800' },
   statLabel: { fontSize: 12, textAlign: 'center' },
