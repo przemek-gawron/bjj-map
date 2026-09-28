@@ -12,7 +12,7 @@ export const Colors = {
     text: '#1E1B4B',
     background: '#F7F5FF',
     backgroundElement: '#FFFFFF',
-    backgroundSelected: '#ECE8FB',
+    backgroundSelected: '#DAD2F7',
     textSecondary: '#6B6893',
     accent: '#6D28D9',
     /** Text and icons drawn on the accent color. */
