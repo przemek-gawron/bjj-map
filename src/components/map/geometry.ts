@@ -108,8 +108,9 @@ export function canvasBounds(layout: Layout) {
 
 /** Rows of the tidy layout, top to bottom; positions of other groups go last. */
 const GROUP_ROWS: PositionGroup[] = ['standing', 'open_guard', 'closed_guard', 'half_guard', 'side_control', 'mount', 'back'];
-const COL_GAP = 100;
-const ROW_GAP = 80;
+/** Wide enough for the arrows between the two columns to keep their labels apart. */
+const COL_GAP = 200;
+const ROW_GAP = 120;
 
 /**
  * A clean layout: neutral positions centred on top, then one row per position group with

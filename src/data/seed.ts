@@ -6,17 +6,17 @@ import type { Drill, Position, Technique } from './types';
  */
 
 export const seedPositions: Position[] = [
-  { id: 'standing', name: 'Stójka', group: 'standing', side: 'neutral', layout: { x: 142, y: 0 } },
-  { id: 'og_bottom', name: 'Open guard (dół)', group: 'open_guard', side: 'bottom', layout: { x: 0, y: 156 } },
-  { id: 'cg_bottom', name: 'Closed guard (dół)', group: 'closed_guard', side: 'bottom', layout: { x: 0, y: 312 } },
-  { id: 'half_bottom', name: 'Half guard (dół)', group: 'half_guard', side: 'bottom', layout: { x: 0, y: 468 } },
-  { id: 'side_bottom', name: 'Side control (dół)', group: 'side_control', side: 'bottom', layout: { x: 0, y: 624 } },
-  { id: 'mount_bottom', name: 'Mount (dół)', group: 'mount', side: 'bottom', layout: { x: 0, y: 780 } },
-  { id: 'og_top', name: 'Open guard (góra)', group: 'open_guard', side: 'top', layout: { x: 284, y: 156 } },
-  { id: 'cg_top', name: 'Closed guard (góra)', group: 'closed_guard', side: 'top', layout: { x: 284, y: 312 } },
-  { id: 'side_top', name: 'Side control (góra)', group: 'side_control', side: 'top', layout: { x: 284, y: 624 } },
-  { id: 'mount_top', name: 'Mount (góra)', group: 'mount', side: 'top', layout: { x: 284, y: 780 } },
-  { id: 'back_top', name: 'Plecy (góra)', group: 'back', side: 'top', layout: { x: 284, y: 936 } },
+  { id: 'standing', name: 'Stójka', group: 'standing', side: 'neutral', layout: { x: 192, y: 0 } },
+  { id: 'og_bottom', name: 'Open guard (dół)', group: 'open_guard', side: 'bottom', layout: { x: 0, y: 196 } },
+  { id: 'cg_bottom', name: 'Closed guard (dół)', group: 'closed_guard', side: 'bottom', layout: { x: 0, y: 392 } },
+  { id: 'half_bottom', name: 'Half guard (dół)', group: 'half_guard', side: 'bottom', layout: { x: 0, y: 588 } },
+  { id: 'side_bottom', name: 'Side control (dół)', group: 'side_control', side: 'bottom', layout: { x: 0, y: 784 } },
+  { id: 'mount_bottom', name: 'Mount (dół)', group: 'mount', side: 'bottom', layout: { x: 0, y: 980 } },
+  { id: 'og_top', name: 'Open guard (góra)', group: 'open_guard', side: 'top', layout: { x: 384, y: 196 } },
+  { id: 'cg_top', name: 'Closed guard (góra)', group: 'closed_guard', side: 'top', layout: { x: 384, y: 392 } },
+  { id: 'side_top', name: 'Side control (góra)', group: 'side_control', side: 'top', layout: { x: 384, y: 784 } },
+  { id: 'mount_top', name: 'Mount (góra)', group: 'mount', side: 'top', layout: { x: 384, y: 980 } },
+  { id: 'back_top', name: 'Plecy (góra)', group: 'back', side: 'top', layout: { x: 384, y: 1176 } },
 ];
 
 const technique = (t: Omit<Technique, 'status'>): Technique => ({ ...t, status: 'seen' });
