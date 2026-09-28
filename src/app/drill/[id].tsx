@@ -91,6 +91,12 @@ export default function DrillScreen() {
           </View>
         )}
 
+        {drill.notes && (
+          <ThemedText type="small" style={styles.notes}>
+            {drill.notes}
+          </ThemedText>
+        )}
+
         <Pressable
           onPress={() => Linking.openURL(drill.videoUrl ?? youtubeSearch(drill.name))}
           style={({ pressed }) => [styles.videoButton, !drill.videoUrl && styles.videoSearch, pressed && styles.pressed]}>
@@ -140,12 +146,6 @@ export default function DrillScreen() {
           </ThemedView>
         )}
 
-        {drill.notes && (
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="smallBold">{tr.drills.notes}</ThemedText>
-            <ThemedText type="small">{drill.notes}</ThemedText>
-          </ThemedView>
-        )}
       </ScrollView>
     </ThemedView>
   );
@@ -158,6 +158,7 @@ const styles = StyleSheet.create({
   content: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', padding: Spacing.three, gap: Spacing.two },
   name: { fontSize: 24, lineHeight: 30, marginBottom: Spacing.one },
   links: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.one },
+  notes: { lineHeight: 21 },
   videoButton: { backgroundColor: '#EF4444', borderRadius: 12, paddingVertical: 12, alignItems: 'center', marginTop: Spacing.two },
   videoText: { color: '#FFFFFF' },
   // no video of its own: an outlined search button instead of a filled "watch" one

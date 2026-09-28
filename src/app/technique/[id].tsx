@@ -73,6 +73,12 @@ export default function TechniqueScreen() {
         </ThemedText>
         <StatusChip status={technique.status} onChange={(next) => setStatus(technique.id, next)} />
 
+        {technique.notes && (
+          <ThemedText type="small" style={styles.notes}>
+            {technique.notes}
+          </ThemedText>
+        )}
+
         <Pressable
           onPress={() => Linking.openURL(technique.videoUrl ?? youtubeSearch(technique.name))}
           style={({ pressed }) => [styles.videoButton, !technique.videoUrl && styles.videoSearch, pressed && styles.pressed]}>
@@ -147,12 +153,6 @@ export default function TechniqueScreen() {
           </Pressable>
         </ThemedView>
 
-        {technique.notes && (
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="smallBold">{tr.techniques.notes}</ThemedText>
-            <ThemedText type="small">{technique.notes}</ThemedText>
-          </ThemedView>
-        )}
       </ScrollView>
     </ThemedView>
   );
@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   content: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', padding: Spacing.three, gap: Spacing.two },
   path: { fontSize: 24, lineHeight: 30, marginBottom: Spacing.one },
+  notes: { lineHeight: 21 },
   videoButton: { backgroundColor: '#EF4444', borderRadius: 12, paddingVertical: 12, alignItems: 'center', marginTop: Spacing.two },
   videoText: { color: '#FFFFFF' },
   // no video of its own: an outlined search button instead of a filled "watch" one
