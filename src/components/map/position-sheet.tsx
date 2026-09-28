@@ -1,10 +1,10 @@
 import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
 import { PositionIllustration } from '@/components/position-illustration';
 import { StatusChip } from '@/components/status-chip';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useStore } from '@/data/store';
 import type { Position, Technique } from '@/data/types';
@@ -55,7 +55,10 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
 
   return (
     // border keeps the sheet visible in dark mode, where the shadow disappears
-    <ThemedView style={[styles.sheet, { bottom, shadowColor: '#000', borderColor: theme.backgroundSelected }]}>
+    <Animated.View
+      entering={FadeInDown.duration(220)}
+      exiting={FadeOutDown.duration(180)}
+      style={[styles.sheet, { bottom, shadowColor: '#000', borderColor: theme.backgroundSelected, backgroundColor: theme.background }]}>
       <View style={styles.head}>
         <PositionIllustration position={position} width={96} height={67} />
         <View style={styles.flex}>
@@ -109,7 +112,7 @@ export function PositionSheet({ position, bottom, onClose }: Props) {
           </>
         )}
       </ScrollView>
-    </ThemedView>
+    </Animated.View>
   );
 }
 

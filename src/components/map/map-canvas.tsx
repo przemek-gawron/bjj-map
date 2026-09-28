@@ -163,14 +163,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
             </Svg>
 
             {edges.map(({ technique: t, label }) => (
-              <View
-                key={t.id}
-                pointerEvents="none"
-                style={[styles.edgeLabel, { left: label.x - 70, top: label.y - 8, opacity: isTechniqueActive(t) ? 1 : 0.15 }]}>
-                <Text numberOfLines={1} style={[styles.edgeLabelText, { color: STATUS_COLOR[t.status], backgroundColor: theme.background }]}>
-                  {t.name}
-                </Text>
-              </View>
+              <EdgeLabel key={t.id} technique={t} x={label.x} y={label.y} active={isTechniqueActive(t)} />
             ))}
 
             {positions.map((p) => (
@@ -212,6 +205,24 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
   );
 }
 
+/** Fades with the filters instead of snapping between visible and dimmed. */
+function useFade(active: boolean, dimmed: number) {
+  return useAnimatedStyle(() => ({ opacity: withTiming(active ? 1 : dimmed, { duration: 200 }) }), [active, dimmed]);
+}
+
+function EdgeLabel({ technique: t, x, y, active }: { technique: Technique; x: number; y: number; active: boolean }) {
+  const theme = useTheme();
+  const fade = useFade(active, 0.15);
+
+  return (
+    <Animated.View pointerEvents="none" style={[styles.edgeLabel, { left: x - 70, top: y - 8 }, fade]}>
+      <Text numberOfLines={1} style={[styles.edgeLabelText, { color: STATUS_COLOR[t.status], backgroundColor: theme.background }]}>
+        {t.name}
+      </Text>
+    </Animated.View>
+  );
+}
+
 type NodeProps = {
   position: Position;
   x: number;
@@ -230,6 +241,7 @@ function MapNode({ position, x, y, active, selected, submissions, isTechniqueAct
   const theme = useTheme();
   const { id } = position;
   const origin = useSharedValue({ x: 0, y: 0 });
+  const fade = useFade(active, 0.3);
 
   const gesture = useMemo(() => {
     const at = (e: { translationX: number; translationY: number }) => {
@@ -262,7 +274,7 @@ function MapNode({ position, x, y, active, selected, submissions, isTechniqueAct
 
   return (
     <GestureDetector gesture={gesture}>
-      <View
+      <Animated.View
         accessibilityRole="button"
         accessibilityLabel={position.name}
         style={[
@@ -272,9 +284,9 @@ function MapNode({ position, x, y, active, selected, submissions, isTechniqueAct
             top: y,
             borderColor: selected ? theme.accent : SIDE_COLOR[position.side],
             backgroundColor: selected ? theme.backgroundSelected : theme.background,
-            opacity: active ? 1 : 0.3,
           },
           selected && styles.nodeSelected,
+          fade,
         ]}>
         <PositionIllustration position={position} width={64} height={45} />
         <View style={styles.nodeBody}>
@@ -293,7 +305,7 @@ function MapNode({ position, x, y, active, selected, submissions, isTechniqueAct
             </View>
           )}
         </View>
-      </View>
+      </Animated.View>
     </GestureDetector>
   );
 }
