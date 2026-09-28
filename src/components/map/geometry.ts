@@ -34,59 +34,103 @@ const LABEL_H = 16;
 const labelWidth = (name: string) => Math.min(140, name.length * 6.4 + 8);
 
 /** Points along the curve tried for the label, preferring the middle. */
-const LABEL_TS = [0.5, 0.38, 0.62, 0.28, 0.72, 0.2, 0.8];
+const LABEL_TS = [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82];
 
 const bezier = (s: Point, c: Point, e: Point, t: number): Point => ({
   x: (1 - t) ** 2 * s.x + 2 * (1 - t) * t * c.x + t ** 2 * e.x,
   y: (1 - t) ** 2 * s.y + 2 * (1 - t) * t * c.y + t ** 2 * e.y,
 });
 
+/** Points along a curve, used to keep labels off other arrows and arrows out of other nodes. */
+const samples = (s: Point, c: Point, e: Point, n = 24) =>
+  Array.from({ length: n - 1 }, (_, i) => bezier(s, c, e, (i + 1) / n));
+
+const inside = (p: Point, r: Rect, margin = 0) =>
+  p.x > r.x - margin && p.x < r.x + r.w + margin && p.y > r.y - margin && p.y < r.y + r.h + margin;
+
+/** Extra bend tried, in order, when an arrow would run through another node. */
+const BEND_STEPS = [1, 2.2, 3.4, 4.6, 6, 7.5];
+/** Cost of an arrow's line crossing a label, per sampled point (vs. area for overlaps). */
+const LINE_COST = 40;
+
+type Curve = { technique: Technique; start: Point; c: Point; end: Point };
+
 /**
  * Curved arrows between node boxes. Techniques between the same two positions (either
- * direction) fan out alternately to either side so they don't overlap, and each label
- * slides along its curve to the spot least covered by nodes and earlier labels.
+ * direction) fan out side by side so they don't overlap. A pair whose arrow would cut
+ * through another node (or out past the map's sides) bends the other way or further
+ * round it, and each label slides along
+ * its curve to the spot least covered by nodes, earlier labels and other arrows.
  */
 export function buildEdges(techniques: Technique[], layout: Layout): Edge[] {
   const seen: Record<string, number> = {};
-  const edges: Edge[] = [];
-  const taken: Rect[] = Object.values(layout).map((p) => ({ x: p.x, y: p.y, w: NODE_W, h: NODE_H }));
+  // bend side and strength picked for each pair of positions, shared by all its arrows
+  const choice: Record<string, { side: number; step: number }> = {};
+  const nodes = Object.entries(layout).map(([id, p]) => ({ id, rect: { x: p.x, y: p.y, w: NODE_W, h: NODE_H } }));
+  // arrows bulging past the outermost nodes get cut off at the canvas edge (and off screen)
+  const minX = Math.min(...nodes.map((n) => n.rect.x));
+  const maxX = Math.max(...nodes.map((n) => n.rect.x + n.rect.w));
 
-  for (const t of techniques) {
-    if (!t.to || !layout[t.from] || !layout[t.to]) continue;
-    const [p, q] = [t.from, t.to].sort();
-    const key = `${p}|${q}`;
-    const i = (seen[key] = (seen[key] ?? -1) + 1);
+  const curves: Curve[] = techniques
+    .filter((t) => t.to && layout[t.from] && layout[t.to])
+    .map((t) => {
+      const [p, q] = [t.from, t.to!].sort();
+      const key = `${p}|${q}`;
+      const i = (seen[key] = (seen[key] ?? -1) + 1);
 
-    const a = center(layout[t.from]);
-    const b = center(layout[t.to]);
-    // bend relative to a direction shared by both A → B and B → A, otherwise
-    // opposite arrows would bend onto the very same curve
-    const n0 = center(layout[p]);
-    const n1 = center(layout[q]);
-    const dx = n1.x - n0.x;
-    const dy = n1.y - n0.y;
-    const len = Math.hypot(dx, dy) || 1;
-    // 0 → +40, 1 → -40, 2 → +90, 3 → -90 …
-    const bend = (i % 2 === 0 ? 1 : -1) * (40 + Math.floor(i / 2) * 50);
-    const c = { x: (a.x + b.x) / 2 - (dy / len) * bend, y: (a.y + b.y) / 2 + (dx / len) * bend };
+      const a = center(layout[t.from]);
+      const b = center(layout[t.to!]);
+      // bend relative to a direction shared by both A → B and B → A, otherwise
+      // opposite arrows would bend onto the very same curve
+      const n0 = center(layout[p]);
+      const n1 = center(layout[q]);
+      const dx = n1.x - n0.x;
+      const dy = n1.y - n0.y;
+      const len = Math.hypot(dx, dy) || 1;
+      // arrows of one pair fan out on the same side, each further out: 40, 90, 140 …
+      const bendBy = 40 + i * 50;
+      const curve = (side: number, step: number): Curve => {
+        const bend = bendBy * step * side;
+        const c = { x: (a.x + b.x) / 2 - (dy / len) * bend, y: (a.y + b.y) / 2 + (dx / len) * bend };
+        return { technique: t, start: boxEntry(a, c), c, end: boxEntry(b, c, 10) };
+      };
 
-    const start = boxEntry(a, c);
-    const end = boxEntry(b, c, 10);
+      if (!choice[key]) {
+        const others = nodes.filter((n) => n.id !== p && n.id !== q);
+        const hitsOf = ({ start, c, end }: Curve) =>
+          samples(start, c, end).filter((pt) => pt.x < minX || pt.x > maxX || others.some((n) => inside(pt, n.rect, 8))).length;
+        let best = { side: 1, step: 1, hits: Infinity };
+        search: for (const step of BEND_STEPS) {
+          for (const side of [1, -1]) {
+            const hits = hitsOf(curve(side, step));
+            if (hits < best.hits) best = { side, step, hits };
+            if (hits === 0) break search;
+          }
+        }
+        choice[key] = best;
+      }
+      return curve(choice[key].side, choice[key].step);
+    });
 
+  const lines = curves.map((cv) => samples(cv.start, cv.c, cv.end, 32));
+  const taken: Rect[] = nodes.map((n) => n.rect);
+
+  return curves.map(({ technique: t, start, c, end }, k) => {
     const w = labelWidth(t.name);
     let best = { point: bezier(start, c, end, 0.5), cost: Infinity };
     for (const lt of LABEL_TS) {
       const point = bezier(start, c, end, lt);
       const rect = { x: point.x - w / 2, y: point.y - LABEL_H / 2, w, h: LABEL_H };
-      const cost = taken.reduce((sum, r) => sum + overlap(rect, r), 0);
+      let cost = taken.reduce((sum, r) => sum + overlap(rect, r), 0);
+      lines.forEach((line, j) => {
+        if (j !== k) cost += line.filter((pt) => inside(pt, rect)).length * LINE_COST;
+      });
       if (cost < best.cost) best = { point, cost };
       if (cost === 0) break;
     }
     taken.push({ x: best.point.x - w / 2, y: best.point.y - LABEL_H / 2, w, h: LABEL_H });
-
-    edges.push({ technique: t, d: `M ${start.x} ${start.y} Q ${c.x} ${c.y} ${end.x} ${end.y}`, label: best.point });
-  }
-  return edges;
+    return { technique: t, d: `M ${start.x} ${start.y} Q ${c.x} ${c.y} ${end.x} ${end.y}`, label: best.point };
+  });
 }
 
 /**
