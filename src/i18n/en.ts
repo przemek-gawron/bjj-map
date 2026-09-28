@@ -151,6 +151,8 @@ export const en: Dict = {
     note: 'Note',
     notePlaceholder: 'What do you want to remember?',
     deleteButton: 'Delete training',
+    allTime: 'All time',
+    since: (date: string) => `since ${date}`,
     month: 'Month',
     year: 'Year',
     sessionsLabel: (n: number) => enPlural(n, 'training', 'trainings'),

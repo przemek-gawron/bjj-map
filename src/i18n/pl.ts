@@ -153,6 +153,8 @@ export const pl = {
     note: 'Notatka',
     notePlaceholder: 'Co zapamiętać z treningu?',
     deleteButton: 'Usuń trening',
+    allTime: 'Łącznie',
+    since: (date: string) => `od ${date}`,
     month: 'Miesiąc',
     year: 'Rok',
     sessionsLabel: (n: number) => plPlural(n, 'trening', 'treningi', 'treningów'),

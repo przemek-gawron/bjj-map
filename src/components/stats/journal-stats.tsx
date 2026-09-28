@@ -11,7 +11,7 @@ import { Segmented } from '@/components/segmented';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { monthGrid, shortMonthLabel, toDateKey } from '@/data/dates';
+import { monthGrid, shortDate, shortMonthLabel, toDateKey } from '@/data/dates';
 import { formatHours, HOURS_PER_SESSION, periodStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
@@ -35,6 +35,8 @@ export function JournalStats() {
 
   const prefix = period === 'month' ? month : String(year);
   const stats = periodStats(sessions, prefix);
+  const total = periodStats(sessions, '');
+  const firstDate = sessions.reduce<string | undefined>((min, s) => (!min || s.date < min ? s.date : min), undefined);
   const trainingDays = new Set(sessions.map((s) => s.date));
   const hoursOn = (days: (string | null)[]) => days.filter((d) => d && trainingDays.has(d)).length * HOURS_PER_SESSION;
 
@@ -60,6 +62,24 @@ export function JournalStats() {
 
   return (
     <View style={styles.root}>
+      <ThemedView type="backgroundElement" style={styles.totalCard}>
+        <View style={styles.totalHead}>
+          <ThemedText type="smallBold" themeColor="textSecondary" style={styles.totalTitle}>
+            {tr.journal.allTime}
+          </ThemedText>
+          {firstDate && (
+            <ThemedText type="small" themeColor="textSecondary">
+              {tr.journal.since(`${shortDate(firstDate)}.${firstDate.slice(0, 4)}`)}
+            </ThemedText>
+          )}
+        </View>
+        <View style={styles.totalRow}>
+          <Stat value={String(total.sessions)} label={tr.journal.sessionsLabel(total.sessions)} accent />
+          <Stat value={formatHours(total.hours)} label={tr.journal.hoursLabel} accent />
+          <Stat value={String(total.techniques.length)} label={tr.journal.techniquesLabel(total.techniques.length)} accent />
+        </View>
+      </ThemedView>
+
       <Segmented
         options={[
           { value: 'month', label: tr.journal.month },
@@ -147,10 +167,12 @@ export function JournalStats() {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
+function Stat({ value, label, accent }: { value: string; label: string; accent?: boolean }) {
   return (
     <View style={styles.stat}>
-      <ThemedText style={styles.statValue}>{value}</ThemedText>
+      <ThemedText themeColor={accent ? 'accent' : 'text'} style={styles.statValue}>
+        {value}
+      </ThemedText>
       <ThemedText type="small" themeColor="textSecondary" style={styles.statLabel}>
         {label}
       </ThemedText>
@@ -160,6 +182,10 @@ function Stat({ value, label }: { value: string; label: string }) {
 
 const styles = StyleSheet.create({
   root: { gap: Spacing.two, marginTop: Spacing.three },
+  totalCard: { borderRadius: 14, paddingTop: Spacing.three, paddingHorizontal: Spacing.three, marginBottom: Spacing.two },
+  totalHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
+  totalTitle: { textTransform: 'uppercase', fontSize: 12 },
+  totalRow: { flexDirection: 'row' },
   flex: { flex: 1 },
   card: { borderRadius: 14, padding: Spacing.three, marginTop: Spacing.two },
   yearHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.two },
