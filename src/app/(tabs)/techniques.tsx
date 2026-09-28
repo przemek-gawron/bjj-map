@@ -5,7 +5,9 @@ import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanim
 
 import { AddButton } from '@/components/add-button';
 import { Chip } from '@/components/chip';
+import { DrillList } from '@/components/drill-list';
 import { Screen } from '@/components/screen';
+import { Segmented } from '@/components/segmented';
 import { StatusChip } from '@/components/status-chip';
 import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
@@ -32,6 +34,7 @@ export default function TechniquesScreen() {
   const setStatus = useStore((s) => s.setStatus);
   const removeTechnique = useStore((s) => s.removeTechnique);
 
+  const [view, setView] = useState<'techniques' | 'drills'>('techniques');
   const [statusFilter, setStatusFilter] = useState<Status | null>(null);
   const [typeFilter, setTypeFilter] = useState<TechniqueType | null>(null);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
@@ -45,106 +48,127 @@ export default function TechniquesScreen() {
     <Screen
       title={tr.techniques.title}
       action={
-        <AddButton onPress={() => router.push('/technique/form')} accessibilityLabel={tr.techniques.add} />
+        view === 'drills' ? (
+          <AddButton onPress={() => router.push('/drill/form')} accessibilityLabel={tr.drills.add} />
+        ) : (
+          <AddButton onPress={() => router.push('/technique/form')} accessibilityLabel={tr.techniques.add} />
+        )
       }>
-      <View style={styles.progress}>
-        {counts.map(({ status, n }) => (
-          <View key={status} style={{ flex: n, backgroundColor: STATUS_COLOR[status] }} />
-        ))}
-      </View>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.summary}>
-        {tr.techniques.worksSummary(counts[0].n, techniques.length)}
-      </ThemedText>
+      <Segmented
+        options={[
+          { value: 'techniques', label: tr.techniques.title },
+          { value: 'drills', label: tr.drills.title },
+        ]}
+        value={view}
+        onChange={setView}
+      />
 
-      <View style={styles.chips}>
-        {counts.map(({ status, n }) => (
-          <Chip
-            key={status}
-            label={`${tr.status[status]} · ${n}`}
-            color={STATUS_COLOR[status]}
-            selected={statusFilter === status}
-            onPress={() => setStatusFilter(statusFilter === status ? null : status)}
-          />
-        ))}
-      </View>
-      <View style={styles.chips}>
-        {TYPES.map((type) => (
-          <Chip
-            key={type}
-            small
-            label={tr.type[type]}
-            selected={typeFilter === type}
-            onPress={() => setTypeFilter(typeFilter === type ? null : type)}
-          />
-        ))}
-      </View>
+      {view === 'drills' ? (
+        <Animated.View key="drills" entering={FadeIn.duration(200)}>
+          <DrillList />
+        </Animated.View>
+      ) : (
+        <Animated.View key="techniques" entering={FadeIn.duration(200)}>
+          <View style={styles.progress}>
+            {counts.map(({ status, n }) => (
+              <View key={status} style={{ flex: n, backgroundColor: STATUS_COLOR[status] }} />
+            ))}
+          </View>
+          <ThemedText type="small" themeColor="textSecondary" style={styles.summary}>
+            {tr.techniques.worksSummary(counts[0].n, techniques.length)}
+          </ThemedText>
 
-      {positions.map((p) => {
-        const list = visible.filter((t) => t.from === p.id);
-        if (filtering && list.length === 0) return null;
-        const all = techniques.filter((t) => t.from === p.id);
-        const open = filtering || !collapsed[p.id];
+          <View style={styles.chips}>
+            {counts.map(({ status, n }) => (
+              <Chip
+                key={status}
+                label={`${tr.status[status]} · ${n}`}
+                color={STATUS_COLOR[status]}
+                selected={statusFilter === status}
+                onPress={() => setStatusFilter(statusFilter === status ? null : status)}
+              />
+            ))}
+          </View>
+          <View style={styles.chips}>
+            {TYPES.map((type) => (
+              <Chip
+                key={type}
+                small
+                label={tr.type[type]}
+                selected={typeFilter === type}
+                onPress={() => setTypeFilter(typeFilter === type ? null : type)}
+              />
+            ))}
+          </View>
 
-        return (
-          <Animated.View
-            key={p.id}
-            layout={LinearTransition.duration(220)}
-            entering={FadeIn.duration(200)}
-            exiting={FadeOut.duration(180)}
-            style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
-            <Pressable style={styles.cardHead} onPress={() => setCollapsed({ ...collapsed, [p.id]: !collapsed[p.id] })}>
-              <View style={[styles.sideBar, { backgroundColor: SIDE_COLOR[p.side] }]} />
-              <View style={styles.flex}>
-                <ThemedText type="smallBold" style={styles.positionName}>
-                  {p.name}
-                </ThemedText>
-                <ThemedText type="small" themeColor="textSecondary">
-                  {tr.techniques.positionSummary(all.length, all.filter((t) => t.status === 'works').length)}
-                </ThemedText>
-              </View>
-              <ThemedText themeColor="textSecondary">{open ? '▾' : '▸'}</ThemedText>
-            </Pressable>
+          {positions.map((p) => {
+            const list = visible.filter((t) => t.from === p.id);
+            if (filtering && list.length === 0) return null;
+            const all = techniques.filter((t) => t.from === p.id);
+            const open = filtering || !collapsed[p.id];
 
-            {open &&
-              list.map((t) => {
-                const s = stats.get(t.id);
-                return (
-                  <SwipeToDelete
-                    key={t.id}
-                    onDelete={() =>
-                      confirm(tr.techniques.deleteTitle, tr.techniques.deleteMessage(t.name), tr.common.delete, () => removeTechnique(t.id))
-                    }
-                    style={[styles.rowContainer, { borderColor: theme.backgroundSelected }]}>
-                    <Pressable
-                      onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}
-                      // opaque (also when pressed), so the delete button stays hidden until swiped
-                      style={({ pressed }) => [styles.row, { backgroundColor: pressed ? theme.backgroundSelected : theme.backgroundElement }]}>
-                      <View style={styles.flex}>
-                        <ThemedText type="smallBold">{t.name}</ThemedText>
-                        <ThemedText type="small" themeColor="textSecondary">
-                          {tr.type[t.type]}
-                          {t.to ? ' → ' + positions.find((x) => x.id === t.to)?.name : ''}
-                          {s ? ` · ${s.count}× · ${relativeDay(s.lastDate!)}` : ` · ${tr.techniques.notTrained}`}
-                        </ThemedText>
-                      </View>
-                      <StatusChip small status={t.status} onChange={(next) => setStatus(t.id, next)} />
-                    </Pressable>
-                  </SwipeToDelete>
-                );
-              })}
-            {open && all.length === 0 && (
-              <ThemedText type="small" themeColor="textSecondary" style={styles.empty}>
-                {tr.techniques.noneFromPosition}
-              </ThemedText>
-            )}
-          </Animated.View>
-        );
-      })}
+            return (
+              <Animated.View
+                key={p.id}
+                layout={LinearTransition.duration(220)}
+                entering={FadeIn.duration(200)}
+                exiting={FadeOut.duration(180)}
+                style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
+                <Pressable style={styles.cardHead} onPress={() => setCollapsed({ ...collapsed, [p.id]: !collapsed[p.id] })}>
+                  <View style={[styles.sideBar, { backgroundColor: SIDE_COLOR[p.side] }]} />
+                  <View style={styles.flex}>
+                    <ThemedText type="smallBold" style={styles.positionName}>
+                      {p.name}
+                    </ThemedText>
+                    <ThemedText type="small" themeColor="textSecondary">
+                      {tr.techniques.positionSummary(all.length, all.filter((t) => t.status === 'works').length)}
+                    </ThemedText>
+                  </View>
+                  <ThemedText themeColor="textSecondary">{open ? '▾' : '▸'}</ThemedText>
+                </Pressable>
 
-      {filtering && visible.length === 0 && (
-        <ThemedText themeColor="textSecondary" style={styles.empty}>
-          {tr.techniques.noneForFilters}
-        </ThemedText>
+                {open &&
+                  list.map((t) => {
+                    const s = stats.get(t.id);
+                    return (
+                      <SwipeToDelete
+                        key={t.id}
+                        onDelete={() =>
+                          confirm(tr.techniques.deleteTitle, tr.techniques.deleteMessage(t.name), tr.common.delete, () => removeTechnique(t.id))
+                        }
+                        style={[styles.rowContainer, { borderColor: theme.backgroundSelected }]}>
+                        <Pressable
+                          onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}
+                          // opaque (also when pressed), so the delete button stays hidden until swiped
+                          style={({ pressed }) => [styles.row, { backgroundColor: pressed ? theme.backgroundSelected : theme.backgroundElement }]}>
+                          <View style={styles.flex}>
+                            <ThemedText type="smallBold">{t.name}</ThemedText>
+                            <ThemedText type="small" themeColor="textSecondary">
+                              {tr.type[t.type]}
+                              {t.to ? ' → ' + positions.find((x) => x.id === t.to)?.name : ''}
+                              {s ? ` · ${s.count}× · ${relativeDay(s.lastDate!)}` : ` · ${tr.techniques.notTrained}`}
+                            </ThemedText>
+                          </View>
+                          <StatusChip small status={t.status} onChange={(next) => setStatus(t.id, next)} />
+                        </Pressable>
+                      </SwipeToDelete>
+                    );
+                  })}
+                {open && all.length === 0 && (
+                  <ThemedText type="small" themeColor="textSecondary" style={styles.empty}>
+                    {tr.techniques.noneFromPosition}
+                  </ThemedText>
+                )}
+              </Animated.View>
+            );
+          })}
+
+          {filtering && visible.length === 0 && (
+            <ThemedText themeColor="textSecondary" style={styles.empty}>
+              {tr.techniques.noneForFilters}
+            </ThemedText>
+          )}
+        </Animated.View>
       )}
     </Screen>
   );
@@ -152,7 +176,7 @@ export default function TechniquesScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  progress: { flexDirection: 'row', height: 8, borderRadius: 4, overflow: 'hidden' },
+  progress: { flexDirection: 'row', height: 8, marginTop: Spacing.three, borderRadius: 4, overflow: 'hidden' },
   summary: { marginTop: Spacing.two, marginBottom: Spacing.three },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, marginBottom: Spacing.two },
   card: { borderRadius: 14, marginTop: Spacing.two, overflow: 'hidden' },

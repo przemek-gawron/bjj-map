@@ -108,6 +108,12 @@ export const en: Dict = {
   drills: {
     title: 'Drills',
     add: 'Add drill',
+    search: 'Search drills…',
+    notDone: 'not done yet',
+    noLinks: 'no positions',
+    empty: 'No drills yet. Tap + to add the first one.',
+    noneForSearch: 'No drill matches.',
+    summary: (n: number) => `${n} solo ${enPlural(n, 'drill', 'drills')} for your positions and techniques`,
     solo: 'Solo drill',
     newTitle: 'New drill',
     editTitle: 'Edit drill',

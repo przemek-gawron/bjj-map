@@ -110,6 +110,12 @@ export const pl = {
   drills: {
     title: 'Drille',
     add: 'Dodaj drill',
+    search: 'Szukaj drilla…',
+    notDone: 'nie robiony',
+    noLinks: 'bez pozycji',
+    empty: 'Brak drilli. Dotknij +, żeby dodać pierwszy.',
+    noneForSearch: 'Żaden drill nie pasuje.',
+    summary: (n: number) => `${n} ${plPlural(n, 'drill', 'drille', 'drilli')} solo do Twoich pozycji i technik`,
     solo: 'Drill solo',
     newTitle: 'Nowy drill',
     editTitle: 'Edytuj drill',
