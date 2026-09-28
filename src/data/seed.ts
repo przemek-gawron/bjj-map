@@ -1,4 +1,4 @@
-import type { Position, Technique } from './types';
+import type { Drill, Position, Technique } from './types';
 
 /**
  * Starter white-belt map loaded on first launch. Everything starts as "seen".
@@ -43,4 +43,22 @@ export const seedTechniques: Technique[] = [
   technique({ id: 'armbar_mount', name: 'Armbar z mount', type: 'submission', from: 'mount_top', to: null }),
   technique({ id: 'take_back', name: 'Wejście na plecy', type: 'transition', from: 'mount_top', to: 'back_top' }),
   technique({ id: 'rnc', name: 'RNC', type: 'submission', from: 'back_top', to: null }),
+];
+
+const drill = (d: Omit<Drill, 'techniqueIds'> & { techniqueIds?: string[] }): Drill => ({ techniqueIds: [], ...d });
+
+/** Classic solo drills, linked to the starter positions and techniques they build. */
+export const seedDrills: Drill[] = [
+  drill({ id: 'drill_shrimp', name: 'Shrimp (krewetka)', dose: '3×10', positionIds: ['side_bottom', 'mount_bottom', 'half_bottom'], techniqueIds: ['shrimp', 'elbow_knee'] }),
+  drill({ id: 'drill_bridge', name: 'Mostek (bridge)', dose: '3×10', positionIds: ['mount_bottom', 'side_bottom'], techniqueIds: ['upa'] }),
+  drill({ id: 'drill_standup', name: 'Technical stand-up', dose: '3×10', positionIds: ['og_bottom', 'standing'] }),
+  drill({ id: 'drill_granby', name: 'Granby roll', dose: '3×5', positionIds: ['og_bottom'] }),
+  drill({ id: 'drill_back_roll', name: 'Przewrót w tył przez bark', dose: '3×5', positionIds: ['og_bottom'] }),
+  drill({ id: 'drill_forward_roll', name: 'Przewrót w przód przez bark', dose: '3×5', positionIds: ['standing'] }),
+  drill({ id: 'drill_sprawl', name: 'Sprawl', dose: '3×10', positionIds: ['standing'], techniqueIds: ['double_leg'] }),
+  drill({ id: 'drill_penetration', name: 'Penetration step', dose: '3×10', positionIds: ['standing'], techniqueIds: ['double_leg'] }),
+  drill({ id: 'drill_hip_up', name: 'Unoszenie bioder z gardy', dose: '3×10', positionIds: ['cg_bottom'], techniqueIds: ['hip_bump', 'armbar_guard', 'triangle'] }),
+  drill({ id: 'drill_leg_circles', name: 'Kręcenie nogami (utrzymanie gardy)', dose: '3×30 s', positionIds: ['og_bottom'], techniqueIds: ['close_guard'] }),
+  drill({ id: 'drill_hip_switch', name: 'Zmiana bioder (hip switch)', dose: '3×10', positionIds: ['side_top', 'mount_top'], techniqueIds: ['knee_slide'] }),
+  drill({ id: 'drill_knee_cut', name: 'Knee cut solo', dose: '3×10', positionIds: ['cg_top', 'og_top'], techniqueIds: ['knee_cut'] }),
 ];

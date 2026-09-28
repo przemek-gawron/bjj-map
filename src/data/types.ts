@@ -37,6 +37,21 @@ export type Technique = {
 };
 
 /**
+ * Solo exercise (shrimp, bridge, technical stand-up…) that builds the movement behind
+ * positions and techniques. Linked to any number of both; shown on the map with them.
+ */
+export type Drill = {
+  id: string;
+  name: string;
+  positionIds: string[];
+  techniqueIds: string[];
+  /** Free-form volume, e.g. "3×10" or "2 min". */
+  dose?: string;
+  videoUrl?: string;
+  notes?: string;
+};
+
+/**
  * One training day. The single source of truth for "when was X trained" —
  * counts, last-trained dates and future stats/reminders are derived from sessions.
  */
@@ -45,6 +60,7 @@ export type Session = {
   /** Local date, YYYY-MM-DD. */
   date: string;
   techniqueIds: string[];
+  drillIds?: string[];
   note?: string;
   /** Length of the training in minutes; unset counts as DEFAULT_SESSION_MINUTES. */
   durationMin?: number;
@@ -54,4 +70,5 @@ export type WeeklyPlan = {
   /** Monday of the planned week, YYYY-MM-DD. */
   weekStart: string;
   techniqueIds: string[];
+  drillIds?: string[];
 };

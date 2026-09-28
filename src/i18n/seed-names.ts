@@ -1,6 +1,6 @@
 import type { Language } from '.';
 
-import { seedPositions, seedTechniques } from '@/data/seed';
+import { seedDrills, seedPositions, seedTechniques } from '@/data/seed';
 
 const en: Record<string, string> = {
   // positions
@@ -37,15 +37,28 @@ const en: Record<string, string> = {
   armbar_mount: 'Armbar from mount',
   take_back: 'Taking the back',
   rnc: 'RNC',
+  // drills
+  drill_shrimp: 'Shrimp',
+  drill_bridge: 'Bridge',
+  drill_standup: 'Technical stand-up',
+  drill_granby: 'Granby roll',
+  drill_back_roll: 'Backward shoulder roll',
+  drill_forward_roll: 'Forward shoulder roll',
+  drill_sprawl: 'Sprawl',
+  drill_penetration: 'Penetration step',
+  drill_hip_up: 'Guard hip-ups',
+  drill_leg_circles: 'Leg circles (guard retention)',
+  drill_hip_switch: 'Hip switch',
+  drill_knee_cut: 'Solo knee cut',
 };
 
 // the seed itself is written in Polish
-const pl: Record<string, string> = Object.fromEntries([...seedPositions, ...seedTechniques].map((x) => [x.id, x.name]));
+const pl: Record<string, string> = Object.fromEntries([...seedPositions, ...seedTechniques, ...seedDrills].map((x) => [x.id, x.name]));
 
 const NAMES: Record<Language, Record<string, string>> = { pl, en };
 
 /**
- * Starter positions and techniques in `language`. Only names still matching a seed
+ * Starter positions, techniques and drills in `language`. Only names still matching a seed
  * name in either language are switched, so anything the user renamed stays as is.
  */
 export function localizeSeedNames<T extends { id: string; name: string }>(items: T[], language: Language): T[] {
