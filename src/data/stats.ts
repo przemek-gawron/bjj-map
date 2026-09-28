@@ -4,12 +4,18 @@ import type { Session } from './types';
 
 export type TrainingStats = { count: number; lastDate?: string; dates: string[] };
 
-/** Per-technique training history derived from sessions (newest date first). */
-export function trainingStats(sessions: Session[]): Map<string, TrainingStats> {
+/**
+ * Per-technique training history derived from sessions (newest date first).
+ * Pass `ids` to count something else a session holds, e.g. drills.
+ */
+export function trainingStats(
+  sessions: Session[],
+  ids: (s: Session) => string[] = (s) => s.techniqueIds
+): Map<string, TrainingStats> {
   const stats = new Map<string, TrainingStats>();
   const sorted = [...sessions].sort((a, b) => b.date.localeCompare(a.date));
   for (const session of sorted) {
-    for (const id of session.techniqueIds) {
+    for (const id of ids(session)) {
       const s = stats.get(id) ?? { count: 0, dates: [] };
       s.count += 1;
       s.lastDate ??= session.date;
@@ -19,6 +25,8 @@ export function trainingStats(sessions: Session[]): Map<string, TrainingStats> {
   }
   return stats;
 }
+
+export const drillIdsOf = (s: Session) => s.drillIds ?? [];
 
 /** Length assumed for trainings logged without one (e.g. ticked off in Techniki or Plan). */
 export const DEFAULT_SESSION_MINUTES = 90;

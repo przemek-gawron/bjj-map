@@ -10,7 +10,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { useLanguage, useT } from '@/i18n';
 
 /**
- * Tabs live in the (tabs) group. Technique screens sit on the root stack so they open
+ * Tabs live in the (tabs) group. Technique and drill screens sit on the root stack so they open
  * on top of whichever tab you came from (map, plan, list) and "back" returns there.
  */
 export default function RootLayout() {
@@ -50,6 +50,8 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="technique/[id]" options={{ title: '' }} />
           <Stack.Screen name="technique/form" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="drill/[id]" options={{ title: '' }} />
+          <Stack.Screen name="drill/form" options={{ presentation: 'modal' }} />
           <Stack.Screen name="settings" options={{ title: tr.settings.title }} />
         </Stack>
       </ThemeProvider>
