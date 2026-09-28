@@ -47,6 +47,9 @@ type Actions = {
 
 const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 
+/** A session left with no techniques and no note isn't a training any more. */
+const dropEmpty = (sessions: Session[]) => sessions.filter((x) => x.techniqueIds.length > 0 || x.note);
+
 const emptyPlan = (): WeeklyPlan => ({ weekStart: weekStartOf(toDateKey()), techniqueIds: [] });
 
 export const useStore = create<State & Actions>()(
@@ -67,7 +70,7 @@ export const useStore = create<State & Actions>()(
       removeTechnique: (id) =>
         set((s) => ({
           techniques: s.techniques.filter((t) => t.id !== id),
-          sessions: s.sessions.map((x) => ({ ...x, techniqueIds: x.techniqueIds.filter((t) => t !== id) })),
+          sessions: dropEmpty(s.sessions.map((x) => ({ ...x, techniqueIds: x.techniqueIds.filter((t) => t !== id) }))),
           plan: { ...s.plan, techniqueIds: s.plan.techniqueIds.filter((t) => t !== id) },
         })),
       setStatus: (id, status) => get().updateTechnique(id, { status }),
@@ -89,8 +92,8 @@ export const useStore = create<State & Actions>()(
         }),
       unlogTraining: (date, techniqueId) =>
         set((s) => ({
-          sessions: s.sessions.map((x) =>
-            x.date === date ? { ...x, techniqueIds: x.techniqueIds.filter((t) => t !== techniqueId) } : x
+          sessions: dropEmpty(
+            s.sessions.map((x) => (x.date === date ? { ...x, techniqueIds: x.techniqueIds.filter((t) => t !== techniqueId) } : x))
           ),
         })),
       saveSession: ({ id, date, techniqueIds, note }) =>
@@ -141,7 +144,7 @@ export const useStore = create<State & Actions>()(
     }),
     {
       name: 'bjj-map',
-      version: 3,
+      version: 4,
       storage: createJSONStorage(() => AsyncStorage),
       migrate: (persisted, version) => {
         const state = persisted as State;
@@ -166,6 +169,10 @@ export const useStore = create<State & Actions>()(
             return i === -1 ? seedPositions.length : i;
           };
           state.positions = [...state.positions].sort((a, b) => rank(a.id) - rank(b.id));
+        }
+        if (version < 4) {
+          // v4: unticking a day's last technique used to leave an empty session behind
+          state.sessions = dropEmpty(state.sessions);
         }
         return state;
       },
