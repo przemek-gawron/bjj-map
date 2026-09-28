@@ -15,15 +15,15 @@ export function AddButton({ onPress, accessibilityLabel }: Props) {
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       style={({ pressed }) => [styles.button, { backgroundColor: theme.accent }, pressed && styles.pressed]}>
-      <View style={styles.horizontal} />
-      <View style={styles.vertical} />
+      <View style={[styles.horizontal, { backgroundColor: theme.onAccent }]} />
+      <View style={[styles.vertical, { backgroundColor: theme.onAccent }]} />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   button: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  horizontal: { position: 'absolute', width: 16, height: 2.5, borderRadius: 1.25, backgroundColor: '#FFFFFF' },
-  vertical: { position: 'absolute', width: 2.5, height: 16, borderRadius: 1.25, backgroundColor: '#FFFFFF' },
+  horizontal: { position: 'absolute', width: 16, height: 2.5, borderRadius: 1.25 },
+  vertical: { position: 'absolute', width: 2.5, height: 16, borderRadius: 1.25 },
   pressed: { opacity: 0.7 },
 });

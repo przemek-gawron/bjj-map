@@ -93,7 +93,7 @@ export default function TechniqueScreen() {
               { backgroundColor: trainedOn.has(today) ? STATUS_COLOR.works : theme.accent },
               pressed && styles.pressed,
             ]}>
-            <ThemedText style={styles.todayText}>{trainedOn.has(today) ? tr.techniques.trainedToday : tr.techniques.trainToday}</ThemedText>
+            <ThemedText style={[styles.todayText, { color: trainedOn.has(today) ? '#FFFFFF' : theme.onAccent }]}>{trainedOn.has(today) ? tr.techniques.trainedToday : tr.techniques.trainToday}</ThemedText>
           </Pressable>
 
           <ThemedText type="small" themeColor="textSecondary" style={styles.label}>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   videoText: { color: '#FFFFFF' },
   card: { borderRadius: 14, padding: Spacing.three, gap: Spacing.one, marginTop: Spacing.two },
   todayButton: { borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: Spacing.two },
-  todayText: { color: '#FFFFFF', fontWeight: '700' },
+  todayText: { fontWeight: '700' },
   label: { marginTop: Spacing.two },
   days: { gap: Spacing.one, paddingVertical: Spacing.one },
   history: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.one, marginTop: Spacing.one },

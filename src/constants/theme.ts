@@ -15,6 +15,8 @@ export const Colors = {
     backgroundSelected: '#E0E1E6',
     textSecondary: '#60646C',
     accent: '#7C3AED',
+    /** Text and icons drawn on the accent color. */
+    onAccent: '#FFFFFF',
   },
   dark: {
     text: '#ffffff',
@@ -23,6 +25,7 @@ export const Colors = {
     backgroundSelected: '#2E3135',
     textSecondary: '#B0B4BA',
     accent: '#A78BFA',
+    onAccent: '#FFFFFF',
   },
 } as const;
 

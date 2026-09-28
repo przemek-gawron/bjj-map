@@ -66,7 +66,7 @@ export default function PlanScreen() {
           onPress={() => router.push('/plan/pick')}
           hitSlop={10}
           style={[styles.editButton, { backgroundColor: theme.accent }]}>
-          <ThemedText type="smallBold" style={styles.editButtonText}>
+          <ThemedText type="smallBold" style={{ color: theme.onAccent }}>
             {planned.length ? tr.plan.edit : tr.plan.choose}
           </ThemedText>
         </Pressable>
@@ -171,7 +171,6 @@ export default function PlanScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   editButton: { borderRadius: 20, paddingHorizontal: 16, paddingVertical: 9 },
-  editButtonText: { color: '#FFFFFF' },
   progressBox: { gap: Spacing.two, marginTop: Spacing.three, marginBottom: Spacing.one },
   progress: { flexDirection: 'row', height: 8, borderRadius: 4, overflow: 'hidden' },
   card: { borderRadius: 14, padding: 14, gap: Spacing.two, marginTop: Spacing.three },

@@ -81,7 +81,7 @@ export function MonthCalendar({ month, onMonthChange, marked, selected, onSelect
                   <Text
                     style={[
                       styles.dayText,
-                      { color: isSelected ? '#FFFFFF' : future ? theme.textSecondary : theme.text },
+                      { color: isSelected ? theme.onAccent : future ? theme.textSecondary : theme.text },
                       (isMarked || isSelected) && styles.bold,
                       future && styles.disabled,
                     ]}>
