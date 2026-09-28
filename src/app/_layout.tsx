@@ -30,6 +30,8 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             headerShadowVisible: false,
+            // Android left-aligns titles, which jams them against a "Cancel" button
+            headerTitleAlign: 'center',
             headerTintColor: theme.accent,
             headerStyle: { backgroundColor: theme.background },
             headerTitleStyle: { color: theme.text },

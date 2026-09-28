@@ -11,6 +11,7 @@ export default function PlanLayout() {
     <Stack
       screenOptions={{
         headerShadowVisible: false,
+        headerTitleAlign: 'center',
         headerTintColor: theme.accent,
         headerStyle: { backgroundColor: theme.background },
         headerTitleStyle: { color: theme.text },
