@@ -196,6 +196,8 @@ export const pl = {
     duration: 'Jak długo',
     practiced: (n: number) => `Co ćwiczyłeś · ${n}`,
     search: 'Szukaj techniki…',
+    drills: (n: number) => `Drille · ${n}`,
+    mostDrilled: 'Najczęściej robione drille',
     note: 'Notatka',
     notePlaceholder: 'Co zapamiętać z treningu?',
     deleteButton: 'Usuń trening',

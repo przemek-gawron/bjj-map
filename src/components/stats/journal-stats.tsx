@@ -27,6 +27,7 @@ export function JournalStats() {
   const tr = useT();
   const sessions = useStore((s) => s.sessions);
   const techniques = useStore((s) => s.techniques);
+  const drills = useStore((s) => s.drills);
 
   const today = toDateKey();
   const [period, setPeriod] = useState<Period>('month');
@@ -55,6 +56,8 @@ export function JournalStats() {
 
   const top = stats.techniques.slice(0, TOP_TECHNIQUES);
   const maxCount = top[0]?.count ?? 1;
+  const topDrills = stats.drills.slice(0, TOP_TECHNIQUES);
+  const maxDrillCount = topDrills[0]?.count ?? 1;
   const openDay = (day: string) => {
     const s = sessions.find((x) => x.date === day);
     if (s) router.push({ pathname: '/journal/entry', params: { id: s.id } });
@@ -143,27 +146,59 @@ export function JournalStats() {
       )}
       {top.map(({ id, count }) => {
         const t = techniques.find((x) => x.id === id);
-        if (!t) return null;
         return (
-          <Animated.View key={id} entering={FadeIn.duration(200)} exiting={FadeOut.duration(150)} layout={LinearTransition.duration(220)}>
-            <Pressable
+          t && (
+            <Rank
+              key={id}
+              name={t.name}
+              count={count}
+              max={maxCount}
               onPress={() => router.push({ pathname: '/technique/[id]', params: { id } })}
-              style={({ pressed }) => [styles.rank, pressed && styles.pressed]}>
-              <View style={styles.rankHead}>
-                <ThemedText type="small" numberOfLines={1} style={styles.flex}>
-                  {t.name}
-                </ThemedText>
-                <ThemedText type="smallBold">{count}×</ThemedText>
-              </View>
-              <View style={[styles.rankTrack, { backgroundColor: theme.backgroundElement }]}>
-                <View style={{ flex: count, backgroundColor: theme.accent, borderRadius: 3 }} />
-                <View style={{ flex: maxCount - count }} />
-              </View>
-            </Pressable>
-          </Animated.View>
+            />
+          )
+        );
+      })}
+
+      {topDrills.length > 0 && (
+        <ThemedText type="smallBold" themeColor="textSecondary" style={styles.section}>
+          {tr.journal.mostDrilled}
+        </ThemedText>
+      )}
+      {topDrills.map(({ id, count }) => {
+        const d = drills.find((x) => x.id === id);
+        return (
+          d && (
+            <Rank
+              key={id}
+              name={d.name}
+              count={count}
+              max={maxDrillCount}
+              onPress={() => router.push({ pathname: '/drill/[id]', params: { id } })}
+            />
+          )
         );
       })}
     </View>
+  );
+}
+
+function Rank({ name, count, max, onPress }: { name: string; count: number; max: number; onPress: () => void }) {
+  const theme = useTheme();
+  return (
+    <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(150)} layout={LinearTransition.duration(220)}>
+      <Pressable onPress={onPress} style={({ pressed }) => [styles.rank, pressed && styles.pressed]}>
+        <View style={styles.rankHead}>
+          <ThemedText type="small" numberOfLines={1} style={styles.flex}>
+            {name}
+          </ThemedText>
+          <ThemedText type="smallBold">{count}×</ThemedText>
+        </View>
+        <View style={[styles.rankTrack, { backgroundColor: theme.backgroundElement }]}>
+          <View style={{ flex: count, backgroundColor: theme.accent, borderRadius: 3 }} />
+          <View style={{ flex: max - count }} />
+        </View>
+      </Pressable>
+    </Animated.View>
   );
 }
 

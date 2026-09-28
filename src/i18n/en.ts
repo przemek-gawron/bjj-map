@@ -194,6 +194,8 @@ export const en: Dict = {
     duration: 'How long',
     practiced: (n: number) => `What you drilled · ${n}`,
     search: 'Search techniques…',
+    drills: (n: number) => `Drills · ${n}`,
+    mostDrilled: 'Most done drills',
     note: 'Note',
     notePlaceholder: 'What do you want to remember?',
     deleteButton: 'Delete training',

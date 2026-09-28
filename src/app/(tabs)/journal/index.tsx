@@ -26,6 +26,7 @@ export default function JournalScreen() {
   const tr = useT();
   const sessions = useStore((s) => s.sessions);
   const techniques = useStore((s) => s.techniques);
+  const drills = useStore((s) => s.drills);
   const removeSession = useStore((s) => s.removeSession);
   const [view, setView] = useState<'list' | 'stats'>('list');
 
@@ -109,11 +110,15 @@ export default function JournalScreen() {
                           </ThemedText>
                         </View>
 
-                        {s.techniqueIds.length > 0 && (
+                        {(s.techniqueIds.length > 0 || !!s.drillIds?.length) && (
                           <View style={styles.chips}>
                             {s.techniqueIds.map((id) => {
                               const t = techniques.find((x) => x.id === id);
                               return t && <Chip key={id} small selected label={t.name} color={STATUS_COLOR[t.status]} />;
+                            })}
+                            {s.drillIds?.map((id) => {
+                              const d = drills.find((x) => x.id === id);
+                              return d && <Chip key={id} small label={`🔁 ${d.name}`} />;
                             })}
                           </View>
                         )}

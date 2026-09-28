@@ -24,11 +24,13 @@ export default function JournalEntryScreen() {
   const sessions = useStore((s) => s.sessions);
   const positions = useStore((s) => s.positions);
   const techniques = useStore((s) => s.techniques);
+  const drills = useStore((s) => s.drills);
   const saveSession = useStore((s) => s.saveSession);
   const removeSession = useStore((s) => s.removeSession);
 
   const [date, setDate] = useState(existing?.date ?? toDateKey());
   const [picked, setPicked] = useState<string[]>(existing?.techniqueIds ?? []);
+  const [pickedDrills, setPickedDrills] = useState<string[]>(existing?.drillIds ?? []);
   const [note, setNote] = useState(existing?.note ?? '');
   const [duration, setDuration] = useState(existing?.durationMin ?? DEFAULT_SESSION_MINUTES);
   const [query, setQuery] = useState('');
@@ -40,14 +42,17 @@ export default function JournalEntryScreen() {
   const trainingDays = new Set(sessions.map((s) => s.date));
 
   const clash = sessions.find((s) => s.date === date && s.id !== existing?.id);
-  const canSave = picked.length > 0 || note.trim().length > 0;
+  const canSave = picked.length > 0 || pickedDrills.length > 0 || note.trim().length > 0;
   const q = query.trim().toLowerCase();
 
   const toggle = (tid: string) => setPicked(picked.includes(tid) ? picked.filter((x) => x !== tid) : [...picked, tid]);
+  const toggleDrill = (did: string) =>
+    setPickedDrills(pickedDrills.includes(did) ? pickedDrills.filter((x) => x !== did) : [...pickedDrills, did]);
+  const visibleDrills = drills.filter((d) => !q || d.name.toLowerCase().includes(q));
 
   const save = () => {
     if (!canSave) return;
-    saveSession({ id: existing?.id, date, techniqueIds: picked, note: note.trim() || undefined, durationMin: duration });
+    saveSession({ id: existing?.id, date, techniqueIds: picked, drillIds: pickedDrills, note: note.trim() || undefined, durationMin: duration });
     router.back();
   };
 
@@ -152,6 +157,19 @@ export default function JournalEntryScreen() {
             </View>
           );
         })}
+
+        {visibleDrills.length > 0 && (
+          <View style={styles.group}>
+            <ThemedText type="small" themeColor="textSecondary">
+              {tr.journal.drills(pickedDrills.length)}
+            </ThemedText>
+            <View style={styles.chips}>
+              {visibleDrills.map((d) => (
+                <Chip key={d.id} label={d.name} selected={pickedDrills.includes(d.id)} onPress={() => toggleDrill(d.id)} />
+              ))}
+            </View>
+          </View>
+        )}
 
         <ThemedText type="smallBold" themeColor="textSecondary" style={styles.sectionHead}>
           {tr.journal.note}

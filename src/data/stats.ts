@@ -47,17 +47,23 @@ export type PeriodStats = {
   hours: number;
   /** Techniques trained in the period, most trained first. */
   techniques: { id: string; count: number }[];
+  /** Drills done in the period, most done first. */
+  drills: { id: string; count: number }[];
 };
 
 /** Totals for sessions whose date starts with `prefix` (YYYY for a year, YYYY-MM for a month). */
 export function periodStats(sessions: Session[], prefix: string): PeriodStats {
   const inPeriod = sessions.filter((s) => s.date.startsWith(prefix));
-  const counts = new Map<string, number>();
-  for (const s of inPeriod) for (const id of s.techniqueIds) counts.set(id, (counts.get(id) ?? 0) + 1);
+  const ranked = (ids: (s: Session) => string[]) => {
+    const counts = new Map<string, number>();
+    for (const s of inPeriod) for (const id of ids(s)) counts.set(id, (counts.get(id) ?? 0) + 1);
+    return [...counts].map(([id, count]) => ({ id, count })).sort((a, b) => b.count - a.count);
+  };
   return {
     sessions: inPeriod.length,
     hours: totalHours(inPeriod),
-    techniques: [...counts].map(([id, count]) => ({ id, count })).sort((a, b) => b.count - a.count),
+    techniques: ranked((s) => s.techniqueIds),
+    drills: ranked(drillIdsOf),
   };
 }
 
