@@ -85,7 +85,25 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
         }),
     [tx, ty, scale, start]
   );
-  const canvasGesture = useMemo(() => Gesture.Simultaneous(canvasPan, canvasPinch), [canvasPan, canvasPinch]);
+  // double tap zooms in 2× around the tapped point; at full zoom it zooms back out
+  const canvasDoubleTap = useMemo(
+    () =>
+      Gesture.Tap()
+        .numberOfTaps(2)
+        .onEnd((e) => {
+          const s0 = scale.get();
+          const s = s0 >= MAX_SCALE * 0.95 ? Math.max(MIN_SCALE, s0 / 4) : Math.min(MAX_SCALE, s0 * 2);
+          const k = s / s0;
+          tx.set(withTiming(e.x - (e.x - tx.get()) * k));
+          ty.set(withTiming(e.y - (e.y - ty.get()) * k));
+          scale.set(withTiming(s));
+        }),
+    [tx, ty, scale]
+  );
+  const canvasGesture = useMemo(
+    () => Gesture.Simultaneous(canvasPan, canvasPinch, canvasDoubleTap),
+    [canvasPan, canvasPinch, canvasDoubleTap]
+  );
 
   const transform = useAnimatedStyle(() => ({
     transform: [{ translateX: tx.get() }, { translateY: ty.get() }, { scale: scale.get() }],
