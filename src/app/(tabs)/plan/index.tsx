@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useMemo } from 'react';
 import { Linking, Pressable, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { Screen } from '@/components/screen';
 import { StatusChip } from '@/components/status-chip';
@@ -87,7 +88,11 @@ export default function PlanScreen() {
       )}
 
       {carryOver.length > 0 && (
-        <ThemedView type="backgroundElement" style={styles.card}>
+        <Animated.View
+          entering={FadeIn.duration(200)}
+          exiting={FadeOut.duration(180)}
+          layout={LinearTransition.duration(220)}
+          style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
           <ThemedText type="smallBold">{tr.plan.lastWeek}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
             {tr.plan.lastWeekWaiting(carryOver.length)}
@@ -97,16 +102,20 @@ export default function PlanScreen() {
               {tr.plan.carryOver}
             </ThemedText>
           </Pressable>
-        </ThemedView>
+        </Animated.View>
       )}
 
       {planned.length === 0 && (
-        <ThemedView type="backgroundElement" style={styles.card}>
+        <Animated.View
+          entering={FadeIn.duration(200)}
+          exiting={FadeOut.duration(180)}
+          layout={LinearTransition.duration(220)}
+          style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
           <ThemedText type="smallBold">{tr.plan.emptyTitle}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
             {tr.plan.emptyText}
           </ThemedText>
-        </ThemedView>
+        </Animated.View>
       )}
 
       {planned.map((t) => {

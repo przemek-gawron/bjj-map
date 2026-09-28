@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { AddButton } from '@/components/add-button';
 import { Chip } from '@/components/chip';
@@ -65,63 +66,67 @@ export default function JournalScreen() {
         <JournalStats />
       ) : (
         <>
-        <View style={[styles.stats, { borderColor: theme.backgroundSelected }]}>
-          <Stat value={weekCount} label={tr.journal.thisWeek} />
-          <Stat value={monthCount} label={tr.journal.thisMonth} />
-          <Stat value={monthTechniques} label={tr.journal.techniquesThisMonth} />
-        </View>
-
-        {sessions.length === 0 && (
-          <ThemedView type="backgroundElement" style={styles.empty}>
-            <ThemedText type="smallBold">{tr.journal.emptyTitle}</ThemedText>
-            <ThemedText type="small" themeColor="textSecondary">
-              {tr.journal.emptyText}
-            </ThemedText>
-          </ThemedView>
-        )}
-
-        {[...weeks.entries()].map(([weekStart, list]) => (
-          <View key={weekStart}>
-            <ThemedText type="smallBold" themeColor="textSecondary" style={styles.weekHead}>
-              {weekStart === thisWeek ? tr.journal.thisWeekHeader : weekRangeLabel(weekStart)} · {list.length}×
-            </ThemedText>
-
-            {list.map((s) => (
-              <SwipeToDelete key={s.id} onDelete={() => remove(s)} style={styles.swipeable}>
-                <Pressable onPress={() => openEntry(s.id)}>
-                  {({ pressed }) => (
-                    // pressed state tints instead of fading, which would reveal the delete button
-                    <ThemedView type={pressed ? 'backgroundSelected' : 'backgroundElement'} style={styles.card}>
-                      <View style={styles.cardHead}>
-                        <ThemedText type="smallBold" style={styles.date}>
-                          {dayLabel(s.date)}
-                        </ThemedText>
-                        <ThemedText type="small" themeColor="textSecondary">
-                          {relativeDay(s.date)}
-                        </ThemedText>
-                      </View>
-
-                      {s.techniqueIds.length > 0 && (
-                        <View style={styles.chips}>
-                          {s.techniqueIds.map((id) => {
-                            const t = techniques.find((x) => x.id === id);
-                            return t && <Chip key={id} small selected label={t.name} color={STATUS_COLOR[t.status]} />;
-                          })}
-                        </View>
-                      )}
-
-                      {s.note && (
-                        <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
-                          {s.note}
-                        </ThemedText>
-                      )}
-                    </ThemedView>
-                  )}
-                </Pressable>
-              </SwipeToDelete>
-            ))}
+          <View style={[styles.stats, { borderColor: theme.backgroundSelected }]}>
+            <Stat value={weekCount} label={tr.journal.thisWeek} />
+            <Stat value={monthCount} label={tr.journal.thisMonth} />
+            <Stat value={monthTechniques} label={tr.journal.techniquesThisMonth} />
           </View>
-        ))}
+
+          {sessions.length === 0 && (
+            <ThemedView type="backgroundElement" style={styles.empty}>
+              <ThemedText type="smallBold">{tr.journal.emptyTitle}</ThemedText>
+              <ThemedText type="small" themeColor="textSecondary">
+                {tr.journal.emptyText}
+              </ThemedText>
+            </ThemedView>
+          )}
+
+          {[...weeks.entries()].map(([weekStart, list]) => (
+            <Animated.View
+            key={weekStart}
+            layout={LinearTransition.duration(220)}
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(180)}>
+              <ThemedText type="smallBold" themeColor="textSecondary" style={styles.weekHead}>
+                {weekStart === thisWeek ? tr.journal.thisWeekHeader : weekRangeLabel(weekStart)} · {list.length}×
+              </ThemedText>
+
+              {list.map((s) => (
+                <SwipeToDelete key={s.id} onDelete={() => remove(s)} style={styles.swipeable}>
+                  <Pressable onPress={() => openEntry(s.id)}>
+                    {({ pressed }) => (
+                      // pressed state tints instead of fading, which would reveal the delete button
+                      <ThemedView type={pressed ? 'backgroundSelected' : 'backgroundElement'} style={styles.card}>
+                        <View style={styles.cardHead}>
+                          <ThemedText type="smallBold" style={styles.date}>
+                            {dayLabel(s.date)}
+                          </ThemedText>
+                          <ThemedText type="small" themeColor="textSecondary">
+                            {relativeDay(s.date)}
+                          </ThemedText>
+                        </View>
+
+                        {s.techniqueIds.length > 0 && (
+                          <View style={styles.chips}>
+                            {s.techniqueIds.map((id) => {
+                              const t = techniques.find((x) => x.id === id);
+                              return t && <Chip key={id} small selected label={t.name} color={STATUS_COLOR[t.status]} />;
+                            })}
+                          </View>
+                        )}
+
+                        {s.note && (
+                          <ThemedText type="small" themeColor="textSecondary" style={styles.note}>
+                            {s.note}
+                          </ThemedText>
+                        )}
+                      </ThemedView>
+                    )}
+                  </Pressable>
+                </SwipeToDelete>
+              ))}
+            </Animated.View>
+          ))}
         </>
       )}
     </Screen>

@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { AddButton } from '@/components/add-button';
 import { Chip } from '@/components/chip';
@@ -8,7 +9,6 @@ import { Screen } from '@/components/screen';
 import { StatusChip } from '@/components/status-chip';
 import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { relativeDay } from '@/data/dates';
 import { STATUS_COLOR } from '@/data/labels';
@@ -86,7 +86,12 @@ export default function TechniquesScreen() {
         const open = filtering || !collapsed[p.id];
 
         return (
-          <ThemedView key={p.id} type="backgroundElement" style={styles.card}>
+          <Animated.View
+            key={p.id}
+            layout={LinearTransition.duration(220)}
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(180)}
+            style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
             <Pressable style={styles.cardHead} onPress={() => setCollapsed({ ...collapsed, [p.id]: !collapsed[p.id] })}>
               <View style={[styles.sideBar, { backgroundColor: SIDE_COLOR[p.side] }]} />
               <View style={styles.flex}>
@@ -132,7 +137,7 @@ export default function TechniquesScreen() {
                 {tr.techniques.noneFromPosition}
               </ThemedText>
             )}
-          </ThemedView>
+          </Animated.View>
         );
       })}
 
