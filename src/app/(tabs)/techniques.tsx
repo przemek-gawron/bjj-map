@@ -6,6 +6,7 @@ import { AddButton } from '@/components/add-button';
 import { Chip } from '@/components/chip';
 import { Screen } from '@/components/screen';
 import { StatusChip } from '@/components/status-chip';
+import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
@@ -15,6 +16,7 @@ import { trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import type { Status, TechniqueType } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
+import { confirm } from '@/utils/confirm';
 
 const STATUSES: Status[] = ['works', 'drilling', 'seen'];
 const TYPES: TechniqueType[] = ['submission', 'sweep', 'escape', 'pass', 'takedown', 'transition'];
@@ -26,6 +28,7 @@ export default function TechniquesScreen() {
   const techniques = useStore((s) => s.techniques);
   const sessions = useStore((s) => s.sessions);
   const setStatus = useStore((s) => s.setStatus);
+  const removeTechnique = useStore((s) => s.removeTechnique);
 
   const [statusFilter, setStatusFilter] = useState<Status | null>(null);
   const [typeFilter, setTypeFilter] = useState<TechniqueType | null>(null);
@@ -99,10 +102,16 @@ export default function TechniquesScreen() {
               list.map((t) => {
                 const s = stats.get(t.id);
                 return (
-                  <Pressable
+                  <SwipeToDelete
                     key={t.id}
-                    onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}
-                    style={({ pressed }) => [styles.row, { borderColor: theme.backgroundSelected }, pressed && styles.pressed]}>
+                    onDelete={() =>
+                      confirm('Usunąć technikę?', `„${t.name}” zniknie też z dziennika i planu.`, 'Usuń', () => removeTechnique(t.id))
+                    }
+                    style={[styles.rowContainer, { borderColor: theme.backgroundSelected }]}>
+                    <Pressable
+                      onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}
+                      // opaque, so the delete button stays hidden until swiped
+                      style={({ pressed }) => [styles.row, { backgroundColor: theme.backgroundElement }, pressed && styles.pressed]}>
                       <View style={styles.flex}>
                         <ThemedText type="smallBold">{t.name}</ThemedText>
                         <ThemedText type="small" themeColor="textSecondary">
@@ -111,8 +120,9 @@ export default function TechniquesScreen() {
                           {s ? ` · ${s.count}× · ${relativeDay(s.lastDate!)}` : ' · nie trenowane'}
                         </ThemedText>
                       </View>
-                    <StatusChip small status={t.status} onChange={(next) => setStatus(t.id, next)} />
-                  </Pressable>
+                      <StatusChip small status={t.status} onChange={(next) => setStatus(t.id, next)} />
+                    </Pressable>
+                  </SwipeToDelete>
                 );
               })}
             {open && all.length === 0 && (
@@ -142,14 +152,8 @@ const styles = StyleSheet.create({
   cardHead: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three, padding: 14 },
   sideBar: { width: 4, alignSelf: 'stretch', borderRadius: 2 },
   positionName: { fontSize: 17 },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.two,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
+  rowContainer: { borderTopWidth: StyleSheet.hairlineWidth },
+  row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two, paddingHorizontal: 14, paddingVertical: 10 },
   pressed: { opacity: 0.6 },
   empty: { paddingHorizontal: 14, paddingBottom: 14 },
 });
