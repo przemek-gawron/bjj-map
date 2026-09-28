@@ -43,9 +43,9 @@ export default function TechniquesScreen() {
 
   return (
     <Screen
-      title="Techniki"
+      title={tr.techniques.title}
       action={
-        <AddButton onPress={() => router.push('/technique/form')} accessibilityLabel="Dodaj technikę" />
+        <AddButton onPress={() => router.push('/technique/form')} accessibilityLabel={tr.techniques.add} />
       }>
       <View style={styles.progress}>
         {counts.map(({ status, n }) => (
@@ -53,7 +53,7 @@ export default function TechniquesScreen() {
         ))}
       </View>
       <ThemedText type="small" themeColor="textSecondary" style={styles.summary}>
-        {counts[0].n} z {techniques.length} technik działa w sparingu
+        {tr.techniques.worksSummary(counts[0].n, techniques.length)}
       </ThemedText>
 
       <View style={styles.chips}>
@@ -94,7 +94,7 @@ export default function TechniquesScreen() {
                   {p.name}
                 </ThemedText>
                 <ThemedText type="small" themeColor="textSecondary">
-                  {all.length} technik · {all.filter((t) => t.status === 'works').length} działa
+                  {tr.techniques.positionSummary(all.length, all.filter((t) => t.status === 'works').length)}
                 </ThemedText>
               </View>
               <ThemedText themeColor="textSecondary">{open ? '▾' : '▸'}</ThemedText>
@@ -107,7 +107,7 @@ export default function TechniquesScreen() {
                   <SwipeToDelete
                     key={t.id}
                     onDelete={() =>
-                      confirm('Usunąć technikę?', `„${t.name}” zniknie też z dziennika i planu.`, 'Usuń', () => removeTechnique(t.id))
+                      confirm(tr.techniques.deleteTitle, tr.techniques.deleteMessage(t.name), tr.common.delete, () => removeTechnique(t.id))
                     }
                     style={[styles.rowContainer, { borderColor: theme.backgroundSelected }]}>
                     <Pressable
@@ -119,7 +119,7 @@ export default function TechniquesScreen() {
                         <ThemedText type="small" themeColor="textSecondary">
                           {tr.type[t.type]}
                           {t.to ? ' → ' + positions.find((x) => x.id === t.to)?.name : ''}
-                          {s ? ` · ${s.count}× · ${relativeDay(s.lastDate!)}` : ' · nie trenowane'}
+                          {s ? ` · ${s.count}× · ${relativeDay(s.lastDate!)}` : ` · ${tr.techniques.notTrained}`}
                         </ThemedText>
                       </View>
                       <StatusChip small status={t.status} onChange={(next) => setStatus(t.id, next)} />
@@ -129,7 +129,7 @@ export default function TechniquesScreen() {
               })}
             {open && all.length === 0 && (
               <ThemedText type="small" themeColor="textSecondary" style={styles.empty}>
-                Brak technik z tej pozycji.
+                {tr.techniques.noneFromPosition}
               </ThemedText>
             )}
           </ThemedView>
@@ -138,7 +138,7 @@ export default function TechniquesScreen() {
 
       {filtering && visible.length === 0 && (
         <ThemedText themeColor="textSecondary" style={styles.empty}>
-          Brak technik dla tych filtrów.
+          {tr.techniques.noneForFilters}
         </ThemedText>
       )}
     </Screen>

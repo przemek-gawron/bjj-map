@@ -57,7 +57,7 @@ export default function TechniqueFormScreen() {
 
   const remove = () => {
     if (!existing) return;
-    confirm('Usunąć technikę?', `„${existing.name}” zniknie też z dziennika i planu.`, 'Usuń', () => {
+    confirm(tr.techniques.deleteTitle, tr.techniques.deleteMessage(existing.name), tr.common.delete, () => {
       removeTechnique(existing.id);
       // back past the (now deleted) technique's detail screen
       router.dismissAll();
@@ -70,18 +70,18 @@ export default function TechniqueFormScreen() {
     <ThemedView style={styles.root}>
       <Stack.Screen
         options={{
-          title: existing ? 'Edytuj technikę' : 'Nowa technika',
+          title: existing ? tr.techniques.editTitle : tr.techniques.newTitle,
           headerLeft: () => (
             <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerButton}>
               <ThemedText type="small" themeColor="accent">
-                Anuluj
+                {tr.common.cancel}
               </ThemedText>
             </Pressable>
           ),
           headerRight: () => (
             <Pressable onPress={save} disabled={!canSave} hitSlop={10} style={styles.headerButton}>
               <ThemedText type="smallBold" themeColor={canSave ? 'accent' : 'textSecondary'}>
-                Zapisz
+                {tr.common.save}
               </ThemedText>
             </Pressable>
           ),
@@ -92,18 +92,18 @@ export default function TechniqueFormScreen() {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
         automaticallyAdjustKeyboardInsets>
-        <Field label="Nazwa">
+        <Field label={tr.techniques.name}>
           <TextInput
             value={name}
             onChangeText={setName}
-            placeholder="np. Armbar z gardy"
+            placeholder={tr.techniques.namePlaceholder}
             placeholderTextColor={theme.textSecondary}
             style={inputStyle}
             autoFocus={!existing}
           />
         </Field>
 
-        <Field label="Typ">
+        <Field label={tr.techniques.type}>
           <View style={styles.chips}>
             {TYPES.map((t) => (
               <Chip key={t} label={tr.type[t]} selected={type === t} onPress={() => setType(t)} />
@@ -111,7 +111,7 @@ export default function TechniqueFormScreen() {
           </View>
         </Field>
 
-        <Field label="Z pozycji">
+        <Field label={tr.techniques.from}>
           <View style={styles.chips}>
             {positions.map((p) => (
               <Chip key={p.id} small label={p.name} selected={from === p.id} onPress={() => {
@@ -123,7 +123,7 @@ export default function TechniqueFormScreen() {
         </Field>
 
         {!isSubmission && (
-          <Field label="Kończy się w pozycji">
+          <Field label={tr.techniques.to}>
             <View style={styles.chips}>
               {positions
                 .filter((p) => p.id !== from)
@@ -134,7 +134,7 @@ export default function TechniqueFormScreen() {
           </Field>
         )}
 
-        <Field label="Status">
+        <Field label={tr.techniques.status}>
           <View style={styles.chips}>
             {STATUSES.map((s) => (
               <Chip key={s} label={tr.status[s]} color={STATUS_COLOR[s]} selected={status === s} onPress={() => setStatus(s)} />
@@ -142,7 +142,7 @@ export default function TechniqueFormScreen() {
           </View>
         </Field>
 
-        <Field label="Link do wideo (opcjonalnie)">
+        <Field label={tr.techniques.video}>
           <TextInput
             value={videoUrl}
             onChangeText={setVideoUrl}
@@ -155,11 +155,11 @@ export default function TechniqueFormScreen() {
           />
         </Field>
 
-        <Field label="Notatki (opcjonalnie)">
+        <Field label={tr.techniques.notesOptional}>
           <TextInput
             value={notes}
             onChangeText={setNotes}
-            placeholder="Detale, na co uważać…"
+            placeholder={tr.techniques.notesPlaceholder}
             placeholderTextColor={theme.textSecondary}
             multiline
             style={[inputStyle, styles.notes]}
@@ -169,7 +169,7 @@ export default function TechniqueFormScreen() {
         {existing && (
           <Pressable onPress={remove} style={({ pressed }) => [styles.delete, pressed && { opacity: 0.6 }]}>
             <ThemedText type="smallBold" style={styles.deleteText}>
-              Usuń technikę
+              {tr.techniques.deleteButton}
             </ThemedText>
           </Pressable>
         )}

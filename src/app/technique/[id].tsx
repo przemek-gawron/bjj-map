@@ -31,7 +31,7 @@ export default function TechniqueScreen() {
     return (
       <ThemedView style={styles.root}>
         <ThemedText themeColor="textSecondary" style={styles.content}>
-          Ta technika już nie istnieje.
+          {tr.techniques.gone}
         </ThemedText>
       </ThemedView>
     );
@@ -54,7 +54,7 @@ export default function TechniqueScreen() {
               style={styles.headerButton}
               onPress={() => router.push({ pathname: '/technique/form', params: { id: technique.id } })}>
               <ThemedText type="smallBold" themeColor="accent">
-                Edytuj
+                {tr.common.edit}
               </ThemedText>
             </Pressable>
           ),
@@ -66,7 +66,7 @@ export default function TechniqueScreen() {
         </ThemedText>
         <ThemedText type="subtitle" style={styles.path}>
           {positionName(technique.from)}
-          {technique.to ? ` → ${positionName(technique.to)}` : ' → kończenie'}
+          {technique.to ? ` → ${positionName(technique.to)}` : ` → ${tr.techniques.submission}`}
         </ThemedText>
         <StatusChip status={technique.status} onChange={(next) => setStatus(technique.id, next)} />
 
@@ -75,15 +75,15 @@ export default function TechniqueScreen() {
             onPress={() => Linking.openURL(technique.videoUrl!)}
             style={({ pressed }) => [styles.videoButton, pressed && styles.pressed]}>
             <ThemedText type="smallBold" style={styles.videoText}>
-              ▶ Obejrzyj wideo
+              {tr.techniques.watchVideo}
             </ThemedText>
           </Pressable>
         )}
 
         <ThemedView type="backgroundElement" style={styles.card}>
-          <ThemedText type="smallBold">Trening</ThemedText>
+          <ThemedText type="smallBold">{tr.techniques.training}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            {stats ? `${stats.count}× · ostatnio ${relativeDay(stats.lastDate!)}` : 'Jeszcze nie trenowane'}
+            {stats ? tr.techniques.trainedSummary(stats.count, relativeDay(stats.lastDate!)) : tr.techniques.notTrainedYet}
           </ThemedText>
 
           <Pressable
@@ -93,11 +93,11 @@ export default function TechniqueScreen() {
               { backgroundColor: trainedOn.has(today) ? STATUS_COLOR.works : theme.accent },
               pressed && styles.pressed,
             ]}>
-            <ThemedText style={styles.todayText}>{trainedOn.has(today) ? '✓ Trenowane dziś' : 'Trenowałem dziś'}</ThemedText>
+            <ThemedText style={styles.todayText}>{trainedOn.has(today) ? tr.techniques.trainedToday : tr.techniques.trainToday}</ThemedText>
           </Pressable>
 
           <ThemedText type="small" themeColor="textSecondary" style={styles.label}>
-            Inny dzień:
+            {tr.techniques.otherDay}
           </ThemedText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.days}>
             {recentDays(14)
@@ -110,7 +110,7 @@ export default function TechniqueScreen() {
 
         {stats && (
           <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="smallBold">Historia</ThemedText>
+            <ThemedText type="smallBold">{tr.techniques.history}</ThemedText>
             <View style={styles.history}>
               {stats.dates.map((date) => (
                 <Chip key={date} small label={dayLabel(date)} selected color={STATUS_COLOR.works} />
@@ -121,7 +121,7 @@ export default function TechniqueScreen() {
 
         {technique.notes && (
           <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="smallBold">Notatki</ThemedText>
+            <ThemedText type="smallBold">{tr.techniques.notes}</ThemedText>
             <ThemedText type="small">{technique.notes}</ThemedText>
           </ThemedView>
         )}
