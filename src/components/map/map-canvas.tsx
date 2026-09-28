@@ -16,6 +16,8 @@ import { confirm } from '@/utils/confirm';
 
 const MIN_SCALE = 0.3;
 const MAX_SCALE = 2.5;
+/** Smallest scale at which tile names are still comfortable to read. */
+const READABLE_SCALE = 0.6;
 const SIDE_COLOR = { top: '#3B82F6', bottom: '#8B5CF6', neutral: '#9CA3AF' };
 const STATUSES: Status[] = ['seen', 'drilling', 'works'];
 
@@ -119,11 +121,21 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
     set(ty, -b.y * s);
   };
 
+  /** Start view: as wide as the screen allows but never below a readable scale, from the top of the map. */
+  const readable = (vp = viewport, animate = true, b = bounds) => {
+    if (!vp) return;
+    const s = Math.min(1, Math.max(READABLE_SCALE, vp.width / b.width));
+    const set = (v: SharedValue<number>, to: number) => v.set(animate ? withTiming(to) : to);
+    set(scale, s);
+    set(tx, (vp.width - b.width * s) / 2 - b.x * s);
+    set(ty, -b.y * s);
+  };
+
   const tidy = () =>
     confirm(tr.map.tidyTitle, tr.map.tidyMessage, tr.map.tidyConfirm, () => {
       const next = tidyLayout(positions);
       useStore.getState().setLayouts(next);
-      fit(viewport, true, canvasBounds(next));
+      readable(viewport, true, canvasBounds(next));
     });
 
   const zoomBy = (k: number) => {
@@ -139,7 +151,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
 
   const onLayout = (e: LayoutChangeEvent) => {
     const vp = { width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height };
-    if (!viewport) fit(vp, false);
+    if (!viewport) readable(vp, false);
     setViewport(vp);
   };
 
