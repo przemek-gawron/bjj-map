@@ -6,6 +6,9 @@ import { toDateKey, weekStartOf } from './dates';
 import { seedPositions, seedTechniques } from './seed';
 import type { Position, Session, Status, Technique, WeeklyPlan } from './types';
 
+import { currentLanguage, type Language } from '@/i18n';
+import { localizeSeedNames } from '@/i18n/seed-names';
+
 type State = {
   positions: Position[];
   techniques: Technique[];
@@ -38,6 +41,8 @@ type Actions = {
 
   /** Back to the starting positions and techniques; sessions, plan and photos are dropped. */
   resetAll: () => void;
+  /** Switches the starter positions' and techniques' names to `language` (user-renamed ones stay). */
+  localizeSeed: (language: Language) => void;
 };
 
 const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -124,7 +129,15 @@ export const useStore = create<State & Actions>()(
         }),
       setPlan: (techniqueIds) => set({ plan: { weekStart: weekStartOf(toDateKey()), techniqueIds } }),
 
-      resetAll: () => set({ positions: seedPositions, techniques: seedTechniques, sessions: [], plan: emptyPlan() }),
+      resetAll: () =>
+        set({
+          positions: localizeSeedNames(seedPositions, currentLanguage()),
+          techniques: localizeSeedNames(seedTechniques, currentLanguage()),
+          sessions: [],
+          plan: emptyPlan(),
+        }),
+      localizeSeed: (language) =>
+        set((s) => ({ positions: localizeSeedNames(s.positions, language), techniques: localizeSeedNames(s.techniques, language) })),
     }),
     {
       name: 'bjj-map',

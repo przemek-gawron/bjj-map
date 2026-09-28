@@ -1,9 +1,11 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { useEffect } from 'react';
 import { StyleSheet, useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
-import { useT } from '@/i18n';
+import { useLanguage, useT } from '@/i18n';
 
 /**
  * Tabs live in the (tabs) group. Technique screens sit on the root stack so they open
@@ -13,6 +15,14 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = useTheme();
   const tr = useT();
+  const language = useLanguage();
+
+  // starter map names follow the app language, once the saved data has loaded
+  useEffect(() => {
+    const localize = () => useStore.getState().localizeSeed(language);
+    if (useStore.persist.hasHydrated()) localize();
+    return useStore.persist.onFinishHydration(localize);
+  }, [language]);
 
   return (
     <GestureHandlerRootView style={styles.root}>
