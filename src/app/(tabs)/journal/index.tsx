@@ -17,9 +17,11 @@ import { useStore } from '@/data/store';
 import type { Session } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
+import { useT } from '@/i18n';
 
 export default function JournalScreen() {
   const theme = useTheme();
+  const tr = useT();
   const sessions = useStore((s) => s.sessions);
   const techniques = useStore((s) => s.techniques);
   const removeSession = useStore((s) => s.removeSession);
@@ -41,19 +43,19 @@ export default function JournalScreen() {
   // "+" edits today's entry if there already is one — one session per day
   const todaySession = sessions.find((s) => s.date === today);
   const remove = (s: Session) =>
-    confirm('Usunąć trening?', `Trening z ${dayLabel(s.date)} zniknie z dziennika.`, 'Usuń', () => removeSession(s.id));
+    confirm(tr.journal.deleteTitle, tr.journal.deleteMessage(dayLabel(s.date)), tr.common.delete, () => removeSession(s.id));
   const openEntry = (id?: string) => router.push(id ? { pathname: '/journal/entry', params: { id } } : '/journal/entry');
 
   return (
     <Screen
-      title="Dziennik"
+      title={tr.journal.title}
       action={
-        <AddButton onPress={() => openEntry(todaySession?.id)} accessibilityLabel="Dodaj trening" />
+        <AddButton onPress={() => openEntry(todaySession?.id)} accessibilityLabel={tr.journal.add} />
       }>
       <Segmented
         options={[
-          { value: 'list', label: 'Treningi' },
-          { value: 'stats', label: 'Statystyki' },
+          { value: 'list', label: tr.journal.list },
+          { value: 'stats', label: tr.journal.stats },
         ]}
         value={view}
         onChange={setView}
@@ -64,16 +66,16 @@ export default function JournalScreen() {
       ) : (
         <>
         <View style={[styles.stats, { borderColor: theme.backgroundSelected }]}>
-          <Stat value={weekCount} label="w tym tygodniu" />
-          <Stat value={monthCount} label="w tym miesiącu" />
-          <Stat value={monthTechniques} label="technik w miesiącu" />
+          <Stat value={weekCount} label={tr.journal.thisWeek} />
+          <Stat value={monthCount} label={tr.journal.thisMonth} />
+          <Stat value={monthTechniques} label={tr.journal.techniquesThisMonth} />
         </View>
 
         {sessions.length === 0 && (
           <ThemedView type="backgroundElement" style={styles.empty}>
-            <ThemedText type="smallBold">Brak treningów</ThemedText>
+            <ThemedText type="smallBold">{tr.journal.emptyTitle}</ThemedText>
             <ThemedText type="small" themeColor="textSecondary">
-              Po treningu dotknij +, zaznacz co ćwiczyłeś i dopisz notatkę. Treningi z zakładki Techniki też tu trafiają.
+              {tr.journal.emptyText}
             </ThemedText>
           </ThemedView>
         )}
@@ -81,7 +83,7 @@ export default function JournalScreen() {
         {[...weeks.entries()].map(([weekStart, list]) => (
           <View key={weekStart}>
             <ThemedText type="smallBold" themeColor="textSecondary" style={styles.weekHead}>
-              {weekStart === thisWeek ? 'Ten tydzień' : weekRangeLabel(weekStart)} · {list.length}×
+              {weekStart === thisWeek ? tr.journal.thisWeekHeader : weekRangeLabel(weekStart)} · {list.length}×
             </ThemedText>
 
             {list.map((s) => (

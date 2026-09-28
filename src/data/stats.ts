@@ -1,3 +1,5 @@
+import { currentLanguage } from '@/i18n';
+
 import type { Session } from './types';
 
 export type TrainingStats = { count: number; lastDate?: string; dates: string[] };
@@ -40,7 +42,8 @@ export function periodStats(sessions: Session[], prefix: string): PeriodStats {
   };
 }
 
-/** "4,5" — hours with a Polish decimal comma. */
+/** "4,5" in Polish, "4.5" in English. */
 export function formatHours(h: number): string {
-  return Number.isInteger(h) ? String(h) : h.toFixed(1).replace('.', ',');
+  const text = Number.isInteger(h) ? String(h) : h.toFixed(1);
+  return currentLanguage() === 'pl' ? text.replace('.', ',') : text;
 }

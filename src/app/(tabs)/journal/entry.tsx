@@ -11,11 +11,13 @@ import { dayLabel, recentDays, toDateKey } from '@/data/dates';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
+import { useT } from '@/i18n';
 
 /** Add a training session, or edit one when opened with `?id=`. */
 export default function JournalEntryScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const theme = useTheme();
+  const tr = useT();
   const existing = useStore((s) => s.sessions.find((x) => x.id === id));
   const sessions = useStore((s) => s.sessions);
   const positions = useStore((s) => s.positions);
@@ -48,7 +50,7 @@ export default function JournalEntryScreen() {
 
   const remove = () => {
     if (!existing) return;
-    confirm('Usunąć trening?', `Trening z ${dayLabel(existing.date)} zniknie z dziennika.`, 'Usuń', () => {
+    confirm(tr.journal.deleteTitle, tr.journal.deleteMessage(dayLabel(existing.date)), tr.common.delete, () => {
       removeSession(existing.id);
       router.back();
     });
@@ -58,18 +60,18 @@ export default function JournalEntryScreen() {
     <ThemedView style={styles.root}>
       <Stack.Screen
         options={{
-          title: existing ? 'Edytuj trening' : 'Nowy trening',
+          title: existing ? tr.journal.editTitle : tr.journal.newTitle,
           headerLeft: () => (
             <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerButton}>
               <ThemedText type="small" themeColor="accent">
-                Anuluj
+                {tr.common.cancel}
               </ThemedText>
             </Pressable>
           ),
           headerRight: () => (
             <Pressable onPress={save} disabled={!canSave} hitSlop={10} style={styles.headerButton}>
               <ThemedText type="smallBold" themeColor={canSave ? 'accent' : 'textSecondary'}>
-                Zapisz
+                {tr.common.save}
               </ThemedText>
             </Pressable>
           ),
@@ -82,17 +84,17 @@ export default function JournalEntryScreen() {
         automaticallyAdjustKeyboardInsets>
         <View style={styles.dateHead}>
           <ThemedText type="smallBold" themeColor="textSecondary">
-            Kiedy · {dayLabel(date)}
+            {tr.journal.when(dayLabel(date))}
           </ThemedText>
           <Pressable onPress={() => setCalendarOpen(!calendarOpen)} hitSlop={10}>
             <ThemedText type="smallBold" themeColor="accent">
-              {calendarOpen ? 'Ukryj kalendarz' : '📅 Kalendarz'}
+              {calendarOpen ? tr.journal.hideCalendar : tr.journal.showCalendar}
             </ThemedText>
           </Pressable>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.days}>
           {days.map((d, i) => (
-            <Chip key={d} label={i === 0 ? 'Dziś' : i === 1 ? 'Wczoraj' : dayLabel(d)} selected={date === d} onPress={() => setDate(d)} />
+            <Chip key={d} label={i === 0 ? tr.journal.today : i === 1 ? tr.journal.yesterday : dayLabel(d)} selected={date === d} onPress={() => setDate(d)} />
           ))}
         </ScrollView>
         {calendarOpen && (
@@ -102,19 +104,19 @@ export default function JournalEntryScreen() {
         )}
         {clash && (
           <ThemedText type="small" themeColor="textSecondary">
-            Na ten dzień jest już trening — zapis połączy oba wpisy.
+            {tr.journal.clash}
           </ThemedText>
         )}
 
         <View style={styles.sectionHead}>
           <ThemedText type="smallBold" themeColor="textSecondary">
-            Co ćwiczyłeś · {picked.length}
+            {tr.journal.practiced(picked.length)}
           </ThemedText>
         </View>
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder="Szukaj techniki…"
+          placeholder={tr.journal.search}
           placeholderTextColor={theme.textSecondary}
           autoCorrect={false}
           style={[styles.input, { backgroundColor: theme.backgroundElement, color: theme.text }]}
@@ -137,12 +139,12 @@ export default function JournalEntryScreen() {
         })}
 
         <ThemedText type="smallBold" themeColor="textSecondary" style={styles.sectionHead}>
-          Notatka
+          {tr.journal.note}
         </ThemedText>
         <TextInput
           value={note}
           onChangeText={setNote}
-          placeholder="Co zapamiętać z treningu?"
+          placeholder={tr.journal.notePlaceholder}
           placeholderTextColor={theme.textSecondary}
           multiline
           style={[styles.input, styles.note, { backgroundColor: theme.backgroundElement, color: theme.text }]}
@@ -151,7 +153,7 @@ export default function JournalEntryScreen() {
         {existing && (
           <Pressable onPress={remove} style={({ pressed }) => [styles.delete, pressed && { opacity: 0.6 }]}>
             <ThemedText type="smallBold" style={styles.deleteText}>
-              Usuń trening
+              {tr.journal.deleteButton}
             </ThemedText>
           </Pressable>
         )}

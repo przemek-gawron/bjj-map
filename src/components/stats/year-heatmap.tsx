@@ -4,16 +4,17 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { addDays, shortMonthLabel, toDateKey, weekStartOf } from '@/data/dates';
 import type { Session } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 const CELL = 13;
 const GAP = 3;
-const ROW_LABELS = ['pn', '', 'śr', '', 'pt', '', ''];
 
 type Props = { year: number; sessions: Session[] };
 
 /** GitHub-style grid of a year: one column per week, one square per day, darker for more techniques. */
 export function YearHeatmap({ year, sessions }: Props) {
   const theme = useTheme();
+  const tr = useT();
   const scroll = useRef<ScrollView>(null);
   const today = toDateKey();
 
@@ -37,7 +38,7 @@ export function YearHeatmap({ year, sessions }: Props) {
   return (
     <View style={styles.root}>
       <View style={styles.rowLabels}>
-        {ROW_LABELS.map((l, i) => (
+        {tr.journal.heatmapRows.map((l, i) => (
           <Text key={i} style={[styles.rowLabel, { color: theme.textSecondary }]}>
             {l}
           </Text>
@@ -70,7 +71,7 @@ export function YearHeatmap({ year, sessions }: Props) {
                 {w.map((day) => (
                   <View
                     key={day}
-                    accessibilityLabel={byDate.has(day) ? `${day}: trening` : undefined}
+                    accessibilityLabel={byDate.has(day) ? tr.journal.trainingOn(day) : undefined}
                     style={[
                       styles.cell,
                       { backgroundColor: shade(day) },

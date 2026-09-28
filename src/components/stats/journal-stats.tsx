@@ -14,6 +14,7 @@ import { monthGrid, shortMonthLabel, toDateKey } from '@/data/dates';
 import { formatHours, HOURS_PER_SESSION, periodStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 type Period = 'month' | 'year';
 
@@ -22,6 +23,7 @@ const TOP_TECHNIQUES = 10;
 /** Journal statistics for a month or a year: calendar / heatmap, hours per week or month, most trained techniques. */
 export function JournalStats() {
   const theme = useTheme();
+  const tr = useT();
   const sessions = useStore((s) => s.sessions);
   const techniques = useStore((s) => s.techniques);
 
@@ -59,8 +61,8 @@ export function JournalStats() {
     <View style={styles.root}>
       <Segmented
         options={[
-          { value: 'month', label: 'Miesiąc' },
-          { value: 'year', label: 'Rok' },
+          { value: 'month', label: tr.journal.month },
+          { value: 'year', label: tr.journal.year },
         ]}
         value={period}
         onChange={setPeriod}
@@ -72,7 +74,7 @@ export function JournalStats() {
         ) : (
           <>
             <View style={styles.yearHead}>
-              <Pressable onPress={() => setYear(year - 1)} hitSlop={10} accessibilityLabel="Poprzedni rok">
+              <Pressable onPress={() => setYear(year - 1)} hitSlop={10} accessibilityLabel={tr.dates.previousYear}>
                 <ThemedText themeColor="accent" style={styles.arrow}>
                   ‹
                 </ThemedText>
@@ -82,7 +84,7 @@ export function JournalStats() {
                 onPress={() => setYear(year + 1)}
                 disabled={String(year) >= today.slice(0, 4)}
                 hitSlop={10}
-                accessibilityLabel="Następny rok"
+                accessibilityLabel={tr.dates.nextYear}
                 style={String(year) >= today.slice(0, 4) && styles.disabled}>
                 <ThemedText themeColor="accent" style={styles.arrow}>
                   ›
@@ -95,25 +97,25 @@ export function JournalStats() {
       </ThemedView>
 
       <View style={[styles.summary, { borderColor: theme.backgroundSelected }]}>
-        <Stat value={String(stats.sessions)} label="treningów" />
-        <Stat value={formatHours(stats.hours)} label="godzin na macie" />
-        <Stat value={String(stats.techniques.length)} label="technik" />
+        <Stat value={String(stats.sessions)} label={tr.journal.sessionsLabel(stats.sessions)} />
+        <Stat value={formatHours(stats.hours)} label={tr.journal.hoursLabel} />
+        <Stat value={String(stats.techniques.length)} label={tr.journal.techniquesLabel(stats.techniques.length)} />
       </View>
 
       <ThemedText type="smallBold" themeColor="textSecondary" style={styles.section}>
-        Godziny {period === 'month' ? 'w tygodniach' : 'w miesiącach'}
+        {period === 'month' ? tr.journal.hoursPerWeek : tr.journal.hoursPerMonth}
       </ThemedText>
       <BarChart bars={bars} format={formatHours} />
       <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
-        Liczone jako {formatHours(HOURS_PER_SESSION)} h na trening.
+        {tr.journal.hoursNote(formatHours(HOURS_PER_SESSION))}
       </ThemedText>
 
       <ThemedText type="smallBold" themeColor="textSecondary" style={styles.section}>
-        Najczęściej trenowane
+        {tr.journal.mostTrained}
       </ThemedText>
       {top.length === 0 && (
         <ThemedText type="small" themeColor="textSecondary">
-          Brak treningów w tym okresie.
+          {tr.journal.noneInPeriod}
         </ThemedText>
       )}
       {top.map(({ id, count }) => {
