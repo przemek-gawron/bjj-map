@@ -1,9 +1,11 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { useEffect } from 'react';
-import { StyleSheet, useColorScheme } from 'react-native';
+import { Appearance, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { useSettings } from '@/data/settings';
 import { useStore } from '@/data/store';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useTheme } from '@/hooks/use-theme';
 import { useLanguage, useT } from '@/i18n';
 
@@ -16,6 +18,12 @@ export default function RootLayout() {
   const theme = useTheme();
   const tr = useT();
   const language = useLanguage();
+  const appearance = useSettings((s) => s.appearance);
+
+  // native chrome (status bar, alerts, keyboard, tab bar) follows the chosen appearance too
+  useEffect(() => {
+    Appearance.setColorScheme(appearance === 'system' ? 'unspecified' : appearance);
+  }, [appearance]);
 
   // starter map names follow the app language, once the saved data has loaded
   useEffect(() => {

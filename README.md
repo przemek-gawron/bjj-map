@@ -15,7 +15,7 @@ Aplikacja mobilna (iOS / Android) w Expo, działa też w przeglądarce.
 
 Każda technika ma status: **Widziałem → Ćwiczę → Działa w sparingu**.
 
-**Ustawienia** (zębatka na Mapie): język (systemowy, polski, angielski), opis aplikacji i wersja, usunięcie wszystkich danych. Aplikacja jest po polsku i po angielsku — teksty są w `src/i18n/`.
+**Ustawienia** (zębatka na Mapie): wygląd (domyślnie ciemny, można przełączyć na jasny albo systemowy), język (systemowy, polski, angielski), opis aplikacji i wersja, usunięcie wszystkich danych. Aplikacja jest po polsku i po angielsku — teksty są w `src/i18n/`.
 
 ### Planowane
 

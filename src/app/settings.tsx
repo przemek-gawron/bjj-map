@@ -9,7 +9,7 @@ import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
-import { type LanguageSetting, useSettings } from '@/data/settings';
+import { type AppearanceSetting, type LanguageSetting, useSettings } from '@/data/settings';
 import { useT } from '@/i18n';
 import { confirm } from '@/utils/confirm';
 import { deletePositionPhoto } from '@/utils/pick-photo';
@@ -18,6 +18,8 @@ export default function SettingsScreen() {
   const tr = useT();
   const language = useSettings((s) => s.language);
   const setLanguage = useSettings((s) => s.setLanguage);
+  const appearance = useSettings((s) => s.appearance);
+  const setAppearance = useSettings((s) => s.setAppearance);
   const resetAll = useStore((s) => s.resetAll);
 
   const deleteAll = () =>
@@ -30,6 +32,18 @@ export default function SettingsScreen() {
   return (
     <ThemedView style={styles.root}>
       <ScrollView contentContainerStyle={styles.content}>
+        <Section title={tr.settings.appearance}>
+          <Segmented<AppearanceSetting>
+            options={[
+              { value: 'dark', label: tr.settings.appearanceDark },
+              { value: 'light', label: tr.settings.appearanceLight },
+              { value: 'system', label: tr.settings.appearanceSystem },
+            ]}
+            value={appearance}
+            onChange={setAppearance}
+          />
+        </Section>
+
         <Section title={tr.settings.language}>
           <Segmented<LanguageSetting>
             options={[
