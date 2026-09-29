@@ -31,11 +31,15 @@ type Props = {
   isTechniqueActive: (t: Technique) => boolean;
   /** Space kept free at the bottom (tab bar / sheet) for the zoom controls. */
   controlsBottom: number;
+  /** false when the layout is computed rather than the user's own: no dragging, no tidying. */
+  draggable?: boolean;
+  /** Start zoomed to show everything above `controlsBottom` (never below a readable zoom) instead of from the top. */
+  fitOnStart?: boolean;
 };
 
 type Drag = { id: string; x: number; y: number };
 
-export function MapCanvas({ positions, techniques, selectedId, onSelect, isPositionActive, isTechniqueActive, controlsBottom }: Props) {
+export function MapCanvas({ positions, techniques, selectedId, onSelect, isPositionActive, isTechniqueActive, controlsBottom, draggable = true, fitOnStart = false }: Props) {
   const theme = useTheme();
   const tr = useT();
   const drills = useStore((s) => s.drills);
@@ -121,10 +125,11 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
     set(ty, -b.y * s);
   };
 
-  /** Start view: as wide as the screen allows but never below a readable scale, from the top of the map. */
+  /** Start view: as wide (or, with fitOnStart, as much) as the screen allows but never below a readable scale, from the top of the map. */
   const readable = (vp = viewport, animate = true, b = bounds) => {
     if (!vp) return;
-    const s = Math.min(1, Math.max(READABLE_SCALE, vp.width / b.width));
+    const room = fitOnStart ? Math.min(vp.width / b.width, (vp.height - controlsBottom) / b.height) : vp.width / b.width;
+    const s = Math.min(1, Math.max(READABLE_SCALE, room));
     const set = (v: SharedValue<number>, to: number) => v.set(animate ? withTiming(to) : to);
     set(scale, s);
     set(tx, (vp.width - b.width * s) / 2 - b.x * s);
@@ -217,6 +222,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
                 isTechniqueActive={isTechniqueActive}
                 scale={scale}
                 canvasGesture={canvasPan}
+                draggable={draggable}
                 onSelect={onSelect}
                 onDrag={setDrag}
               />
@@ -230,7 +236,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
           { label: '+', a11y: tr.map.zoomIn, onPress: () => zoomBy(1.3) },
           { label: '−', a11y: tr.map.zoomOut, onPress: () => zoomBy(1 / 1.3) },
           { label: '⤢', a11y: tr.map.fit, onPress: () => fit() },
-          { label: '▦', a11y: tr.map.tidy, onPress: tidy },
+          ...(draggable ? [{ label: '▦', a11y: tr.map.tidy, onPress: tidy }] : []),
         ].map((b) => (
           <Pressable
             key={b.label}
@@ -276,9 +282,10 @@ type NodeProps = {
   canvasGesture: GestureType;
   onSelect: (id: string) => void;
   onDrag: (drag: Drag | null) => void;
+  draggable: boolean;
 };
 
-function MapNode({ position, x, y, active, selected, submissions, drillCount, isTechniqueActive, scale, canvasGesture, onSelect, onDrag }: NodeProps) {
+function MapNode({ position, x, y, active, selected, submissions, drillCount, isTechniqueActive, scale, canvasGesture, onSelect, onDrag, draggable }: NodeProps) {
   const theme = useTheme();
   const tr = useT();
   const { id } = position;
@@ -311,8 +318,8 @@ function MapNode({ position, x, y, active, selected, submissions, drillCount, is
     const tap = Gesture.Tap()
       .runOnJS(true)
       .onEnd(() => onSelect(id));
-    return Gesture.Exclusive(pan, tap);
-  }, [id, origin, scale, canvasGesture, onSelect, onDrag]);
+    return draggable ? Gesture.Exclusive(pan, tap) : tap;
+  }, [id, origin, scale, canvasGesture, onSelect, onDrag, draggable]);
 
   return (
     <GestureDetector gesture={gesture}>

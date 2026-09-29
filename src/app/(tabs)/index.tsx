@@ -5,6 +5,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Chip } from '@/components/chip';
 import { MapCanvas } from '@/components/map/map-canvas';
+import { neighborhood } from '@/components/map/neighborhood';
 import { PositionSheet } from '@/components/map/position-sheet';
 import { Screen } from '@/components/screen';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
@@ -31,29 +32,32 @@ const GROUPS: PositionGroup[] = [
 export default function MapScreen() {
   const theme = useTheme();
   const tr = useT();
-  const positions = useStore((s) => s.positions);
-  const techniques = useStore((s) => s.techniques);
+  const allPositions = useStore((s) => s.positions);
+  const allTechniques = useStore((s) => s.techniques);
 
   const [typeFilter, setTypeFilter] = useState<TechniqueType | null>(null);
-  const [groupFilter, setGroupFilter] = useState<PositionGroup | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sheetHeight, setSheetHeight] = useState(0);
   const [areaHeight, setAreaHeight] = useState(0);
 
-  const groupOf = (id: string) => positions.find((p) => p.id === id)?.group;
-  const selected = positions.find((p) => p.id === selectedId);
+  // One position at a time: it sits in the middle, where you come from above it, where
+  // its techniques lead below. Tapping a neighbour walks there; "back" retraces the steps.
+  const [path, setPath] = useState<string[]>([]);
+  const [sheetOpen, setSheetOpen] = useState(true);
+  const centerId = [...path].reverse().find((id) => allPositions.some((p) => p.id === id)) ?? allPositions[0]?.id;
+  const { positions, techniques } = centerId ? neighborhood(centerId, allPositions, allTechniques) : { positions: [], techniques: [] };
+  const center = positions.find((p) => p.id === centerId);
+  const selected = sheetOpen ? center : undefined;
+  const walkTo = (id: string) => {
+    if (id === centerId) return setSheetOpen(true);
+    setPath([...path, id]);
+    setSheetOpen(true);
+  };
+  const goBack = () => setPath(path.slice(0, -1));
+  const groupFilter = center?.group ?? null;
 
-  // group filter = techniques *starting* in that group ("co mogę zrobić z gardy")
-  const isTechniqueActive = (t: Technique) =>
-    (!typeFilter || t.type === typeFilter) &&
-    (!groupFilter || groupOf(t.from) === groupFilter) &&
-    (!selectedId || t.from === selectedId || t.to === selectedId);
-  const filtering = !!typeFilter || !!groupFilter || !!selectedId;
+  const isTechniqueActive = (t: Technique) => !typeFilter || t.type === typeFilter;
   const isPositionActive = (p: Position) =>
-    !filtering ||
-    p.id === selectedId ||
-    (!!groupFilter && !typeFilter && !selectedId && p.group === groupFilter) ||
-    techniques.some((t) => isTechniqueActive(t) && (t.from === p.id || t.to === p.id));
+    !typeFilter || p.id === centerId || techniques.some((t) => isTechniqueActive(t) && (t.from === p.id || t.to === p.id));
 
   const bottom = useTabBarInset() + Spacing.two;
 
@@ -77,23 +81,29 @@ export default function MapScreen() {
         ))}
       </ScrollView>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filters} contentContainerStyle={styles.chips}>
-        {GROUPS.filter((g) => positions.some((p) => p.group === g)).map((group) => (
+        {path.length > 0 && <Chip small label={tr.map.back} onPress={goBack} />}
+        {GROUPS.filter((g) => allPositions.some((p) => p.group === g)).map((group) => (
           <Chip
             key={group}
             small
             label={tr.group[group]}
             selected={groupFilter === group}
-            onPress={() => setGroupFilter(groupFilter === group ? null : group)}
+            // jump to the group's first position
+            onPress={() => walkTo(allPositions.find((p) => p.group === group)!.id)}
           />
         ))}
       </ScrollView>
 
       <View style={styles.area} onLayout={(e) => setAreaHeight(e.nativeEvent.layout.height)}>
         <MapCanvas
+          // a fresh view per centre: every neighbourhood has its own size
+          key={centerId}
+          draggable={false}
+          fitOnStart
           positions={positions}
           techniques={techniques}
-          selectedId={selectedId}
-          onSelect={(id) => setSelectedId((cur) => (cur === id ? null : id))}
+          selectedId={centerId ?? null}
+          onSelect={walkTo}
           isPositionActive={isPositionActive}
           isTechniqueActive={isTechniqueActive}
           controlsBottom={selected ? bottom + sheetHeight : bottom}
@@ -104,8 +114,10 @@ export default function MapScreen() {
             position={selected}
             bottom={bottom}
             maxHeight={areaHeight - bottom}
-            onClose={() => setSelectedId(null)}
+            onClose={() => setSheetOpen(false)}
             onHeight={setSheetHeight}
+            // collapsed, so the neighbours below stay visible; drag it up for the details
+            initialSnap="collapsed"
           />
         )}
       </View>

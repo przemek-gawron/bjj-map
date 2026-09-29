@@ -23,9 +23,11 @@ type Props = {
   onClose: () => void;
   /** Reports the sheet's height so the map can keep its controls above it. */
   onHeight: (height: number) => void;
+  /** Size the sheet opens at; it keeps whatever the user drags it to afterwards. */
+  initialSnap?: Snap;
 };
 
-type Snap = 'collapsed' | 'half' | 'full';
+export type Snap = 'collapsed' | 'half' | 'full';
 /** Collapsed: just the handle and a one-line header, so the map stays visible. */
 const PEEK = 64;
 
@@ -35,7 +37,7 @@ const PEEK = 64;
  * The chosen size stays when another tile is picked, so a collapsed sheet lets you
  * browse the map tile by tile.
  */
-export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight }: Props) {
+export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight, initialSnap = 'half' }: Props) {
   const theme = useTheme();
   const tr = useT();
   const positions = useStore((s) => s.positions);
@@ -49,12 +51,12 @@ export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight }
   const drills = drillsForPosition(position.id, allDrills, techniques);
   const nameOf = (id: string | null) => positions.find((p) => p.id === id)?.name;
 
-  const [snap, setSnap] = useState<Snap>('half');
+  const [snap, setSnap] = useState<Snap>(initialSnap);
   const snaps = useMemo(
     () => ({ collapsed: PEEK, half: Math.max(PEEK, Math.round(maxHeight * 0.5)), full: Math.max(PEEK, maxHeight - 8) }),
     [maxHeight]
   );
-  const height = useSharedValue(snaps.half);
+  const height = useSharedValue(snaps[initialSnap]);
   const dragStart = useSharedValue(0);
 
   useEffect(() => {

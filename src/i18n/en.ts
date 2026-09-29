@@ -65,6 +65,7 @@ export const en: Dict = {
     tidyConfirm: 'Tidy up',
     expandSheet: 'Expand panel',
     collapseSheet: 'Collapse panel',
+    back: '← Back',
     close: 'Close',
     sideTop: 'you are on top',
     sideBottom: 'you are on the bottom',
