@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Chip } from '@/components/chip';
+import { tidyLayout } from '@/components/map/geometry';
+import { GroupBoard } from '@/components/map/group-board';
 import { MapCanvas } from '@/components/map/map-canvas';
 import { PositionSheet } from '@/components/map/position-sheet';
 import { Screen } from '@/components/screen';
@@ -31,8 +33,8 @@ const GROUPS: PositionGroup[] = [
 export default function MapScreen() {
   const theme = useTheme();
   const tr = useT();
-  const positions = useStore((s) => s.positions);
-  const techniques = useStore((s) => s.techniques);
+  const allPositions = useStore((s) => s.positions);
+  const allTechniques = useStore((s) => s.techniques);
 
   const [typeFilter, setTypeFilter] = useState<TechniqueType | null>(null);
   const [groupFilter, setGroupFilter] = useState<PositionGroup | null>(null);
@@ -40,20 +42,30 @@ export default function MapScreen() {
   const [sheetHeight, setSheetHeight] = useState(0);
   const [areaHeight, setAreaHeight] = useState(0);
 
-  const groupOf = (id: string) => positions.find((p) => p.id === id)?.group;
-  const selected = positions.find((p) => p.id === selectedId);
+  // Two levels. Without a group: a board of group cards, no arrows at all. With a group:
+  // its positions plus the ones its techniques lead to or come from, laid out on their
+  // own — never the whole map at once.
+  const groupOf = (id: string) => allPositions.find((p) => p.id === id)?.group;
+  const inGroup = (t: Technique) => groupOf(t.from) === groupFilter || (!!t.to && groupOf(t.to) === groupFilter);
+  const groupTechniques = allTechniques.filter(inGroup);
+  const groupIds = new Set(groupTechniques.flatMap((t) => (t.to ? [t.from, t.to] : [t.from])));
+  const groupPositions = allPositions.filter((p) => p.group === groupFilter || groupIds.has(p.id));
+  const groupLayout = tidyLayout(groupPositions);
+  const positions = groupPositions.map((p) => ({ ...p, layout: groupLayout[p.id] }));
+  const techniques = groupTechniques;
 
-  // group filter = techniques *starting* in that group ("co mogę zrobić z gardy")
+  const selected = positions.find((p) => p.id === selectedId);
   const isTechniqueActive = (t: Technique) =>
-    (!typeFilter || t.type === typeFilter) &&
-    (!groupFilter || groupOf(t.from) === groupFilter) &&
-    (!selectedId || t.from === selectedId || t.to === selectedId);
-  const filtering = !!typeFilter || !!groupFilter || !!selectedId;
+    (!typeFilter || t.type === typeFilter) && (!selectedId || t.from === selectedId || t.to === selectedId);
+  const filtering = !!typeFilter || !!selectedId;
   const isPositionActive = (p: Position) =>
     !filtering ||
     p.id === selectedId ||
-    (!!groupFilter && !typeFilter && !selectedId && p.group === groupFilter) ||
     techniques.some((t) => isTechniqueActive(t) && (t.from === p.id || t.to === p.id));
+  const openGroup = (g: PositionGroup | null) => {
+    setGroupFilter(g);
+    setSelectedId(null);
+  };
 
   const bottom = useTabBarInset() + Spacing.two;
 
@@ -71,33 +83,37 @@ export default function MapScreen() {
           <SymbolView name={{ ios: 'gearshape', android: 'settings', web: 'settings' }} tintColor={theme.text} size={22} />
         </Pressable>
       }>
+      {groupFilter && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filters} contentContainerStyle={styles.chips}>
+          {TYPES.map((type) => (
+            <Chip key={type} small label={tr.type[type]} selected={typeFilter === type} onPress={() => setTypeFilter(typeFilter === type ? null : type)} />
+          ))}
+        </ScrollView>
+      )}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filters} contentContainerStyle={styles.chips}>
-        {TYPES.map((type) => (
-          <Chip key={type} small label={tr.type[type]} selected={typeFilter === type} onPress={() => setTypeFilter(typeFilter === type ? null : type)} />
-        ))}
-      </ScrollView>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filters} contentContainerStyle={styles.chips}>
-        {GROUPS.filter((g) => positions.some((p) => p.group === g)).map((group) => (
-          <Chip
-            key={group}
-            small
-            label={tr.group[group]}
-            selected={groupFilter === group}
-            onPress={() => setGroupFilter(groupFilter === group ? null : group)}
-          />
+        {groupFilter && <Chip small label={tr.map.allGroups} onPress={() => openGroup(null)} />}
+        {GROUPS.filter((g) => allPositions.some((p) => p.group === g)).map((group) => (
+          <Chip key={group} small label={tr.group[group]} selected={groupFilter === group} onPress={() => openGroup(group)} />
         ))}
       </ScrollView>
 
       <View style={styles.area} onLayout={(e) => setAreaHeight(e.nativeEvent.layout.height)}>
-        <MapCanvas
-          positions={positions}
-          techniques={techniques}
-          selectedId={selectedId}
-          onSelect={(id) => setSelectedId((cur) => (cur === id ? null : id))}
-          isPositionActive={isPositionActive}
-          isTechniqueActive={isTechniqueActive}
-          controlsBottom={selected ? bottom + sheetHeight : bottom}
-        />
+        {groupFilter ? (
+          <MapCanvas
+            // a fresh view per group: each has its own size
+            key={groupFilter}
+            draggable={false}
+            positions={positions}
+            techniques={techniques}
+            selectedId={selectedId}
+            onSelect={(id) => setSelectedId((cur) => (cur === id ? null : id))}
+            isPositionActive={isPositionActive}
+            isTechniqueActive={isTechniqueActive}
+            controlsBottom={selected ? bottom + sheetHeight : bottom}
+          />
+        ) : (
+          <GroupBoard positions={allPositions} techniques={allTechniques} onOpen={openGroup} bottom={bottom} />
+        )}
 
         {selected && areaHeight > 0 && (
           <PositionSheet

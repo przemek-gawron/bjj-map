@@ -65,6 +65,10 @@ export const en: Dict = {
     tidyConfirm: 'Tidy up',
     expandSheet: 'Expand panel',
     collapseSheet: 'Collapse panel',
+    allGroups: '← All groups',
+    groupMeta: (p: number, t: number) =>
+      `${p} ${enPlural(p, 'position', 'positions')} · ${t} ${enPlural(t, 'technique', 'techniques')}`,
+    groupSubmissions: (n: number) => `${n} ${enPlural(n, 'submission', 'submissions')}`,
     close: 'Close',
     sideTop: 'you are on top',
     sideBottom: 'you are on the bottom',

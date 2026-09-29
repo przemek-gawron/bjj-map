@@ -66,6 +66,10 @@ export const pl = {
     tidyConfirm: 'Uporządkuj',
     expandSheet: 'Rozwiń panel',
     collapseSheet: 'Zwiń panel',
+    allGroups: '← Wszystkie grupy',
+    groupMeta: (p: number, t: number) =>
+      `${p} ${plPlural(p, 'pozycja', 'pozycje', 'pozycji')} · ${t} ${plPlural(t, 'technika', 'techniki', 'technik')}`,
+    groupSubmissions: (n: number) => `${n} ${plPlural(n, 'kończenie', 'kończenia', 'kończeń')}`,
     close: 'Zamknij',
     sideTop: 'jesteś na górze',
     sideBottom: 'jesteś na dole',
