@@ -64,6 +64,8 @@ export const pl = {
     tidyTitle: 'Uporządkować mapę?',
     tidyMessage: 'Kafelki ustawią się w równych rzędach: pozycje z dołu po lewej, z góry po prawej. Twoje ręczne ułożenie zostanie zastąpione.',
     tidyConfirm: 'Uporządkuj',
+    expandSheet: 'Rozwiń panel',
+    collapseSheet: 'Zwiń panel',
     close: 'Zamknij',
     sideTop: 'jesteś na górze',
     sideBottom: 'jesteś na dole',

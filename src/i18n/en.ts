@@ -63,6 +63,8 @@ export const en: Dict = {
     tidyTitle: 'Tidy up the map?',
     tidyMessage: 'Tiles line up in neat rows: bottom positions on the left, top positions on the right. Your manual arrangement will be replaced.',
     tidyConfirm: 'Tidy up',
+    expandSheet: 'Expand panel',
+    collapseSheet: 'Collapse panel',
     close: 'Close',
     sideTop: 'you are on top',
     sideBottom: 'you are on the bottom',

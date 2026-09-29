@@ -1,7 +1,7 @@
 import { SymbolView } from 'expo-symbols';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Chip } from '@/components/chip';
 import { MapCanvas } from '@/components/map/map-canvas';
@@ -38,6 +38,7 @@ export default function MapScreen() {
   const [groupFilter, setGroupFilter] = useState<PositionGroup | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sheetHeight, setSheetHeight] = useState(0);
+  const [areaHeight, setAreaHeight] = useState(0);
 
   const groupOf = (id: string) => positions.find((p) => p.id === id)?.group;
   const selected = positions.find((p) => p.id === selectedId);
@@ -87,22 +88,33 @@ export default function MapScreen() {
         ))}
       </ScrollView>
 
-      <MapCanvas
-        positions={positions}
-        techniques={techniques}
-        selectedId={selectedId}
-        onSelect={(id) => setSelectedId((cur) => (cur === id ? null : id))}
-        isPositionActive={isPositionActive}
-        isTechniqueActive={isTechniqueActive}
-        controlsBottom={selected ? bottom + sheetHeight : bottom}
-      />
+      <View style={styles.area} onLayout={(e) => setAreaHeight(e.nativeEvent.layout.height)}>
+        <MapCanvas
+          positions={positions}
+          techniques={techniques}
+          selectedId={selectedId}
+          onSelect={(id) => setSelectedId((cur) => (cur === id ? null : id))}
+          isPositionActive={isPositionActive}
+          isTechniqueActive={isTechniqueActive}
+          controlsBottom={selected ? bottom + sheetHeight : bottom}
+        />
 
-      {selected && <PositionSheet position={selected} bottom={bottom} onClose={() => setSelectedId(null)} onHeight={setSheetHeight} />}
+        {selected && areaHeight > 0 && (
+          <PositionSheet
+            position={selected}
+            bottom={bottom}
+            maxHeight={areaHeight - bottom}
+            onClose={() => setSelectedId(null)}
+            onHeight={setSheetHeight}
+          />
+        )}
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  area: { flex: 1 },
   filters: { flexGrow: 0, marginBottom: Spacing.two, width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center' },
   chips: { gap: Spacing.two, paddingHorizontal: Spacing.three },
   settings: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
