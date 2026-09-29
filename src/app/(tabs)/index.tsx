@@ -18,6 +18,9 @@ import { useTabBarInset } from '@/hooks/use-tab-bar-inset';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 
+/** Past this many techniques "My game" dims arrows until a tile is picked, like "Everything" always does. */
+const FOCUS_FROM = 12;
+
 const TYPES: TechniqueType[] = ['submission', 'sweep', 'escape', 'pass', 'takedown', 'transition'];
 const GROUPS: PositionGroup[] = [
   'standing',
@@ -48,6 +51,7 @@ export default function MapScreen() {
   const myLayout = tidyLayout(myPositions);
   const positions = mine ? myPositions.map((p) => ({ ...p, layout: myLayout[p.id] })) : allPositions;
   const techniques = mine ? myTechniques : allTechniques;
+  const focusMode = !mine || myTechniques.length > FOCUS_FROM;
 
   const [typeFilter, setTypeFilter] = useState<TechniqueType | null>(null);
   const [groupFilter, setGroupFilter] = useState<PositionGroup | null>(null);
@@ -128,9 +132,9 @@ export default function MapScreen() {
           isPositionActive={isPositionActive}
           isTechniqueActive={isTechniqueActive}
           controlsBottom={selected ? bottom + sheetHeight : bottom}
-          focused={filtering}
+          focused={filtering || !focusMode}
         />
-        {!filtering && !(mine && myTechniques.length === 0) && (
+        {focusMode && !filtering && (
           <View pointerEvents="none" style={[styles.hintWrap, { bottom: bottom + 12 }]}>
             <ThemedText type="small" style={[styles.hint, { backgroundColor: theme.backgroundElement }]}>
               {tr.map.focusHint}
