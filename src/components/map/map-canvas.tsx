@@ -31,11 +31,13 @@ type Props = {
   isTechniqueActive: (t: Technique) => boolean;
   /** Space kept free at the bottom (tab bar / sheet) for the zoom controls. */
   controlsBottom: number;
+  /** false when the layout is computed rather than the user's own: no dragging, no tidying. */
+  draggable?: boolean;
 };
 
 type Drag = { id: string; x: number; y: number };
 
-export function MapCanvas({ positions, techniques, selectedId, onSelect, isPositionActive, isTechniqueActive, controlsBottom }: Props) {
+export function MapCanvas({ positions, techniques, selectedId, onSelect, isPositionActive, isTechniqueActive, controlsBottom, draggable = true }: Props) {
   const theme = useTheme();
   const tr = useT();
   const drills = useStore((s) => s.drills);
@@ -217,6 +219,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
                 isTechniqueActive={isTechniqueActive}
                 scale={scale}
                 canvasGesture={canvasPan}
+                draggable={draggable}
                 onSelect={onSelect}
                 onDrag={setDrag}
               />
@@ -230,7 +233,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
           { label: '+', a11y: tr.map.zoomIn, onPress: () => zoomBy(1.3) },
           { label: '−', a11y: tr.map.zoomOut, onPress: () => zoomBy(1 / 1.3) },
           { label: '⤢', a11y: tr.map.fit, onPress: () => fit() },
-          { label: '▦', a11y: tr.map.tidy, onPress: tidy },
+          ...(draggable ? [{ label: '▦', a11y: tr.map.tidy, onPress: tidy }] : []),
         ].map((b) => (
           <Pressable
             key={b.label}
@@ -276,9 +279,10 @@ type NodeProps = {
   canvasGesture: GestureType;
   onSelect: (id: string) => void;
   onDrag: (drag: Drag | null) => void;
+  draggable: boolean;
 };
 
-function MapNode({ position, x, y, active, selected, submissions, drillCount, isTechniqueActive, scale, canvasGesture, onSelect, onDrag }: NodeProps) {
+function MapNode({ position, x, y, active, selected, submissions, drillCount, isTechniqueActive, scale, canvasGesture, onSelect, onDrag, draggable }: NodeProps) {
   const theme = useTheme();
   const tr = useT();
   const { id } = position;
@@ -311,8 +315,8 @@ function MapNode({ position, x, y, active, selected, submissions, drillCount, is
     const tap = Gesture.Tap()
       .runOnJS(true)
       .onEnd(() => onSelect(id));
-    return Gesture.Exclusive(pan, tap);
-  }, [id, origin, scale, canvasGesture, onSelect, onDrag]);
+    return draggable ? Gesture.Exclusive(pan, tap) : tap;
+  }, [id, origin, scale, canvasGesture, onSelect, onDrag, draggable]);
 
   return (
     <GestureDetector gesture={gesture}>
