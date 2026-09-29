@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { type LayoutChangeEvent, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector, type GestureType } from 'react-native-gesture-handler';
 import Animated, { type SharedValue, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -33,11 +33,17 @@ type Props = {
   controlsBottom: number;
   /** false when the layout is computed rather than the user's own: no dragging, no tidying. */
   draggable?: boolean;
+  /**
+   * A tile is selected or a filter is on. Without focus the arrows are only a faint
+   * texture with no labels; with it, the matching arrows stand out with their labels
+   * and the rest all but disappear.
+   */
+  focused: boolean;
 };
 
 type Drag = { id: string; x: number; y: number };
 
-export function MapCanvas({ positions, techniques, selectedId, onSelect, isPositionActive, isTechniqueActive, controlsBottom, draggable = true }: Props) {
+export function MapCanvas({ positions, techniques, selectedId, onSelect, isPositionActive, isTechniqueActive, controlsBottom, draggable = true, focused }: Props) {
   const theme = useTheme();
   const tr = useT();
   const drills = useStore((s) => s.drills);
@@ -53,7 +59,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
   const edges = useMemo(() => buildEdges(techniques, layout), [techniques, layout]);
   const bounds = canvasBounds(layout);
   // the paths themselves are in the key: any change in routing (moved tile, edited technique) redraws
-  const svgKey = edges.map((e) => `${isTechniqueActive(e.technique) ? 1 : 0}${e.technique.status[0]}${e.d}`).join('') + selectedId + Object.values(bounds).join(',');
+  const svgKey = (focused ? 'f' : '') + edges.map((e) => `${isTechniqueActive(e.technique) ? 1 : 0}${e.technique.status[0]}${e.d}`).join('') + selectedId + Object.values(bounds).join(',');
 
   // ---- viewport transform (UI thread) ----
   const tx = useSharedValue(0);
@@ -151,6 +157,29 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
     scale.set(withTiming(s));
   };
 
+  // selecting a tile brings it and its neighbours into view, above the sheet
+  useEffect(() => {
+    if (!selectedId || !viewport) return;
+    const ids = new Set([selectedId]);
+    for (const t of techniques) {
+      if (t.from === selectedId && t.to) ids.add(t.to);
+      if (t.to === selectedId) ids.add(t.from);
+    }
+    const b = canvasBounds(Object.fromEntries(Object.entries(layout).filter(([id]) => ids.has(id))));
+    const h = viewport.height - controlsBottom;
+    // never below a readable zoom: labels are the point of focusing
+    const sc = Math.min(1, Math.max(READABLE_SCALE, Math.min(viewport.width / b.width, h / b.height)));
+    // centre the neighbourhood when it fits, otherwise the selected tile itself
+    const fits = b.width * sc <= viewport.width && b.height * sc <= h;
+    const c = fits
+      ? { x: b.x + b.width / 2, y: b.y + b.height / 2 }
+      : { x: layout[selectedId].x + NODE_W / 2, y: layout[selectedId].y + NODE_H / 2 };
+    scale.set(withTiming(sc));
+    tx.set(withTiming(viewport.width / 2 - c.x * sc));
+    ty.set(withTiming(h / 2 - c.y * sc));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- refit on selection or sheet size, not on every drag frame
+  }, [selectedId, controlsBottom, viewport]);
+
   const onLayout = (e: LayoutChangeEvent) => {
     const vp = { width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height };
     if (!viewport) readable(vp, false);
@@ -186,24 +215,25 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
               {edges.map(({ technique: t, d }) => {
                 const active = isTechniqueActive(t);
                 const touchesSelected = t.from === selectedId || t.to === selectedId;
+                const shown = focused && active;
                 return (
                   <Path
                     key={t.id}
                     d={d}
                     stroke={STATUS_COLOR[t.status]}
-                    strokeWidth={touchesSelected ? 3.5 : 2}
+                    strokeWidth={touchesSelected ? 3.5 : shown ? 2 : 1.5}
                     strokeDasharray={t.status === 'seen' ? '7 5' : undefined}
                     fill="none"
-                    strokeOpacity={active ? 1 : 0.12}
+                    strokeOpacity={shown ? 1 : focused ? 0.05 : 0.14}
                     // inactive edges drop the arrowhead: markers ignore the path's stroke opacity
-                    markerEnd={active ? `url(#arrow-${t.status})` : undefined}
+                    markerEnd={shown ? `url(#arrow-${t.status})` : undefined}
                   />
                 );
               })}
             </Svg>
 
             {edges.map(({ technique: t, label }) => (
-              <EdgeLabel key={t.id} technique={t} x={label.x} y={label.y} active={isTechniqueActive(t)} />
+              <EdgeLabel key={t.id} technique={t} x={label.x} y={label.y} active={focused && isTechniqueActive(t)} />
             ))}
 
             {positions.map((p) => (
@@ -255,7 +285,7 @@ function useFade(active: boolean, dimmed: number) {
 
 function EdgeLabel({ technique: t, x, y, active }: { technique: Technique; x: number; y: number; active: boolean }) {
   const theme = useTheme();
-  const fade = useFade(active, 0.15);
+  const fade = useFade(active, 0);
 
   return (
     <Animated.View pointerEvents="none" style={[styles.edgeLabel, { left: x - 70, top: y - 8 }, fade]}>

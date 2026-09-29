@@ -70,6 +70,7 @@ export const pl = {
     scopeAll: (n: number) => `Wszystko · ${n}`,
     mineEmptyTitle: 'Tu pojawi się Twoja gra',
     mineEmptyText: 'Oznacz techniki jako „Ćwiczę” albo „Działa w sparingu”, a zobaczysz tu tylko je i pozycje, które łączą. Całą mapę znajdziesz w „Wszystko”.',
+    focusHint: 'Dotknij pozycji, żeby zobaczyć jej techniki',
     close: 'Zamknij',
     sideTop: 'jesteś na górze',
     sideBottom: 'jesteś na dole',

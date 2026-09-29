@@ -128,7 +128,15 @@ export default function MapScreen() {
           isPositionActive={isPositionActive}
           isTechniqueActive={isTechniqueActive}
           controlsBottom={selected ? bottom + sheetHeight : bottom}
+          focused={filtering}
         />
+        {!filtering && !(mine && myTechniques.length === 0) && (
+          <View pointerEvents="none" style={[styles.hintWrap, { bottom: bottom + 12 }]}>
+            <ThemedText type="small" style={[styles.hint, { backgroundColor: theme.backgroundElement }]}>
+              {tr.map.focusHint}
+            </ThemedText>
+          </View>
+        )}
 
         {mine && myTechniques.length === 0 && (
           <View style={styles.emptyWrap} pointerEvents="none">
@@ -160,6 +168,9 @@ const styles = StyleSheet.create({
   scope: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', paddingHorizontal: Spacing.three, marginBottom: Spacing.two },
   emptyWrap: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', padding: Spacing.four },
   empty: { borderRadius: 14, padding: Spacing.three, gap: Spacing.one },
+  // bottom left, clear of the zoom controls on the right
+  hintWrap: { position: 'absolute', left: 12, right: 64, alignItems: 'flex-start' },
+  hint: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, overflow: 'hidden', fontSize: 13 },
   filters: { flexGrow: 0, marginBottom: Spacing.two, width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center' },
   chips: { gap: Spacing.two, paddingHorizontal: Spacing.three },
   settings: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
