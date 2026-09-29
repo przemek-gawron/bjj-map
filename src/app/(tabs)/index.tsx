@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Chip } from '@/components/chip';
+import { ThemedText } from '@/components/themed-text';
 import { MapCanvas } from '@/components/map/map-canvas';
 import { PositionSheet } from '@/components/map/position-sheet';
 import { Screen } from '@/components/screen';
@@ -97,7 +98,15 @@ export default function MapScreen() {
           isPositionActive={isPositionActive}
           isTechniqueActive={isTechniqueActive}
           controlsBottom={selected ? bottom + sheetHeight : bottom}
+          focused={filtering}
         />
+        {!filtering && (
+          <View pointerEvents="none" style={[styles.hintWrap, { bottom: bottom + 12 }]}>
+            <ThemedText type="small" style={[styles.hint, { backgroundColor: theme.backgroundElement }]}>
+              {tr.map.focusHint}
+            </ThemedText>
+          </View>
+        )}
 
         {selected && areaHeight > 0 && (
           <PositionSheet
@@ -115,6 +124,9 @@ export default function MapScreen() {
 
 const styles = StyleSheet.create({
   area: { flex: 1 },
+  // bottom left, clear of the zoom controls on the right
+  hintWrap: { position: 'absolute', left: 12, right: 64, alignItems: 'flex-start' },
+  hint: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, overflow: 'hidden', fontSize: 13 },
   filters: { flexGrow: 0, marginBottom: Spacing.two, width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center' },
   chips: { gap: Spacing.two, paddingHorizontal: Spacing.three },
   settings: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },

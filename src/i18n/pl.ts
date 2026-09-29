@@ -66,6 +66,7 @@ export const pl = {
     tidyConfirm: 'Uporządkuj',
     expandSheet: 'Rozwiń panel',
     collapseSheet: 'Zwiń panel',
+    focusHint: 'Dotknij pozycji, żeby zobaczyć jej techniki',
     close: 'Zamknij',
     sideTop: 'jesteś na górze',
     sideBottom: 'jesteś na dole',
