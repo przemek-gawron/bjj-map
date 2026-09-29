@@ -234,6 +234,12 @@ export const pl = {
     /** Heatmap row labels, Monday first; blanks keep it airy. */
     heatmapRows: ['pn', '', 'śr', '', 'pt', '', ''],
   },
+  updates: {
+    installed: 'Aplikacja zaktualizowana',
+    ready: 'Nowa wersja jest gotowa',
+    restart: 'Uruchom ponownie',
+    version: (when: string) => `Wersja z ${when}`,
+  },
   settings: {
     title: 'Ustawienia',
     about: 'O aplikacji',

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Appearance, Platform, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { UpdateToast } from '@/components/update-toast';
 import { useSettings } from '@/data/settings';
 import { useStore } from '@/data/store';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -55,6 +56,8 @@ export default function RootLayout() {
           <Stack.Screen name="position/form" options={{ presentation: 'modal' }} />
           <Stack.Screen name="settings" options={{ title: tr.settings.title }} />
         </Stack>
+        {/* expo-updates has nothing to report on web */}
+        {Platform.OS !== 'web' && <UpdateToast />}
       </ThemeProvider>
     </GestureHandlerRootView>
   );

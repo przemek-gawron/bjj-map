@@ -231,6 +231,12 @@ export const en: Dict = {
     trainingOn: (day: string) => `${day}: training`,
     heatmapRows: ['Mon', '', 'Wed', '', 'Fri', '', ''],
   },
+  updates: {
+    installed: 'App updated',
+    ready: 'A new version is ready',
+    restart: 'Restart',
+    version: (when: string) => `Version from ${when}`,
+  },
   settings: {
     title: 'Settings',
     about: 'About',
