@@ -1,4 +1,5 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { Appearance, Platform, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -9,6 +10,15 @@ import { useStore } from '@/data/store';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useTheme } from '@/hooks/use-theme';
 import { useLanguage, useT } from '@/i18n';
+
+// keep the splash up until the saved map and settings have loaded, so the first frame
+// already has the right theme and data, and hold it a moment so it doesn't just blink
+SplashScreen.preventAutoHideAsync().catch(() => {});
+SplashScreen.setOptions({ duration: 300, fade: true });
+const LAUNCHED_AT = Date.now();
+const SPLASH_MIN_MS = 600;
+/** Hide anyway if storage never answers. */
+const SPLASH_MAX_MS = 3000;
 
 /**
  * Tabs live in the (tabs) group. Technique and drill screens sit on the root stack so they open
@@ -34,6 +44,24 @@ export default function RootLayout() {
     if (useStore.persist.hasHydrated()) localize();
     return useStore.persist.onFinishHydration(localize);
   }, [language]);
+
+  useEffect(() => {
+    const stores = [useStore.persist, useSettings.persist];
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const hideWhenLoaded = () => {
+      if (!stores.every((store) => store.hasHydrated())) return;
+      clearTimeout(timer);
+      timer = setTimeout(SplashScreen.hide, Math.max(0, SPLASH_MIN_MS - (Date.now() - LAUNCHED_AT)));
+    };
+    hideWhenLoaded();
+    const unsubscribe = stores.map((store) => store.onFinishHydration(hideWhenLoaded));
+    const fallback = setTimeout(SplashScreen.hide, SPLASH_MAX_MS);
+    return () => {
+      unsubscribe.forEach((off) => off());
+      clearTimeout(timer);
+      clearTimeout(fallback);
+    };
+  }, []);
 
   return (
     <GestureHandlerRootView style={styles.root}>
