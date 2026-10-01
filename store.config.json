@@ -1,0 +1,52 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "copyright": "2026 Przemysław Gawron",
+    "categories": ["SPORTS", "HEALTH_AND_FITNESS"],
+    "info": {
+      "pl": {
+        "title": "BJJ Map",
+        "subtitle": "Mapa technik i dziennik BJJ",
+        "promoText": "Twoja gra w BJJ jako mapa: pozycje, przejścia między nimi, plan na tydzień i dziennik treningów. Bez konta, wszystko zostaje na Twoim telefonie.",
+        "description": "BJJ Map to osobista mapa i dziennik treningowy do brazylijskiego jiu-jitsu. Notujesz techniki z zajęć, układasz je w mapę pozycji, planujesz, co ćwiczyć w tym tygodniu, i widzisz, co i kiedy było trenowane.\n\nAplikacja powstała z myślą o białych i niebieskich pasach: rośnie razem z Tobą, zamiast zasypywać Cię gotową encyklopedią.\n\nMAPA\n• Pozycje to kafelki z ilustracją albo Twoim zdjęciem, techniki to strzałki między nimi.\n• „Moja gra” pokazuje tylko to, co ćwiczysz i co działa w sparingu. „Wszystko” to pełna mapa.\n• Tapnij pozycję, żeby zobaczyć tylko jej przejścia: co możesz z niej zrobić i jak do niej trafić.\n• Filtry po typie techniki (sweepy, kończenia, ucieczki, przejścia gardy) i po grupie pozycji.\n\nTECHNIKI I DRILLE\n• Każda technika ma status: Widziałem → Ćwiczę → Działa w sparingu.\n• Link do wideo albo szybkie wyszukiwanie na YouTube.\n• Drille solo (shrimp, mostek, technical stand-up, granby roll…) przypięte do pozycji i technik, z dawką i opisem.\n\nPLAN TYGODNIA\n• Wybierz techniki i drille na ten tydzień i odhaczaj je po treningu.\n• Postęp tygodnia i przeniesienie planu z poprzedniego tygodnia jednym tapnięciem.\n\nDZIENNIK\n• Oś czasu treningów: data, przećwiczone techniki i drille, notatka.\n• Statystyki miesiąca i roku: kalendarz treningów, godziny na macie, najczęściej trenowane techniki.\n\nPRZYKŁADOWA BIBLIOTEKA\nJednym przyciskiem dodasz około 20 pozycji, 78 technik i 22 drille z opisami: podstawy dla białego i niebieskiego pasa. Możesz je dowolnie edytować i usuwać.\n\nPRYWATNIE\nBez konta, bez reklam, bez śledzenia. Wszystkie dane zostają na Twoim urządzeniu.\n\nAplikacja działa po polsku i po angielsku, w ciemnym i jasnym motywie.",
+        "keywords": ["jiu jitsu", "brazylijskie", "grappling", "dziennik", "trening", "techniki", "sztuki walki", "mata", "gi", "nogi", "drill"],
+        "releaseNotes": "Pierwsza wersja BJJ Map: mapa pozycji i technik, plan tygodnia, drille solo i dziennik treningów ze statystykami.",
+        "supportUrl": "https://github.com/przemek-gawron/bjj-map/issues",
+        "privacyPolicyUrl": "https://github.com/przemek-gawron/bjj-map/blob/main/PRIVACY.md"
+      },
+      "en-US": {
+        "title": "BJJ Map",
+        "subtitle": "Technique map & training log",
+        "promoText": "Your BJJ game as a map: positions, the transitions between them, a weekly plan and a training log. No account, everything stays on your phone.",
+        "description": "BJJ Map is a personal map and training journal for Brazilian jiu-jitsu. Write down techniques from class, lay them out as a map of positions, plan what to drill this week, and see what you trained and when.\n\nIt's built for white and blue belts: it grows with you instead of burying you in a ready-made encyclopedia.\n\nMAP\n• Positions are tiles with an illustration or your own photo; techniques are arrows between them.\n• \"My game\" shows only what you're drilling and what works in sparring. \"All\" is the full map.\n• Tap a position to see only its transitions: what you can do from there and how you get there.\n• Filter by technique type (sweeps, submissions, escapes, guard passes) and by position group.\n\nTECHNIQUES AND DRILLS\n• Every technique has a status: Seen → Drilling → Works in sparring.\n• Link a video or search YouTube in one tap.\n• Solo drills (shrimp, bridge, technical stand-up, granby roll…) pinned to positions and techniques, with reps and notes.\n\nWEEKLY PLAN\n• Pick techniques and drills for the week and tick them off after class.\n• Weekly progress, and carry last week's plan over in one tap.\n\nJOURNAL\n• A timeline of sessions: date, techniques and drills you worked on, notes.\n• Monthly and yearly stats: training calendar, hours on the mat, your most trained techniques.\n\nSAMPLE LIBRARY\nOne button adds about 20 positions, 78 techniques and 22 drills with descriptions: the fundamentals for white and blue belts. Edit or delete anything.\n\nPRIVATE\nNo account, no ads, no tracking. All your data stays on your device.\n\nAvailable in English and Polish, in dark and light themes.",
+        "keywords": ["jiu jitsu", "brazilian", "grappling", "training log", "journal", "martial arts", "gi", "nogi", "drills", "mat"],
+        "releaseNotes": "The first BJJ Map release: a map of positions and techniques, a weekly plan, solo drills and a training journal with stats.",
+        "supportUrl": "https://github.com/przemek-gawron/bjj-map/issues",
+        "privacyPolicyUrl": "https://github.com/przemek-gawron/bjj-map/blob/main/PRIVACY.md"
+      }
+    },
+    "advisory": {
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProloungedGraphicOrSadistic": "NONE",
+      "gambling": false,
+      "unrestrictedWebAccess": false,
+      "kidsAgeBand": null,
+      "ageRatingOverride": "NONE",
+      "koreaAgeRatingOverride": "NONE"
+    },
+    "release": {
+      "automaticRelease": false,
+      "phasedRelease": true
+    }
+  }
+}
