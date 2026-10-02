@@ -65,7 +65,7 @@ export default function TechniqueScreen() {
       />
       <ScrollView contentContainerStyle={styles.content}>
         <ThemedText type="small" themeColor="textSecondary">
-          {tr.type[technique.type]}
+          {tr.typeSingular[technique.type]}
         </ThemedText>
         <ThemedText type="subtitle" style={styles.path}>
           {positionName(technique.from)}

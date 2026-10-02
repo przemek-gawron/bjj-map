@@ -144,7 +144,7 @@ export default function TechniquesScreen() {
                           <View style={styles.flex}>
                             <ThemedText type="smallBold">{t.name}</ThemedText>
                             <ThemedText type="small" themeColor="textSecondary">
-                              {tr.type[t.type]}
+                              {tr.typeSingular[t.type]}
                               {t.to ? ' → ' + positions.find((x) => x.id === t.to)?.name : ''}
                               {s ? ` · ${s.count}× · ${relativeDay(s.lastDate!)}` : ` · ${tr.techniques.notTrained}`}
                             </ThemedText>

@@ -35,6 +35,15 @@ export const pl = {
     takedown: 'Obalenia',
     transition: 'Przejścia',
   },
+  /** One technique's type (its screen, rows, the form); `type` names the filters. */
+  typeSingular: {
+    submission: 'Kończenie',
+    sweep: 'Sweep',
+    escape: 'Ucieczka',
+    pass: 'Przejście gardy',
+    takedown: 'Obalenie',
+    transition: 'Przejście',
+  },
   status: {
     seen: 'Widziałem',
     drilling: 'Ćwiczę',

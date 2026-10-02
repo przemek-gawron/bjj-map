@@ -106,7 +106,7 @@ export default function TechniqueFormScreen() {
         <Field label={tr.techniques.type}>
           <View style={styles.chips}>
             {TYPES.map((t) => (
-              <Chip key={t} label={tr.type[t]} selected={type === t} onPress={() => setType(t)} />
+              <Chip key={t} label={tr.typeSingular[t]} selected={type === t} onPress={() => setType(t)} />
             ))}
           </View>
         </Field>

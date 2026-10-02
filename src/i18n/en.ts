@@ -36,6 +36,14 @@ export const en: Dict = {
     takedown: 'Takedowns',
     transition: 'Transitions',
   },
+  typeSingular: {
+    submission: 'Submission',
+    sweep: 'Sweep',
+    escape: 'Escape',
+    pass: 'Guard pass',
+    takedown: 'Takedown',
+    transition: 'Transition',
+  },
   status: {
     seen: 'Seen it',
     drilling: 'Drilling',
