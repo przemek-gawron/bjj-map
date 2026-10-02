@@ -7,15 +7,16 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { toDateKey, weekStartOf } from '@/data/dates';
-import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Technique } from '@/data/types';
+import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 
 /** Toggles techniques and drills in this week's plan; changes apply immediately. */
 export default function PlanPickScreen() {
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const tr = useT();
   const plan = useStore((s) => s.plan);
   const positions = useStore((s) => s.positions);
@@ -69,7 +70,7 @@ export default function PlanPickScreen() {
 
         {drilling.length > 0 && (
           <View style={styles.group}>
-            <ThemedText type="smallBold" style={{ color: STATUS_COLOR.drilling }}>
+            <ThemedText type="smallBold" style={{ color: statusColor.drilling }}>
               {tr.plan.drillingNow}
             </ThemedText>
             <View style={styles.chips}>{drilling.map(chip)}</View>

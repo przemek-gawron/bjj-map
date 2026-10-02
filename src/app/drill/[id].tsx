@@ -7,9 +7,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { dayLabel, recentDays, relativeDay, toDateKey } from '@/data/dates';
-import { STATUS_COLOR } from '@/data/labels';
 import { drillIdsOf, trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
+import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 import { youtubeSearch } from '@/utils/youtube';
@@ -17,6 +17,7 @@ import { youtubeSearch } from '@/utils/youtube';
 export default function DrillScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const tr = useT();
   const drill = useStore((s) => s.drills.find((d) => d.id === id));
   const positions = useStore((s) => s.positions);
@@ -84,7 +85,7 @@ export default function DrillScreen() {
                 small
                 selected
                 label={t.name}
-                color={STATUS_COLOR[t.status]}
+                color={statusColor[t.status]}
                 onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}
               />
             ))}
@@ -115,7 +116,7 @@ export default function DrillScreen() {
             onPress={() => toggleDay(today)}
             style={({ pressed }) => [
               styles.todayButton,
-              { backgroundColor: doneOn.has(today) ? STATUS_COLOR.works : theme.accent },
+              { backgroundColor: doneOn.has(today) ? statusColor.works : theme.accent },
               pressed && styles.pressed,
             ]}>
             <ThemedText style={[styles.todayText, { color: doneOn.has(today) ? '#FFFFFF' : theme.onAccent }]}>
@@ -140,7 +141,7 @@ export default function DrillScreen() {
             <ThemedText type="smallBold">{tr.drills.history}</ThemedText>
             <View style={styles.links}>
               {stats.dates.map((date) => (
-                <Chip key={date} small label={dayLabel(date)} selected color={STATUS_COLOR.works} />
+                <Chip key={date} small label={dayLabel(date)} selected color={statusColor.works} />
               ))}
             </View>
           </ThemedView>

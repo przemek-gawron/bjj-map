@@ -10,15 +10,16 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { toDateKey, weekRangeLabel, weekStartOf } from '@/data/dates';
-import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Drill, Technique } from '@/data/types';
+import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 import { youtubeSearch } from '@/utils/youtube';
 
 export default function PlanScreen() {
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const tr = useT();
   const plan = useStore((s) => s.plan);
   const techniques = useStore((s) => s.techniques);
@@ -95,7 +96,7 @@ export default function PlanScreen() {
             {tr.plan.progress(done, total)}
           </ThemedText>
           <View style={[styles.progress, { backgroundColor: theme.backgroundElement }]}>
-            <View style={{ flex: done, backgroundColor: STATUS_COLOR.works }} />
+            <View style={{ flex: done, backgroundColor: statusColor.works }} />
             <View style={{ flex: total - done }} />
           </View>
         </View>
@@ -185,6 +186,7 @@ type PlanItemProps = {
 /** A planned technique or drill: tick it off for today, open it, watch its video, swipe to unplan. */
 function PlanItem({ name, subtitle, checked, onCheck, onOpen, onRemove, videoUrl, searchName, accessory }: PlanItemProps) {
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const tr = useT();
 
   return (
@@ -197,8 +199,8 @@ function PlanItem({ name, subtitle, checked, onCheck, onOpen, onRemove, videoUrl
             accessibilityLabel={checked ? tr.plan.uncheckToday(name) : tr.plan.checkToday(name)}
             style={[
               styles.check,
-              { borderColor: checked ? STATUS_COLOR.works : theme.textSecondary },
-              checked && { backgroundColor: STATUS_COLOR.works },
+              { borderColor: checked ? statusColor.works : theme.textSecondary },
+              checked && { backgroundColor: statusColor.works },
             ]}>
             {checked && (
               <Animated.View entering={ZoomIn.duration(180)}>

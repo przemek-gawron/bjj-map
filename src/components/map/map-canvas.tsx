@@ -8,9 +8,9 @@ import { buildEdges, canvasBounds, NODE_H, NODE_W, tidyLayout } from './geometry
 
 import { PositionIllustration } from '@/components/position-illustration';
 import { drillsForPosition } from '@/data/drills';
-import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Position, Status, Technique } from '@/data/types';
+import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 import { confirm } from '@/utils/confirm';
@@ -45,6 +45,7 @@ type Drag = { id: string; x: number; y: number };
 
 export function MapCanvas({ positions, techniques, selectedId, onSelect, isPositionActive, isTechniqueActive, controlsBottom, draggable = true, focused }: Props) {
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const tr = useT();
   const drills = useStore((s) => s.drills);
   const [drag, setDrag] = useState<Drag | null>(null);
@@ -58,8 +59,9 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
   }, [positions, drag]);
   const edges = useMemo(() => buildEdges(techniques, layout), [techniques, layout]);
   const bounds = canvasBounds(layout);
-  // the paths themselves are in the key: any change in routing (moved tile, edited technique) redraws
-  const svgKey = (focused ? 'f' : '') + edges.map((e) => `${isTechniqueActive(e.technique) ? 1 : 0}${e.technique.status[0]}${e.d}`).join('') + selectedId + Object.values(bounds).join(',');
+  // the paths themselves are in the key: any change in routing (moved tile, edited technique) redraws,
+  // and so does a theme switch, which changes the status colors
+  const svgKey = statusColor.seen + (focused ? 'f' : '') + edges.map((e) => `${isTechniqueActive(e.technique) ? 1 : 0}${e.technique.status[0]}${e.d}`).join('') + selectedId + Object.values(bounds).join(',');
 
   // ---- viewport transform (UI thread) ----
   const tx = useSharedValue(0);
@@ -208,7 +210,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
               <Defs>
                 {STATUSES.map((s) => (
                   <Marker key={s} id={`arrow-${s}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-                    <Path d="M 0 0 L 10 5 L 0 10 z" fill={STATUS_COLOR[s]} />
+                    <Path d="M 0 0 L 10 5 L 0 10 z" fill={statusColor[s]} />
                   </Marker>
                 ))}
               </Defs>
@@ -220,7 +222,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
                   <Path
                     key={t.id}
                     d={d}
-                    stroke={STATUS_COLOR[t.status]}
+                    stroke={statusColor[t.status]}
                     strokeWidth={touchesSelected ? 3.5 : shown ? 2 : 1.5}
                     strokeDasharray={t.status === 'seen' ? '7 5' : undefined}
                     fill="none"
@@ -285,11 +287,12 @@ function useFade(active: boolean, dimmed: number) {
 
 function EdgeLabel({ technique: t, x, y, active }: { technique: Technique; x: number; y: number; active: boolean }) {
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const fade = useFade(active, 0);
 
   return (
     <Animated.View pointerEvents="none" style={[styles.edgeLabel, { left: x - 70, top: y - 8 }, fade]}>
-      <Text numberOfLines={1} style={[styles.edgeLabelText, { color: STATUS_COLOR[t.status], backgroundColor: theme.background }]}>
+      <Text numberOfLines={1} style={[styles.edgeLabelText, { color: statusColor[t.status], backgroundColor: theme.background }]}>
         {t.name}
       </Text>
     </Animated.View>
@@ -314,6 +317,7 @@ type NodeProps = {
 
 function MapNode({ position, x, y, active, selected, submissions, drillCount, isTechniqueActive, scale, canvasGesture, onSelect, onDrag, draggable }: NodeProps) {
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const tr = useT();
   const { id } = position;
   const origin = useSharedValue({ x: 0, y: 0 });
@@ -374,7 +378,7 @@ function MapNode({ position, x, y, active, selected, submissions, drillCount, is
               {submissions.map((t) => (
                 <View
                   key={t.id}
-                  style={[styles.subDot, { backgroundColor: STATUS_COLOR[t.status], opacity: isTechniqueActive(t) ? 1 : 0.25 }]}
+                  style={[styles.subDot, { backgroundColor: statusColor[t.status], opacity: isTechniqueActive(t) ? 1 : 0.25 }]}
                 />
               ))}
               {submissions.length > 0 && (

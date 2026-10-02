@@ -13,10 +13,10 @@ import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { relativeDay } from '@/data/dates';
-import { STATUS_COLOR } from '@/data/labels';
 import { trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import type { Status, TechniqueType } from '@/data/types';
+import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
 import { useT } from '@/i18n';
@@ -27,6 +27,7 @@ const SIDE_COLOR = { top: '#3B82F6', bottom: '#8B5CF6', neutral: '#9CA3AF' };
 
 export default function TechniquesScreen() {
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const tr = useT();
   const positions = useStore((s) => s.positions);
   const techniques = useStore((s) => s.techniques);
@@ -71,7 +72,7 @@ export default function TechniquesScreen() {
         <Animated.View key="techniques" entering={FadeIn.duration(200)}>
           <View style={styles.progress}>
             {counts.map(({ status, n }) => (
-              <View key={status} style={{ flex: n, backgroundColor: STATUS_COLOR[status] }} />
+              <View key={status} style={{ flex: n, backgroundColor: statusColor[status] }} />
             ))}
           </View>
           <ThemedText type="small" themeColor="textSecondary" style={styles.summary}>
@@ -83,7 +84,7 @@ export default function TechniquesScreen() {
               <Chip
                 key={status}
                 label={`${tr.status[status]} · ${n}`}
-                color={STATUS_COLOR[status]}
+                color={statusColor[status]}
                 selected={statusFilter === status}
                 onPress={() => setStatusFilter(statusFilter === status ? null : status)}
               />

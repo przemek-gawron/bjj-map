@@ -13,16 +13,17 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { dayLabel, daysAgo, relativeDay, toDateKey, weekRangeLabel, weekStartOf } from '@/data/dates';
-import { STATUS_COLOR } from '@/data/labels';
 import { formatHours, sessionHours } from '@/data/stats';
 import { useStore } from '@/data/store';
 import type { Session } from '@/data/types';
+import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
 import { useT } from '@/i18n';
 
 export default function JournalScreen() {
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const tr = useT();
   const sessions = useStore((s) => s.sessions);
   const techniques = useStore((s) => s.techniques);
@@ -116,7 +117,7 @@ export default function JournalScreen() {
                           <View style={styles.chips}>
                             {s.techniqueIds.map((id) => {
                               const t = techniques.find((x) => x.id === id);
-                              return t && <Chip key={id} small selected label={t.name} color={STATUS_COLOR[t.status]} />;
+                              return t && <Chip key={id} small selected label={t.name} color={statusColor[t.status]} />;
                             })}
                             {s.drillIds?.map((id) => {
                               const d = drills.find((x) => x.id === id);

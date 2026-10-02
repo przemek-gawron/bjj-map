@@ -8,9 +8,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { dayLabel, recentDays, relativeDay, toDateKey } from '@/data/dates';
-import { STATUS_COLOR } from '@/data/labels';
 import { trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
+import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 import { youtubeSearch } from '@/utils/youtube';
@@ -18,6 +18,7 @@ import { youtubeSearch } from '@/utils/youtube';
 export default function TechniqueScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const tr = useT();
   const technique = useStore((s) => s.techniques.find((t) => t.id === id));
   const positions = useStore((s) => s.positions);
@@ -97,7 +98,7 @@ export default function TechniqueScreen() {
             onPress={() => toggleDay(today)}
             style={({ pressed }) => [
               styles.todayButton,
-              { backgroundColor: trainedOn.has(today) ? STATUS_COLOR.works : theme.accent },
+              { backgroundColor: trainedOn.has(today) ? statusColor.works : theme.accent },
               pressed && styles.pressed,
             ]}>
             <ThemedText style={[styles.todayText, { color: trainedOn.has(today) ? '#FFFFFF' : theme.onAccent }]}>{trainedOn.has(today) ? tr.techniques.trainedToday : tr.techniques.trainToday}</ThemedText>
@@ -120,7 +121,7 @@ export default function TechniqueScreen() {
             <ThemedText type="smallBold">{tr.techniques.history}</ThemedText>
             <View style={styles.history}>
               {stats.dates.map((date) => (
-                <Chip key={date} small label={dayLabel(date)} selected color={STATUS_COLOR.works} />
+                <Chip key={date} small label={dayLabel(date)} selected color={statusColor.works} />
               ))}
             </View>
           </ThemedView>

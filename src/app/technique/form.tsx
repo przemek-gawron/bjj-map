@@ -6,9 +6,9 @@ import { Chip } from '@/components/chip';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
-import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
 import type { Status, TechniqueType } from '@/data/types';
+import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
 import { useT } from '@/i18n';
@@ -20,6 +20,7 @@ const STATUSES: Status[] = ['seen', 'drilling', 'works'];
 export default function TechniqueFormScreen() {
   const { id, from: fromParam } = useLocalSearchParams<{ id?: string; from?: string }>();
   const theme = useTheme();
+  const statusColor = useStatusColors();
   const tr = useT();
   const positions = useStore((s) => s.positions);
   const existing = useStore((s) => s.techniques.find((t) => t.id === id));
@@ -137,7 +138,7 @@ export default function TechniqueFormScreen() {
         <Field label={tr.techniques.status}>
           <View style={styles.chips}>
             {STATUSES.map((s) => (
-              <Chip key={s} label={tr.status[s]} color={STATUS_COLOR[s]} selected={status === s} onPress={() => setStatus(s)} />
+              <Chip key={s} label={tr.status[s]} color={statusColor[s]} selected={status === s} onPress={() => setStatus(s)} />
             ))}
           </View>
         </Field>
