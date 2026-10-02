@@ -67,3 +67,10 @@ export const Spacing = {
 } as const;
 
 export const MaxContentWidth = 640;
+
+/**
+ * Side padding of text buttons in stack headers. Web headers have none of their own, and iOS 26
+ * draws a glass capsule hugging each header button, which squeezes a bare label against its edges.
+ */
+export const HeaderButtonPadding =
+  Platform.OS === 'web' ? Spacing.three : Platform.OS === 'ios' && parseInt(String(Platform.Version), 10) >= 26 ? 12 : 0;

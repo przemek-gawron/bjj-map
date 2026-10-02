@@ -1,12 +1,12 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useMemo } from 'react';
-import { Linking, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Chip } from '@/components/chip';
 import { StatusChip } from '@/components/status-chip';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { dayLabel, recentDays, relativeDay, toDateKey } from '@/data/dates';
 import { STATUS_COLOR } from '@/data/labels';
 import { trainingStats } from '@/data/stats';
@@ -159,8 +159,7 @@ export default function TechniqueScreen() {
 }
 
 const styles = StyleSheet.create({
-  // web headers have no side padding of their own
-  headerButton: { paddingHorizontal: Platform.OS === 'web' ? Spacing.three : 0 },
+  headerButton: { paddingHorizontal: HeaderButtonPadding },
   root: { flex: 1 },
   content: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', padding: Spacing.three, gap: Spacing.two },
   path: { fontSize: 24, lineHeight: 30, marginBottom: Spacing.one },

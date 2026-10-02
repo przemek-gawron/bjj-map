@@ -1,13 +1,13 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Chip } from '@/components/chip';
 import { MonthCalendar } from '@/components/month-calendar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { dayLabel, recentDays, toDateKey } from '@/data/dates';
 import { DEFAULT_SESSION_MINUTES, formatHours, SESSION_MINUTES } from '@/data/stats';
 import { useStore } from '@/data/store';
@@ -197,8 +197,7 @@ export default function JournalEntryScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  // web headers have no side padding of their own
-  headerButton: { paddingHorizontal: Platform.OS === 'web' ? Spacing.three : 0 },
+  headerButton: { paddingHorizontal: HeaderButtonPadding },
   content: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', padding: Spacing.three, paddingBottom: Spacing.six, gap: Spacing.two },
   dateHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   days: { gap: Spacing.two, paddingVertical: Spacing.one },

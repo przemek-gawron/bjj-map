@@ -1,11 +1,11 @@
 import { router, Stack } from 'expo-router';
 import { useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { Chip } from '@/components/chip';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { toDateKey, weekStartOf } from '@/data/dates';
 import { STATUS_COLOR } from '@/data/labels';
 import { useStore } from '@/data/store';
@@ -108,8 +108,7 @@ export default function PlanPickScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  // web headers have no side padding of their own
-  headerButton: { paddingHorizontal: Platform.OS === 'web' ? Spacing.three : 0 },
+  headerButton: { paddingHorizontal: HeaderButtonPadding },
   content: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', padding: Spacing.three, paddingBottom: Spacing.six, gap: Spacing.two },
   input: { borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 16 },
   group: { gap: Spacing.one, marginTop: Spacing.two },

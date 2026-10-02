@@ -1,11 +1,11 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { Chip } from '@/components/chip';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
@@ -198,8 +198,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 const styles = StyleSheet.create({
-  // web headers have no side padding of their own
-  headerButton: { paddingHorizontal: Platform.OS === 'web' ? Spacing.three : 0 },
+  headerButton: { paddingHorizontal: HeaderButtonPadding },
   root: { flex: 1 },
   content: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', padding: Spacing.three, paddingBottom: Spacing.six },
   field: { gap: Spacing.two, marginBottom: Spacing.four },
