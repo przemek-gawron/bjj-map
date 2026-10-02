@@ -32,7 +32,9 @@ export default function JournalEntryScreen() {
   const [picked, setPicked] = useState<string[]>(existing?.techniqueIds ?? []);
   const [pickedDrills, setPickedDrills] = useState<string[]>(existing?.drillIds ?? []);
   const [note, setNote] = useState(existing?.note ?? '');
-  const [duration, setDuration] = useState(existing?.durationMin ?? DEFAULT_SESSION_MINUTES);
+  // unset until picked: saving onto a day that already has a training keeps that training's length
+  // instead of resetting it to the default
+  const [duration, setDuration] = useState(existing?.durationMin);
   const [query, setQuery] = useState('');
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [month, setMonth] = useState(date.slice(0, 7));
@@ -42,6 +44,7 @@ export default function JournalEntryScreen() {
   const trainingDays = new Set(sessions.map((s) => s.date));
 
   const clash = sessions.find((s) => s.date === date && s.id !== existing?.id);
+  const shownDuration = duration ?? clash?.durationMin ?? DEFAULT_SESSION_MINUTES;
   const canSave = picked.length > 0 || pickedDrills.length > 0 || note.trim().length > 0;
   const q = query.trim().toLowerCase();
 
@@ -124,7 +127,7 @@ export default function JournalEntryScreen() {
         </ThemedText>
         <View style={styles.chips}>
           {SESSION_MINUTES.map((m) => (
-            <Chip key={m} label={`${formatHours(m / 60)} h`} selected={duration === m} onPress={() => setDuration(m)} />
+            <Chip key={m} label={`${formatHours(m / 60)} h`} selected={shownDuration === m} onPress={() => setDuration(m)} />
           ))}
         </View>
 
