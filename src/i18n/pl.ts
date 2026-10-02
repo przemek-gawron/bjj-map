@@ -221,7 +221,7 @@ export const pl = {
     clash: 'Na ten dzień jest już trening — zapis połączy oba wpisy.',
     duration: 'Jak długo',
     practiced: (n: number) => `Co ćwiczyłeś · ${n}`,
-    search: 'Szukaj techniki…',
+    search: 'Szukaj techniki lub drilla…',
     drills: (n: number) => `Drille · ${n}`,
     mostDrilled: 'Najczęściej robione drille',
     note: 'Notatka',

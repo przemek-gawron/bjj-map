@@ -218,7 +218,7 @@ export const en: Dict = {
     clash: 'There is already a training on this day — saving merges both entries.',
     duration: 'How long',
     practiced: (n: number) => `What you drilled · ${n}`,
-    search: 'Search techniques…',
+    search: 'Search techniques or drills…',
     drills: (n: number) => `Drills · ${n}`,
     mostDrilled: 'Most done drills',
     note: 'Note',
