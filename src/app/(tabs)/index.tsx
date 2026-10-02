@@ -1,7 +1,7 @@
 import { SymbolView } from 'expo-symbols';
-import { router } from 'expo-router';
-import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { BackHandler, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Chip } from '@/components/chip';
 import { tidyLayout } from '@/components/map/geometry';
@@ -73,6 +73,19 @@ export default function MapScreen() {
     p.id === selectedId ||
     (!!groupFilter && !typeFilter && !selectedId && p.group === groupFilter) ||
     techniques.some((t) => isTechniqueActive(t) && (t.from === p.id || t.to === p.id));
+
+  // Android back closes an open position sheet instead of leaving the app; only while the map
+  // is focused, so back from a technique opened on top of it still goes back
+  useFocusEffect(
+    useCallback(() => {
+      if (!selectedId) return;
+      const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+        setSelectedId(null);
+        return true;
+      });
+      return () => sub.remove();
+    }, [selectedId])
+  );
 
   const bottom = useTabBarInset() + Spacing.two;
 
