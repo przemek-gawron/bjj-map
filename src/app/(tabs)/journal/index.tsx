@@ -12,7 +12,7 @@ import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { dayLabel, relativeDay, toDateKey, weekRangeLabel, weekStartOf } from '@/data/dates';
+import { dayLabel, daysAgo, relativeDay, toDateKey, weekRangeLabel, weekStartOf } from '@/data/dates';
 import { STATUS_COLOR } from '@/data/labels';
 import { formatHours, sessionHours } from '@/data/stats';
 import { useStore } from '@/data/store';
@@ -106,7 +106,9 @@ export default function JournalScreen() {
                             {dayLabel(s.date)}
                           </ThemedText>
                           <ThemedText type="small" themeColor="textSecondary">
-                            {formatHours(sessionHours(s))} h · {relativeDay(s.date)}
+                            {formatHours(sessionHours(s))} h
+                            {/* past a week the relative day is just the date again */}
+                            {daysAgo(s.date) < 7 && ` · ${relativeDay(s.date)}`}
                           </ThemedText>
                         </View>
 
