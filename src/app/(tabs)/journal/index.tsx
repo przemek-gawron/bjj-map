@@ -156,7 +156,9 @@ const styles = StyleSheet.create({
   stats: { flexDirection: 'row', borderTopWidth: 1, borderBottomWidth: 1, marginTop: Spacing.three, marginBottom: Spacing.two },
   stat: { flex: 1, alignItems: 'center', paddingVertical: Spacing.three },
   statValue: { fontSize: 26, lineHeight: 32, fontWeight: '800' },
-  statLabel: { fontSize: 12, textAlign: 'center' },
+  // full column width: Android can measure a shrink-wrapped label too narrow and cut off its
+  // last word ("this week" showed as "this")
+  statLabel: { fontSize: 12, textAlign: 'center', alignSelf: 'stretch' },
   empty: { borderRadius: 14, padding: Spacing.three, gap: Spacing.one, marginTop: Spacing.three },
   weekHead: { marginTop: Spacing.four, marginBottom: Spacing.two, textTransform: 'uppercase', fontSize: 12 },
   swipeable: { borderRadius: 14, marginBottom: Spacing.two },

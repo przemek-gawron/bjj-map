@@ -229,7 +229,8 @@ const styles = StyleSheet.create({
   summary: { flexDirection: 'row', borderTopWidth: 1, borderBottomWidth: 1, marginTop: Spacing.two },
   stat: { flex: 1, alignItems: 'center', paddingVertical: Spacing.three },
   statValue: { fontSize: 26, lineHeight: 32, fontWeight: '800' },
-  statLabel: { fontSize: 12, textAlign: 'center' },
+  // full column width: Android can measure a shrink-wrapped label too narrow and cut off its last word
+  statLabel: { fontSize: 12, textAlign: 'center', alignSelf: 'stretch' },
   section: { marginTop: Spacing.four, marginBottom: Spacing.one, textTransform: 'uppercase', fontSize: 12 },
   hint: { fontSize: 11 },
   rank: { gap: 4, paddingVertical: 4 },
