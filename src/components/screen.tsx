@@ -34,7 +34,11 @@ export function Screen({ title, action, children, scroll = true }: Props) {
     <ThemedView style={styles.root}>
       <SafeAreaView edges={['top']} style={styles.root}>
         {scroll ? (
-          <ScrollView contentContainerStyle={[styles.content, { paddingBottom: bottom }]}>
+          <ScrollView
+            contentContainerStyle={[styles.content, { paddingBottom: bottom }]}
+            // a tap on a search result opens it right away instead of only closing the keyboard
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag">
             {header}
             {children}
           </ScrollView>
