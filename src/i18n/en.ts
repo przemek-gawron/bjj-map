@@ -160,7 +160,7 @@ export const en: Dict = {
     notes: 'Description',
     watchVideo: '▶ Watch video',
     training: 'Training',
-    doneSummary: (count: number, last: string) => `${count}× · last ${last}`,
+    doneSummary: (count: number, last: string) => `${count}× · last done ${last}`,
     notDoneYet: 'Not done yet',
     doneToday: '✓ Done today',
     doToday: 'Did it today',
