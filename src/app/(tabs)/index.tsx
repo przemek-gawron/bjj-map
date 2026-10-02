@@ -84,7 +84,7 @@ export default function MapScreen() {
         return true;
       });
       return () => sub.remove();
-    }, [selectedId])
+    }, [selectedId, setSelectedId])
   );
 
   const bottom = useTabBarInset() + Spacing.two;
