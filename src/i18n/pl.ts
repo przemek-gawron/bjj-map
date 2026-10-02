@@ -182,7 +182,7 @@ export const pl = {
     week: (range: string) => `Tydzień ${range}`,
     progress: (done: number, total: number) => `${done} z ${total} przećwiczone w tym tygodniu`,
     lastWeek: 'Plan z poprzedniego tygodnia',
-    lastWeekWaiting: (n: number) => `Do przećwiczenia zostało: ${n}.`,
+    lastWeekDone: (done: number, total: number) => `Przećwiczone: ${done} z ${total}.`,
     carryOver: 'Przenieś na ten tydzień',
     emptyTitle: 'Co chcesz ćwiczyć w tym tygodniu?',
     emptyText: 'Wybierz kilka technik i drilli — zobaczysz je tu razem z wideo, a po treningu odhaczysz jednym tapnięciem.',

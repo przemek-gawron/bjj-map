@@ -48,6 +48,11 @@ export default function PlanScreen() {
   const carryOver = isCurrent ? [] : plan.techniqueIds.filter((id) => techniques.some((t) => t.id === id));
   const carryOverDrills = isCurrent ? [] : (plan.drillIds ?? []).filter((id) => drills.some((d) => d.id === id));
   const carryOverCount = carryOver.length + carryOverDrills.length;
+  // how much of that plan got done in its own week
+  const carryOverDone = new Set(
+    sessions.filter((s) => weekStartOf(s.date) === plan.weekStart).flatMap((s) => [...s.techniqueIds, ...(s.drillIds ?? [])])
+  );
+  const carryOverDoneCount = [...carryOver, ...carryOverDrills].filter((id) => carryOverDone.has(id)).length;
 
   // technique and drill ids never clash (drills are prefixed or random), so one map holds both
   const { weekCounts, doneToday } = useMemo(() => {
@@ -111,7 +116,7 @@ export default function PlanScreen() {
           style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
           <ThemedText type="smallBold">{tr.plan.lastWeek}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            {tr.plan.lastWeekWaiting(carryOverCount)}
+            {tr.plan.lastWeekDone(carryOverDoneCount, carryOverCount)}
           </ThemedText>
           <Pressable onPress={() => setPlan(carryOver, carryOverDrills)} accessibilityRole="button" style={[styles.secondaryButton, { borderColor: theme.accent }]}>
             <ThemedText type="smallBold" themeColor="accent">

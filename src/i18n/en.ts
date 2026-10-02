@@ -179,7 +179,7 @@ export const en: Dict = {
     week: (range: string) => `Week ${range}`,
     progress: (done: number, total: number) => `${done} of ${total} drilled this week`,
     lastWeek: "Last week's plan",
-    lastWeekWaiting: (n: number) => `${n} left to practice.`,
+    lastWeekDone: (done: number, total: number) => `Drilled: ${done} of ${total}.`,
     carryOver: 'Move to this week',
     emptyTitle: 'What do you want to drill this week?',
     emptyText: "Pick a few techniques and drills — you'll see them here with videos, and tick them off with one tap after training.",
