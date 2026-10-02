@@ -202,7 +202,7 @@ export const en: Dict = {
     stats: 'Statistics',
     thisWeek: 'this week',
     thisMonth: 'this month',
-    techniquesThisMonth: 'techniques this month',
+    techniquesThisMonth: (n: number) => `${enPlural(n, 'technique', 'techniques')} this month`,
     emptyTitle: 'No trainings yet',
     emptyText: 'After training tap +, mark what you drilled and add a note. Trainings logged from the Techniques tab show up here too.',
     thisWeekHeader: 'This week',

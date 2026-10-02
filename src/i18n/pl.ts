@@ -205,7 +205,7 @@ export const pl = {
     stats: 'Statystyki',
     thisWeek: 'w tym tygodniu',
     thisMonth: 'w tym miesiącu',
-    techniquesThisMonth: 'technik w miesiącu',
+    techniquesThisMonth: (n: number) => `${plPlural(n, 'technika', 'techniki', 'technik')} w miesiącu`,
     emptyTitle: 'Brak treningów',
     emptyText: 'Po treningu dotknij +, zaznacz co ćwiczyłeś i dopisz notatkę. Treningi z zakładki Techniki też tu trafiają.',
     thisWeekHeader: 'Ten tydzień',

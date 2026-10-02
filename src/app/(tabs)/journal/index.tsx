@@ -73,7 +73,7 @@ export default function JournalScreen() {
           <View style={[styles.stats, { borderColor: theme.backgroundSelected }]}>
             <Stat value={weekCount} label={tr.journal.thisWeek} />
             <Stat value={monthCount} label={tr.journal.thisMonth} />
-            <Stat value={monthTechniques} label={tr.journal.techniquesThisMonth} />
+            <Stat value={monthTechniques} label={tr.journal.techniquesThisMonth(monthTechniques)} />
           </View>
 
           {sessions.length === 0 && (
