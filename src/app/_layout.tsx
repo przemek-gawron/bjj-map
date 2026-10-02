@@ -1,3 +1,4 @@
+import { isRunningInExpoGo } from 'expo';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -14,7 +15,8 @@ import { useLanguage, useT } from '@/i18n';
 // keep the splash up until the saved map and settings have loaded, so the first frame
 // already has the right theme and data, and hold it a moment so it doesn't just blink
 SplashScreen.preventAutoHideAsync().catch(() => {});
-SplashScreen.setOptions({ duration: 300, fade: true });
+// Expo Go can't customise the splash and only warns, with a banner over the tab bar
+if (!isRunningInExpoGo()) SplashScreen.setOptions({ duration: 300, fade: true });
 const LAUNCHED_AT = Date.now();
 const SPLASH_MIN_MS = 600;
 /** Hide anyway if storage never answers. */
