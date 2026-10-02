@@ -156,12 +156,21 @@ export default function MapScreen() {
         )}
 
         {mine && myTechniques.length === 0 && (
-          <View style={styles.emptyWrap} pointerEvents="none">
+          <View style={styles.emptyWrap} pointerEvents="box-none">
             <ThemedView type="backgroundElement" style={styles.empty}>
               <ThemedText type="smallBold">{tr.map.mineEmptyTitle}</ThemedText>
               <ThemedText type="small" themeColor="textSecondary">
                 {tr.map.mineEmptyText}
               </ThemedText>
+              {/* a new user's map starts here, empty: one tap to the whole map */}
+              <Pressable
+                onPress={() => setScope('all')}
+                accessibilityRole="button"
+                style={({ pressed }) => [styles.emptyButton, { borderColor: theme.accent }, pressed && styles.pressed]}>
+                <ThemedText type="smallBold" themeColor="accent">
+                  {tr.map.mineEmptyAction}
+                </ThemedText>
+              </Pressable>
             </ThemedView>
           </View>
         )}
@@ -185,6 +194,7 @@ const styles = StyleSheet.create({
   scope: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', paddingHorizontal: Spacing.three, marginBottom: Spacing.two },
   emptyWrap: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', padding: Spacing.four },
   empty: { borderRadius: 14, padding: Spacing.three, gap: Spacing.one },
+  emptyButton: { borderWidth: 1, borderRadius: 10, paddingVertical: 10, alignItems: 'center', marginTop: Spacing.two },
   // bottom left, clear of the zoom controls on the right
   hintWrap: { position: 'absolute', left: 12, right: 64, alignItems: 'flex-start' },
   hint: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, overflow: 'hidden', fontSize: 13 },
