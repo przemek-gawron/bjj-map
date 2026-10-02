@@ -9,10 +9,12 @@ type Props = {
   /** Tint used for the border/fill; defaults to the theme accent. */
   color?: string;
   small?: boolean;
+  /** Tinted for looks (a status badge, a link), not a toggle: not announced as selected. */
+  badge?: boolean;
 };
 
 /** Pill used for filters, pickers and status badges. */
-export function Chip({ label, selected, onPress, color, small }: Props) {
+export function Chip({ label, selected, onPress, color, small, badge }: Props) {
   const theme = useTheme();
   const tint = color ?? theme.accent;
 
@@ -20,6 +22,8 @@ export function Chip({ label, selected, onPress, color, small }: Props) {
     <Pressable
       onPress={onPress}
       disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityState={onPress && !badge ? { selected: !!selected } : undefined}
       hitSlop={small ? 6 : 0}
       style={({ pressed }) => [
         styles.chip,

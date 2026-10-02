@@ -16,6 +16,7 @@ export function StatusChip({ status, onChange, small }: { status: Status; onChan
       label={tr.status[status]}
       color={statusColor[status]}
       selected
+      badge
       small={small}
       onPress={onChange && (() => onChange(NEXT[status]))}
     />

@@ -84,6 +84,7 @@ export default function DrillScreen() {
                 key={t.id}
                 small
                 selected
+                badge
                 label={t.name}
                 color={statusColor[t.status]}
                 onPress={() => router.push({ pathname: '/technique/[id]', params: { id: t.id } })}
