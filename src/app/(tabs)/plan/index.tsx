@@ -80,6 +80,7 @@ export default function PlanScreen() {
         <Pressable
           onPress={() => router.push('/plan/pick')}
           hitSlop={10}
+          accessibilityRole="button"
           style={[styles.editButton, { backgroundColor: theme.accent }]}>
           <ThemedText type="smallBold" style={{ color: theme.onAccent }}>
             {total ? tr.plan.edit : tr.plan.choose}
@@ -112,7 +113,7 @@ export default function PlanScreen() {
           <ThemedText type="small" themeColor="textSecondary">
             {tr.plan.lastWeekWaiting(carryOverCount)}
           </ThemedText>
-          <Pressable onPress={() => setPlan(carryOver, carryOverDrills)} style={[styles.secondaryButton, { borderColor: theme.accent }]}>
+          <Pressable onPress={() => setPlan(carryOver, carryOverDrills)} accessibilityRole="button" style={[styles.secondaryButton, { borderColor: theme.accent }]}>
             <ThemedText type="smallBold" themeColor="accent">
               {tr.plan.carryOver}
             </ThemedText>
@@ -196,6 +197,8 @@ function PlanItem({ name, subtitle, checked, onCheck, onOpen, onRemove, videoUrl
           <Pressable
             onPress={onCheck}
             hitSlop={8}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked }}
             accessibilityLabel={checked ? tr.plan.uncheckToday(name) : tr.plan.checkToday(name)}
             style={[
               styles.check,
@@ -222,6 +225,7 @@ function PlanItem({ name, subtitle, checked, onCheck, onOpen, onRemove, videoUrl
         <View style={styles.actions}>
           <Pressable
             onPress={() => Linking.openURL(videoUrl ?? youtubeSearch(searchName ?? name))}
+            accessibilityRole="link"
             style={({ pressed }) => [styles.videoButton, !videoUrl && styles.videoSearch, pressed && styles.pressed]}>
             <ThemedText type="smallBold" style={videoUrl ? styles.videoText : styles.videoSearchText}>
               {videoUrl ? tr.plan.video : tr.common.searchYoutube}

@@ -73,14 +73,14 @@ export default function TechniqueFormScreen() {
         options={{
           title: existing ? tr.techniques.editTitle : tr.techniques.newTitle,
           headerLeft: () => (
-            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerButton}>
+            <Pressable onPress={() => router.back()} hitSlop={10} accessibilityRole="button" style={styles.headerButton}>
               <ThemedText type="small" themeColor="accent">
                 {tr.common.cancel}
               </ThemedText>
             </Pressable>
           ),
           headerRight: () => (
-            <Pressable onPress={save} disabled={!canSave} hitSlop={10} style={styles.headerButton}>
+            <Pressable onPress={save} disabled={!canSave} hitSlop={10} accessibilityRole="button" style={styles.headerButton}>
               <ThemedText type="smallBold" themeColor={canSave ? 'accent' : 'textSecondary'}>
                 {tr.common.save}
               </ThemedText>
@@ -168,7 +168,7 @@ export default function TechniqueFormScreen() {
         </Field>
 
         {existing && (
-          <Pressable onPress={remove} style={({ pressed }) => [styles.delete, pressed && { opacity: 0.6 }]}>
+          <Pressable onPress={remove} accessibilityRole="button" style={({ pressed }) => [styles.delete, pressed && { opacity: 0.6 }]}>
             <ThemedText type="smallBold" style={styles.deleteText}>
               {tr.techniques.deleteButton}
             </ThemedText>

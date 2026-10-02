@@ -70,14 +70,14 @@ export default function JournalEntryScreen() {
         options={{
           title: existing ? tr.journal.editTitle : tr.journal.newTitle,
           headerLeft: () => (
-            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerButton}>
+            <Pressable onPress={() => router.back()} hitSlop={10} accessibilityRole="button" style={styles.headerButton}>
               <ThemedText type="small" themeColor="accent">
                 {tr.common.cancel}
               </ThemedText>
             </Pressable>
           ),
           headerRight: () => (
-            <Pressable onPress={save} disabled={!canSave} hitSlop={10} style={styles.headerButton}>
+            <Pressable onPress={save} disabled={!canSave} hitSlop={10} accessibilityRole="button" style={styles.headerButton}>
               <ThemedText type="smallBold" themeColor={canSave ? 'accent' : 'textSecondary'}>
                 {tr.common.save}
               </ThemedText>
@@ -94,7 +94,7 @@ export default function JournalEntryScreen() {
           <ThemedText type="smallBold" themeColor="textSecondary">
             {tr.journal.when(dayLabel(date))}
           </ThemedText>
-          <Pressable onPress={() => setCalendarOpen(!calendarOpen)} hitSlop={10}>
+          <Pressable onPress={() => setCalendarOpen(!calendarOpen)} hitSlop={10} accessibilityRole="button">
             <ThemedText type="smallBold" themeColor="accent">
               {calendarOpen ? tr.journal.hideCalendar : tr.journal.showCalendar}
             </ThemedText>
@@ -184,7 +184,7 @@ export default function JournalEntryScreen() {
         />
 
         {existing && (
-          <Pressable onPress={remove} style={({ pressed }) => [styles.delete, pressed && { opacity: 0.6 }]}>
+          <Pressable onPress={remove} accessibilityRole="button" style={({ pressed }) => [styles.delete, pressed && { opacity: 0.6 }]}>
             <ThemedText type="smallBold" style={styles.deleteText}>
               {tr.journal.deleteButton}
             </ThemedText>

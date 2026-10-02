@@ -52,6 +52,7 @@ export default function DrillScreen() {
           headerRight: () => (
             <Pressable
               hitSlop={10}
+              accessibilityRole="button"
               style={styles.headerButton}
               onPress={() => router.push({ pathname: '/drill/form', params: { id: drill.id } })}>
               <ThemedText type="smallBold" themeColor="accent">
@@ -101,6 +102,7 @@ export default function DrillScreen() {
 
         <Pressable
           onPress={() => Linking.openURL(drill.videoUrl ?? youtubeSearch(drill.name))}
+          accessibilityRole="link"
           style={({ pressed }) => [styles.videoButton, !drill.videoUrl && styles.videoSearch, pressed && styles.pressed]}>
           <ThemedText type="smallBold" style={drill.videoUrl ? styles.videoText : styles.videoSearchText}>
             {drill.videoUrl ? tr.drills.watchVideo : tr.common.searchYoutube}
@@ -115,6 +117,7 @@ export default function DrillScreen() {
 
           <Pressable
             onPress={() => toggleDay(today)}
+            accessibilityRole="button"
             style={({ pressed }) => [
               styles.todayButton,
               { backgroundColor: doneOn.has(today) ? statusColor.works : theme.accent },

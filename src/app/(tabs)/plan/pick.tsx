@@ -43,7 +43,7 @@ export default function PlanPickScreen() {
       <Stack.Screen
         options={{
           headerRight: () => (
-            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerButton}>
+            <Pressable onPress={() => router.back()} hitSlop={10} accessibilityRole="button" style={styles.headerButton}>
               <ThemedText type="smallBold" themeColor="accent">
                 {tr.plan.done}
               </ThemedText>

@@ -270,6 +270,7 @@ export function MapCanvas({ positions, techniques, selectedId, onSelect, isPosit
           <Pressable
             key={b.label}
             onPress={b.onPress}
+            accessibilityRole="button"
             accessibilityLabel={b.a11y}
             style={({ pressed }) => [styles.control, { backgroundColor: theme.backgroundElement }, pressed && styles.pressed]}>
             <Text style={[styles.controlText, { color: theme.text }]}>{b.label}</Text>

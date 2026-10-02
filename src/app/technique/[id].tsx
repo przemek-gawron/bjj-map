@@ -55,6 +55,7 @@ export default function TechniqueScreen() {
           headerRight: () => (
             <Pressable
               hitSlop={10}
+              accessibilityRole="button"
               style={styles.headerButton}
               onPress={() => router.push({ pathname: '/technique/form', params: { id: technique.id } })}>
               <ThemedText type="smallBold" themeColor="accent">
@@ -82,6 +83,7 @@ export default function TechniqueScreen() {
 
         <Pressable
           onPress={() => Linking.openURL(technique.videoUrl ?? youtubeSearch(technique.name))}
+          accessibilityRole="link"
           style={({ pressed }) => [styles.videoButton, !technique.videoUrl && styles.videoSearch, pressed && styles.pressed]}>
           <ThemedText type="smallBold" style={technique.videoUrl ? styles.videoText : styles.videoSearchText}>
             {technique.videoUrl ? tr.techniques.watchVideo : tr.common.searchYoutube}
@@ -96,6 +98,7 @@ export default function TechniqueScreen() {
 
           <Pressable
             onPress={() => toggleDay(today)}
+            accessibilityRole="button"
             style={({ pressed }) => [
               styles.todayButton,
               { backgroundColor: trainedOn.has(today) ? statusColor.works : theme.accent },
@@ -147,6 +150,7 @@ export default function TechniqueScreen() {
           <Pressable
             onPress={() => router.push({ pathname: '/drill/form', params: { technique: technique.id } })}
             hitSlop={6}
+            accessibilityRole="button"
             style={styles.addDrill}>
             <ThemedText type="smallBold" themeColor="accent">
               {tr.techniques.addDrill}

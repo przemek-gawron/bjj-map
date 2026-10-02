@@ -119,7 +119,11 @@ export default function TechniquesScreen() {
                     entering={FadeIn.duration(200)}
                     exiting={FadeOut.duration(180)}
                     style={[styles.card, { backgroundColor: theme.backgroundElement }]}>
-                    <Pressable style={styles.cardHead} onPress={() => setCollapsed({ ...collapsed, [p.id]: !collapsed[p.id] })}>
+                    <Pressable
+                      style={styles.cardHead}
+                      onPress={() => setCollapsed({ ...collapsed, [p.id]: !collapsed[p.id] })}
+                      accessibilityRole="button"
+                      accessibilityState={{ expanded: open }}>
                       <View style={[styles.sideBar, { backgroundColor: SIDE_COLOR[p.side] }]} />
                       <View style={styles.flex}>
                         <ThemedText type="smallBold" style={styles.positionName}>

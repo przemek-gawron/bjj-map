@@ -100,7 +100,7 @@ export function JournalStats() {
         ) : (
           <Animated.View key="year" entering={FadeIn.duration(200)}>
             <View style={styles.yearHead}>
-              <Pressable onPress={() => setYear(year - 1)} hitSlop={10} accessibilityLabel={tr.dates.previousYear}>
+              <Pressable onPress={() => setYear(year - 1)} hitSlop={10} accessibilityRole="button" accessibilityLabel={tr.dates.previousYear}>
                 <ThemedText themeColor="accent" style={styles.arrow}>
                   ‹
                 </ThemedText>
@@ -110,6 +110,7 @@ export function JournalStats() {
                 onPress={() => setYear(year + 1)}
                 disabled={String(year) >= today.slice(0, 4)}
                 hitSlop={10}
+                accessibilityRole="button"
                 accessibilityLabel={tr.dates.nextYear}
                 style={String(year) >= today.slice(0, 4) && styles.disabled}>
                 <ThemedText themeColor="accent" style={styles.arrow}>

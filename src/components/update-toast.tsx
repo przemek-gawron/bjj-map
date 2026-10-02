@@ -80,6 +80,7 @@ export function UpdateToast() {
           <Pressable
             onPress={() => Updates.reloadAsync().catch(() => {})}
             hitSlop={8}
+            accessibilityRole="button"
             style={[styles.action, { backgroundColor: theme.accent }]}>
             <ThemedText type="smallBold" style={{ color: theme.onAccent }}>
               {tr.updates.restart}

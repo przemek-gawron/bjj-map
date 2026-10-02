@@ -140,7 +140,7 @@ export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight }
                   {tr.map.fromHere(from.length)}
                 </ThemedText>
               </Pressable>
-              <Pressable onPress={onClose} hitSlop={12} accessibilityLabel={tr.map.close}>
+              <Pressable onPress={onClose} hitSlop={12} accessibilityRole="button" accessibilityLabel={tr.map.close}>
                 <ThemedText themeColor="textSecondary" style={styles.close}>
                   ✕
                 </ThemedText>
@@ -157,18 +157,18 @@ export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight }
                   {tr.group[position.group]} · {side}
                 </ThemedText>
                 <View style={styles.photoActions}>
-                  <Pressable onPress={() => router.push({ pathname: '/position/form', params: { id: position.id } })} hitSlop={6}>
+                  <Pressable onPress={() => router.push({ pathname: '/position/form', params: { id: position.id } })} hitSlop={6} accessibilityRole="button">
                     <ThemedText type="small" themeColor="accent">
                       {position.notes ? tr.map.editPosition : tr.map.addNotes}
                     </ThemedText>
                   </Pressable>
-                  <Pressable onPress={changePhoto} hitSlop={6}>
+                  <Pressable onPress={changePhoto} hitSlop={6} accessibilityRole="button">
                     <ThemedText type="small" themeColor="accent">
                       {position.photoUri ? tr.map.changePhoto : tr.map.addPhoto}
                     </ThemedText>
                   </Pressable>
                   {position.photoUri && (
-                    <Pressable onPress={removePhoto} hitSlop={6}>
+                    <Pressable onPress={removePhoto} hitSlop={6} accessibilityRole="button">
                       <ThemedText type="small" themeColor="textSecondary">
                         {tr.map.removePhoto}
                       </ThemedText>
@@ -176,7 +176,7 @@ export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight }
                   )}
                 </View>
               </View>
-              <Pressable onPress={onClose} hitSlop={12} accessibilityLabel={tr.map.close}>
+              <Pressable onPress={onClose} hitSlop={12} accessibilityRole="button" accessibilityLabel={tr.map.close}>
                 <ThemedText themeColor="textSecondary" style={styles.close}>
                   ✕
                 </ThemedText>
@@ -199,6 +199,7 @@ export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight }
           {from.map((t) => row(t, t.to ? `${tr.typeSingular[t.type]} → ${nameOf(t.to)}` : tr.typeSingular[t.type]))}
           <Pressable
             onPress={() => router.push({ pathname: '/technique/form', params: { from: position.id } })}
+            accessibilityRole="button"
             style={styles.add}>
             <ThemedText type="smallBold" themeColor="accent">
               {tr.map.addFromHere}
@@ -225,6 +226,7 @@ export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight }
           ))}
           <Pressable
             onPress={() => router.push({ pathname: '/drill/form', params: { position: position.id } })}
+            accessibilityRole="button"
             style={styles.add}>
             <ThemedText type="smallBold" themeColor="accent">
               {tr.map.addDrill}

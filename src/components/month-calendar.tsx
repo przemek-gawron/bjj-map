@@ -30,6 +30,7 @@ export function MonthCalendar({ month, onMonthChange, marked, selected, onSelect
       onPress={() => onMonthChange(addMonths(month, delta))}
       disabled={disabled}
       hitSlop={10}
+      accessibilityRole="button"
       accessibilityLabel={a11y}
       style={[styles.arrow, disabled && styles.disabled]}>
       <ThemedText themeColor="accent" style={styles.arrowText}>
@@ -68,6 +69,7 @@ export function MonthCalendar({ month, onMonthChange, marked, selected, onSelect
                 key={day}
                 onPress={() => onSelect?.(day)}
                 disabled={!onSelect || future}
+                accessibilityRole="button"
                 accessibilityLabel={day}
                 accessibilityState={{ selected: isSelected, disabled: future }}
                 style={styles.cell}>
