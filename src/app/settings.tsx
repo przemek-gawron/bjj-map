@@ -15,6 +15,7 @@ import { confirm } from '@/utils/confirm';
 import { deletePositionPhoto } from '@/utils/pick-photo';
 
 export default function SettingsScreen() {
+  const theme = useTheme();
   const tr = useT();
   const language = useSettings((s) => s.language);
   const setLanguage = useSettings((s) => s.setLanguage);
@@ -96,6 +97,8 @@ export default function SettingsScreen() {
           <ThemedText type="small" themeColor={libraryResult ? 'accent' : 'textSecondary'}>
             {libraryResult ?? tr.settings.loadLibraryHint}
           </ThemedText>
+          {/* the destructive action stands apart from the library text above it */}
+          <View style={[styles.divider, { backgroundColor: theme.backgroundSelected }]} />
           <Row label={tr.settings.deleteAll} destructive onPress={deleteAll} />
         </Section>
       </ScrollView>
@@ -139,5 +142,6 @@ const styles = StyleSheet.create({
   card: { borderRadius: 14, padding: Spacing.three, gap: Spacing.two },
   appName: { fontSize: 17 },
   row: { paddingVertical: Spacing.one },
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: Spacing.one },
   pressed: { opacity: 0.6 },
 });
