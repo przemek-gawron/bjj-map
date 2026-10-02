@@ -25,12 +25,19 @@ export default function SettingsScreen() {
   const currentLanguage = useLanguage();
   const [libraryResult, setLibraryResult] = useState<string | null>(null);
 
+  // adds data and deletes nothing, so the confirm button isn't red
   const load = () =>
-    confirm(tr.settings.loadLibraryTitle, tr.settings.loadLibraryMessage, tr.settings.loadLibraryConfirm, () => {
-      const added = loadLibrary(currentLanguage);
-      const any = added.positions + added.techniques + added.drills > 0;
-      setLibraryResult(any ? tr.settings.libraryLoaded(added.positions, added.techniques, added.drills) : tr.settings.libraryUpToDate);
-    });
+    confirm(
+      tr.settings.loadLibraryTitle,
+      tr.settings.loadLibraryMessage,
+      tr.settings.loadLibraryConfirm,
+      () => {
+        const added = loadLibrary(currentLanguage);
+        const any = added.positions + added.techniques + added.drills > 0;
+        setLibraryResult(any ? tr.settings.libraryLoaded(added.positions, added.techniques, added.drills) : tr.settings.libraryUpToDate);
+      },
+      false
+    );
 
   const deleteAll = () =>
     confirm(tr.settings.deleteAllTitle, tr.settings.deleteAllMessage, tr.settings.deleteAllConfirm, () => {
