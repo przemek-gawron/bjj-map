@@ -86,7 +86,6 @@ export default function SettingsScreen() {
         </Section>
 
         <Section title={tr.settings.account}>
-          <Row label={tr.settings.logout} disabled />
           <ThemedText type="small" themeColor="textSecondary">
             {tr.settings.noAccount}
           </ThemedText>
@@ -117,15 +116,14 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function Row({ label, onPress, destructive, disabled }: { label: string; onPress?: () => void; destructive?: boolean; disabled?: boolean }) {
+function Row({ label, onPress, destructive }: { label: string; onPress: () => void; destructive?: boolean }) {
   const theme = useTheme();
 
   return (
     <Pressable
       onPress={onPress}
-      disabled={disabled || !onPress}
       accessibilityRole="button"
-      style={({ pressed }) => [styles.row, pressed && styles.pressed, disabled && styles.disabled]}>
+      style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
       <ThemedText type="smallBold" style={{ color: destructive ? '#EF4444' : theme.text }}>
         {label}
       </ThemedText>
@@ -142,5 +140,4 @@ const styles = StyleSheet.create({
   appName: { fontSize: 17 },
   row: { paddingVertical: Spacing.one },
   pressed: { opacity: 0.6 },
-  disabled: { opacity: 0.4 },
 });

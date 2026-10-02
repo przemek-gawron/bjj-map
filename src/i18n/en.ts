@@ -250,7 +250,6 @@ export const en: Dict = {
     appearanceLight: 'Light',
     appearanceSystem: 'System',
     account: 'Account',
-    logout: 'Log out',
     noAccount: 'There are no accounts yet. Your data is stored only on this device.',
     data: 'Data',
     loadLibrary: 'Load the sample library',

@@ -253,7 +253,6 @@ export const pl = {
     appearanceLight: 'Jasny',
     appearanceSystem: 'Systemowy',
     account: 'Konto',
-    logout: 'Wyloguj',
     noAccount: 'Konta jeszcze nie ma. Dane są zapisane tylko na tym urządzeniu.',
     data: 'Dane',
     loadLibrary: 'Wczytaj przykładową bibliotekę',
