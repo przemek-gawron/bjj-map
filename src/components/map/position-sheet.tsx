@@ -31,9 +31,9 @@ const PEEK = 64;
 
 /**
  * Bottom sheet for a map position. Drag the handle (or header) down to collapse it to a
- * one-line bar, up to open it half or almost full height; tapping the handle toggles.
- * The chosen size stays when another tile is picked, so a collapsed sheet lets you
- * browse the map tile by tile.
+ * one-line bar, up to open it half or almost full height; tapping the handle toggles, and
+ * tapping the collapsed bar opens it again. The chosen size stays when another tile is
+ * picked, so a collapsed sheet lets you browse the map tile by tile.
  */
 export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight }: Props) {
   const theme = useTheme();
@@ -62,23 +62,24 @@ export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight }
     onHeight(snaps[snap]);
   }, [snap, snaps, height, onHeight]);
 
-  const gesture = useMemo(() => {
-    const pan = Gesture.Pan()
-      .runOnJS(true)
-      .onStart(() => dragStart.set(height.get()))
-      .onUpdate((e) => height.set(Math.min(snaps.full, Math.max(PEEK, dragStart.get() - e.translationY))))
-      .onEnd((e) => {
-        // a flick carries on in its direction; otherwise the nearest size wins
-        const projected = height.get() - e.velocityY * 0.2;
-        const next = (Object.keys(snaps) as Snap[]).reduce((a, b) => (Math.abs(snaps[b] - projected) < Math.abs(snaps[a] - projected) ? b : a));
-        setSnap(next);
-        height.set(withTiming(snaps[next], { duration: 220 }));
-      });
-    const tap = Gesture.Tap()
-      .runOnJS(true)
-      .onEnd(() => setSnap((cur) => (cur === 'collapsed' ? 'half' : 'collapsed')));
-    return Gesture.Exclusive(pan, tap);
-  }, [snaps, height, dragStart]);
+  // dragging works anywhere on the header; taps are left to the buttons in it (a tap
+  // gesture over the whole header would swallow "Edit" and "Add photo")
+  const pan = useMemo(
+    () =>
+      Gesture.Pan()
+        .runOnJS(true)
+        .onStart(() => dragStart.set(height.get()))
+        .onUpdate((e) => height.set(Math.min(snaps.full, Math.max(PEEK, dragStart.get() - e.translationY))))
+        .onEnd((e) => {
+          // a flick carries on in its direction; otherwise the nearest size wins
+          const projected = height.get() - e.velocityY * 0.2;
+          const next = (Object.keys(snaps) as Snap[]).reduce((a, b) => (Math.abs(snaps[b] - projected) < Math.abs(snaps[a] - projected) ? b : a));
+          setSnap(next);
+          height.set(withTiming(snaps[next], { duration: 220 }));
+        }),
+    [snaps, height, dragStart]
+  );
+  const toggle = () => setSnap((cur) => (cur === 'collapsed' ? 'half' : 'collapsed'));
 
   const sizeStyle = useAnimatedStyle(() => ({ height: height.get() }));
   const side = position.side === 'top' ? tr.map.sideTop : position.side === 'bottom' ? tr.map.sideBottom : tr.map.sideNeutral;
@@ -120,24 +121,25 @@ export function PositionSheet({ position, bottom, maxHeight, onClose, onHeight }
         sizeStyle,
         { bottom, shadowColor: '#000', borderColor: theme.backgroundSelected, backgroundColor: theme.background },
       ]}>
-      <GestureDetector gesture={gesture}>
+      <GestureDetector gesture={pan}>
         <View>
-          <View
+          <Pressable
+            onPress={toggle}
             style={styles.handleArea}
             accessibilityRole="button"
             accessibilityLabel={snap === 'collapsed' ? tr.map.expandSheet : tr.map.collapseSheet}>
             <View style={[styles.handle, { backgroundColor: theme.backgroundSelected }]} />
-          </View>
+          </Pressable>
           {snap === 'collapsed' ? (
             <View style={styles.bar}>
-              <View style={styles.flex}>
-                <ThemedText type="smallBold" numberOfLines={1}>
+              <Pressable onPress={toggle} accessibilityRole="button" accessibilityHint={tr.map.expandSheet} style={styles.barTitle}>
+                <ThemedText type="smallBold" numberOfLines={1} style={styles.flex}>
                   {position.name}
                 </ThemedText>
-              </View>
-              <ThemedText type="small" themeColor="textSecondary">
-                {tr.map.fromHere(from.length)}
-              </ThemedText>
+                <ThemedText type="small" themeColor="textSecondary">
+                  {tr.map.fromHere(from.length)}
+                </ThemedText>
+              </Pressable>
               <Pressable onPress={onClose} hitSlop={12} accessibilityLabel={tr.map.close}>
                 <ThemedText themeColor="textSecondary" style={styles.close}>
                   ✕
@@ -261,6 +263,7 @@ const styles = StyleSheet.create({
   handleArea: { alignItems: 'center', paddingTop: 8, paddingBottom: 10 },
   handle: { width: 40, height: 5, borderRadius: 3 },
   bar: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
+  barTitle: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   head: { flexDirection: 'row', gap: Spacing.three, alignItems: 'flex-start' },
   title: { fontSize: 18 },
   photoActions: { flexDirection: 'row', flexWrap: 'wrap', columnGap: Spacing.three, marginTop: Spacing.one },
