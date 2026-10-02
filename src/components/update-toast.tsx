@@ -16,7 +16,8 @@ const INSTALLED_VISIBLE_MS = 4000;
 type Toast = { kind: 'installed'; at: Date | null } | { kind: 'ready' };
 
 /**
- * Over-the-air update notices (native only; expo-updates is off in development):
+ * Over-the-air update notices (native only, and not in development, where Expo Go hands every
+ * reload a fresh update id):
  * "updated" on the first launch of a new update, and "new version ready — restart"
  * once one has downloaded in the background, instead of waiting for the next cold start.
  */
@@ -32,7 +33,7 @@ export function UpdateToast() {
   const dismiss = () => (toast?.kind === 'ready' ? setReadyDismissed(true) : setInstalled(null));
 
   useEffect(() => {
-    if (!Updates.isEnabled) return;
+    if (!Updates.isEnabled || __DEV__) return;
     const current = Updates.isEmbeddedLaunch ? 'embedded' : (Updates.updateId ?? 'embedded');
     AsyncStorage.getItem(LAST_UPDATE_KEY)
       .then((last) => {
