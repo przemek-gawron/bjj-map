@@ -15,6 +15,7 @@
       }
     },
     "android": {
+      "package": "com.przemekgawrondev.bjjmap",
       "adaptiveIcon": {
         "backgroundColor": "#0B0B0F",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
