@@ -19,19 +19,18 @@ export function weekStartOf(key: string): string {
   return toDateKey(d);
 }
 
-/** Number of calendar days from `key` to today (0 = today). */
-export function daysAgo(key: string): number {
-  const today = fromDateKey(toDateKey());
-  return Math.round((today.getTime() - fromDateKey(key).getTime()) / 86_400_000);
+/** Number of calendar days from `key` to `today` (0 = today). Components pass `today` from useToday. */
+export function daysAgo(key: string, today = toDateKey()): number {
+  return Math.round((fromDateKey(today).getTime() - fromDateKey(key).getTime()) / 86_400_000);
 }
 
 /** Day of the month and 0-based month of a date key. */
 const dayAndMonth = (key: string) => [Number(key.slice(8)), Number(key.slice(5, 7)) - 1] as const;
 
 /** "dziś", "wczoraj", "3 dni temu", or "12.09" / "Sep 12" for older dates. */
-export function relativeDay(key: string): string {
+export function relativeDay(key: string, today = toDateKey()): string {
   const t = currentT().dates;
-  const n = daysAgo(key);
+  const n = daysAgo(key, today);
   if (n === 0) return t.today;
   if (n === 1) return t.yesterday;
   if (n < 7) return t.daysAgo(n);
@@ -55,8 +54,8 @@ export function dayLabel(key: string): string {
 }
 
 /** The last `n` days as date keys, today first. */
-export function recentDays(n: number): string[] {
-  const d = fromDateKey(toDateKey());
+export function recentDays(n: number, today = toDateKey()): string[] {
+  const d = fromDateKey(today);
   return Array.from({ length: n }, (_, i) => {
     const day = new Date(d);
     day.setDate(d.getDate() - i);

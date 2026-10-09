@@ -10,6 +10,7 @@ import { searchMatcher } from '@/data/search';
 import { drillIdsOf, trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { confirm } from '@/utils/confirm';
 import { useT } from '@/i18n';
 
@@ -21,6 +22,7 @@ export function DrillList() {
   const positions = useStore((s) => s.positions);
   const sessions = useStore((s) => s.sessions);
   const removeDrill = useStore((s) => s.removeDrill);
+  const today = useToday();
   const [query, setQuery] = useState('');
 
   const stats = useMemo(() => trainingStats(sessions, drillIdsOf), [sessions]);
@@ -69,7 +71,7 @@ export function DrillList() {
                 )}
               </View>
               <ThemedText type="small" themeColor="textSecondary">
-                {where(d.positionIds)} · {s ? `${s.count}× · ${relativeDay(s.lastDate!)}` : tr.drills.notDone}
+                {where(d.positionIds)} · {s ? `${s.count}× · ${relativeDay(s.lastDate!, today)}` : tr.drills.notDone}
               </ThemedText>
             </Pressable>
           </SwipeToDelete>

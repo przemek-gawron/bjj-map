@@ -18,6 +18,7 @@ import { useStore } from '@/data/store';
 import type { Status, TechniqueType } from '@/data/types';
 import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { confirm } from '@/utils/confirm';
 import { useT } from '@/i18n';
 
@@ -40,6 +41,7 @@ export default function TechniquesScreen() {
   const [typeFilter, setTypeFilter] = useState<TechniqueType | null>(null);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
+  const today = useToday();
   const stats = useMemo(() => trainingStats(sessions), [sessions]);
   const filtering = !!statusFilter || !!typeFilter;
   const visible = techniques.filter((t) => (!statusFilter || t.status === statusFilter) && (!typeFilter || t.type === typeFilter));
@@ -155,7 +157,7 @@ export default function TechniquesScreen() {
                                 <ThemedText type="small" themeColor="textSecondary">
                                   {tr.typeSingular[t.type]}
                                   {t.to ? ' → ' + positions.find((x) => x.id === t.to)?.name : ''}
-                                  {s ? ` · ${s.count}× · ${relativeDay(s.lastDate!)}` : ` · ${tr.techniques.notTrained}`}
+                                  {s ? ` · ${s.count}× · ${relativeDay(s.lastDate!, today)}` : ` · ${tr.techniques.notTrained}`}
                                 </ThemedText>
                               </View>
                               <StatusChip small status={t.status} onChange={(next) => setStatus(t.id, next)} />

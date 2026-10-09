@@ -6,12 +6,13 @@ import { Chip } from '@/components/chip';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
-import { toDateKey, weekStartOf } from '@/data/dates';
+import { weekStartOf } from '@/data/dates';
 import { searchMatcher } from '@/data/search';
 import { useStore } from '@/data/store';
 import type { Technique } from '@/data/types';
 import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { useT } from '@/i18n';
 
 /** Toggles techniques and drills in this week's plan; changes apply immediately. */
@@ -27,7 +28,8 @@ export default function PlanPickScreen() {
   const togglePlannedDrill = useStore((s) => s.togglePlannedDrill);
   const [query, setQuery] = useState('');
 
-  const isCurrent = plan.weekStart === weekStartOf(toDateKey());
+  const today = useToday();
+  const isCurrent = plan.weekStart === weekStartOf(today);
   const planned = isCurrent ? plan.techniqueIds : [];
   const plannedDrills = isCurrent ? (plan.drillIds ?? []) : [];
   const matchesName = searchMatcher(query);

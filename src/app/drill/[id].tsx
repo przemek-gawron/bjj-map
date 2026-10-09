@@ -6,11 +6,12 @@ import { Chip } from '@/components/chip';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
-import { dayLabel, recentDays, relativeDay, toDateKey } from '@/data/dates';
+import { dayLabel, recentDays, relativeDay } from '@/data/dates';
 import { drillIdsOf, trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { useT } from '@/i18n';
 import { youtubeSearch } from '@/utils/youtube';
 
@@ -27,6 +28,7 @@ export default function DrillScreen() {
   const unlogDrill = useStore((s) => s.unlogDrill);
 
   const stats = useMemo(() => trainingStats(sessions, drillIdsOf).get(id), [sessions, id]);
+  const today = useToday();
 
   if (!drill) {
     return (
@@ -39,7 +41,6 @@ export default function DrillScreen() {
   }
 
   const doneOn = new Set(stats?.dates);
-  const today = toDateKey();
   const toggleDay = (date: string) => (doneOn.has(date) ? unlogDrill(date, drill.id) : logDrill(date, drill.id));
   const linkedPositions = positions.filter((p) => drill.positionIds.includes(p.id));
   const linkedTechniques = techniques.filter((t) => drill.techniqueIds.includes(t.id));
@@ -112,7 +113,7 @@ export default function DrillScreen() {
         <ThemedView type="backgroundElement" style={styles.card}>
           <ThemedText type="smallBold">{tr.drills.training}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            {stats ? tr.drills.doneSummary(stats.count, relativeDay(stats.lastDate!)) : tr.drills.notDoneYet}
+            {stats ? tr.drills.doneSummary(stats.count, relativeDay(stats.lastDate!, today)) : tr.drills.notDoneYet}
           </ThemedText>
 
           <Pressable
@@ -132,7 +133,7 @@ export default function DrillScreen() {
             {tr.drills.otherDay}
           </ThemedText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.days}>
-            {recentDays(14)
+            {recentDays(14, today)
               .slice(1)
               .map((date) => (
                 <Chip key={date} small label={dayLabel(date)} selected={doneOn.has(date)} onPress={() => toggleDay(date)} />

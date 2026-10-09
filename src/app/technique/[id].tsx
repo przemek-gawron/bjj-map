@@ -7,11 +7,12 @@ import { StatusChip } from '@/components/status-chip';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
-import { dayLabel, recentDays, relativeDay, toDateKey } from '@/data/dates';
+import { dayLabel, recentDays, relativeDay } from '@/data/dates';
 import { trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { useT } from '@/i18n';
 import { youtubeSearch } from '@/utils/youtube';
 
@@ -29,6 +30,7 @@ export default function TechniqueScreen() {
   const unlogTraining = useStore((s) => s.unlogTraining);
 
   const stats = useMemo(() => trainingStats(sessions).get(id), [sessions, id]);
+  const today = useToday();
 
   if (!technique) {
     return (
@@ -41,7 +43,6 @@ export default function TechniqueScreen() {
   }
 
   const trainedOn = new Set(stats?.dates);
-  const today = toDateKey();
   const toggleDay = (date: string) =>
     trainedOn.has(date) ? unlogTraining(date, technique.id) : logTraining(date, [technique.id]);
   const drills = allDrills.filter((d) => d.techniqueIds.includes(technique.id));
@@ -93,7 +94,7 @@ export default function TechniqueScreen() {
         <ThemedView type="backgroundElement" style={styles.card}>
           <ThemedText type="smallBold">{tr.techniques.training}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            {stats ? tr.techniques.trainedSummary(stats.count, relativeDay(stats.lastDate!)) : tr.techniques.notTrainedYet}
+            {stats ? tr.techniques.trainedSummary(stats.count, relativeDay(stats.lastDate!, today)) : tr.techniques.notTrainedYet}
           </ThemedText>
 
           <Pressable
@@ -111,7 +112,7 @@ export default function TechniqueScreen() {
             {tr.techniques.otherDay}
           </ThemedText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.days}>
-            {recentDays(14)
+            {recentDays(14, today)
               .slice(1)
               .map((date) => (
                 <Chip key={date} small label={dayLabel(date)} selected={trainedOn.has(date)} onPress={() => toggleDay(date)} />

@@ -9,11 +9,12 @@ import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { toDateKey, weekRangeLabel, weekStartOf } from '@/data/dates';
+import { weekRangeLabel, weekStartOf } from '@/data/dates';
 import { useStore } from '@/data/store';
 import type { Drill, Technique } from '@/data/types';
 import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { useT } from '@/i18n';
 import { youtubeSearch } from '@/utils/youtube';
 
@@ -35,7 +36,7 @@ export default function PlanScreen() {
   const logDrill = useStore((s) => s.logDrill);
   const unlogDrill = useStore((s) => s.unlogDrill);
 
-  const today = toDateKey();
+  const today = useToday();
   const thisWeek = weekStartOf(today);
   const isCurrent = plan.weekStart === thisWeek;
   const planned = (isCurrent ? plan.techniqueIds : [])

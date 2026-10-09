@@ -12,12 +12,13 @@ import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { dayLabel, daysAgo, relativeDay, toDateKey, weekRangeLabel, weekStartOf } from '@/data/dates';
+import { dayLabel, daysAgo, relativeDay, weekRangeLabel, weekStartOf } from '@/data/dates';
 import { formatHours, sessionHours } from '@/data/stats';
 import { useStore } from '@/data/store';
 import type { Session } from '@/data/types';
 import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { confirm } from '@/utils/confirm';
 import { useT } from '@/i18n';
 
@@ -31,7 +32,7 @@ export default function JournalScreen() {
   const removeSession = useStore((s) => s.removeSession);
   const [view, setView] = useState<'list' | 'stats'>('list');
 
-  const today = toDateKey();
+  const today = useToday();
   const thisWeek = weekStartOf(today);
   const thisMonth = today.slice(0, 7);
   const weekCount = sessions.filter((s) => weekStartOf(s.date) === thisWeek).length;
@@ -109,7 +110,7 @@ export default function JournalScreen() {
                           <ThemedText type="small" themeColor="textSecondary">
                             {formatHours(sessionHours(s))} h
                             {/* past a week the relative day is just the date again */}
-                            {daysAgo(s.date) < 7 && ` · ${relativeDay(s.date)}`}
+                            {daysAgo(s.date, today) < 7 && ` · ${relativeDay(s.date, today)}`}
                           </ThemedText>
                         </View>
 

@@ -11,10 +11,11 @@ import { Segmented } from '@/components/segmented';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { fullDate, monthGrid, shortMonthLabel, toDateKey } from '@/data/dates';
+import { fullDate, monthGrid, shortMonthLabel } from '@/data/dates';
 import { DEFAULT_SESSION_MINUTES, formatHours, periodStats, totalHours } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { useT } from '@/i18n';
 
 type Period = 'month' | 'year';
@@ -29,7 +30,7 @@ export function JournalStats() {
   const techniques = useStore((s) => s.techniques);
   const drills = useStore((s) => s.drills);
 
-  const today = toDateKey();
+  const today = useToday();
   const [period, setPeriod] = useState<Period>('month');
   const [month, setMonth] = useState(today.slice(0, 7));
   const [year, setYear] = useState(Number(today.slice(0, 4)));

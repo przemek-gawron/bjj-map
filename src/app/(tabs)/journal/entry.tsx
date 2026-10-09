@@ -8,12 +8,13 @@ import { MonthCalendar } from '@/components/month-calendar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
-import { dayLabel, recentDays, toDateKey } from '@/data/dates';
+import { dayLabel, recentDays } from '@/data/dates';
 import { searchMatcher } from '@/data/search';
 import { DEFAULT_SESSION_MINUTES, formatHours, SESSION_MINUTES } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useConfirmDiscard } from '@/hooks/use-confirm-discard';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { confirm } from '@/utils/confirm';
 import { useT } from '@/i18n';
 
@@ -30,7 +31,8 @@ export default function JournalEntryScreen() {
   const saveSession = useStore((s) => s.saveSession);
   const removeSession = useStore((s) => s.removeSession);
 
-  const [date, setDate] = useState(existing?.date ?? toDateKey());
+  const today = useToday();
+  const [date, setDate] = useState(existing?.date ?? today);
   const [picked, setPicked] = useState<string[]>(existing?.techniqueIds ?? []);
   const [pickedDrills, setPickedDrills] = useState<string[]>(existing?.drillIds ?? []);
   const [note, setNote] = useState(existing?.note ?? '');
@@ -43,7 +45,7 @@ export default function JournalEntryScreen() {
   const [month, setMonth] = useState(date.slice(0, 7));
 
   // quick picks for the last week; any other day comes from the calendar
-  const days = recentDays(7);
+  const days = recentDays(7, today);
   const trainingDays = new Set(sessions.map((s) => s.date));
 
   const clash = sessions.find((s) => s.date === date && s.id !== existing?.id);

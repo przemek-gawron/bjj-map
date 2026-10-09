@@ -3,8 +3,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ThemedText } from './themed-text';
 
 import { Spacing } from '@/constants/theme';
-import { addMonths, monthGrid, monthLabel, toDateKey } from '@/data/dates';
+import { addMonths, monthGrid, monthLabel } from '@/data/dates';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { useT } from '@/i18n';
 
 type Props = {
@@ -22,7 +23,7 @@ type Props = {
 export function MonthCalendar({ month, onMonthChange, marked, selected, onSelect }: Props) {
   const theme = useTheme();
   const tr = useT();
-  const today = toDateKey();
+  const today = useToday();
   const isCurrentMonth = month >= today.slice(0, 7);
 
   const arrow = (label: string, a11y: string, delta: number, disabled = false) => (

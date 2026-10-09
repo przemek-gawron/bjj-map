@@ -1,9 +1,10 @@
 import { useRef } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { addDays, shortMonthLabel, toDateKey, weekStartOf } from '@/data/dates';
+import { addDays, shortMonthLabel, weekStartOf } from '@/data/dates';
 import type { Session } from '@/data/types';
 import { useTheme } from '@/hooks/use-theme';
+import { useToday } from '@/hooks/use-today';
 import { useT } from '@/i18n';
 
 const CELL = 13;
@@ -16,7 +17,7 @@ export function YearHeatmap({ year, sessions }: Props) {
   const theme = useTheme();
   const tr = useT();
   const scroll = useRef<ScrollView>(null);
-  const today = toDateKey();
+  const today = useToday();
 
   const byDate = new Map(sessions.filter((s) => s.date.startsWith(String(year))).map((s) => [s.date, s]));
   const weeks: string[][] = [];
