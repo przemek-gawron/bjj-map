@@ -1,6 +1,8 @@
 import type { Dict } from './pl';
 import { enPlural } from './plural';
 
+const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 export const en: Dict = {
   common: {
     back: 'Back',
@@ -56,7 +58,13 @@ export const en: Dict = {
     weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     calendarWeekdays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    monthsShort: MONTHS_SHORT,
+    shortDate: (day: number, month: number) => `${MONTHS_SHORT[month]} ${day}`,
+    dayLabel: (weekday: string, day: number, month: number) => `${weekday}, ${MONTHS_SHORT[month]} ${day}`,
+    // "Sep 22 – 28", or "Sep 29 – Oct 5" across a month boundary
+    range: (fromDay: number, fromMonth: number, toDay: number, toMonth: number) =>
+      `${MONTHS_SHORT[fromMonth]} ${fromDay} – ${fromMonth === toMonth ? '' : `${MONTHS_SHORT[toMonth]} `}${toDay}`,
+    fullDate: (day: number, month: number, year: number) => `${MONTHS_SHORT[month]} ${day}, ${year}`,
     previousMonth: 'Previous month',
     nextMonth: 'Next month',
     previousYear: 'Previous year',

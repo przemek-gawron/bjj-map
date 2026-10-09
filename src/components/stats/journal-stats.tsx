@@ -11,7 +11,7 @@ import { Segmented } from '@/components/segmented';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { monthGrid, shortDate, shortMonthLabel, toDateKey } from '@/data/dates';
+import { fullDate, monthGrid, shortMonthLabel, toDateKey } from '@/data/dates';
 import { DEFAULT_SESSION_MINUTES, formatHours, periodStats, totalHours } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
@@ -72,7 +72,7 @@ export function JournalStats() {
           </ThemedText>
           {firstDate && (
             <ThemedText type="small" themeColor="textSecondary">
-              {tr.journal.since(`${shortDate(firstDate)}.${firstDate.slice(0, 4)}`)}
+              {tr.journal.since(fullDate(firstDate))}
             </ThemedText>
           )}
         </View>

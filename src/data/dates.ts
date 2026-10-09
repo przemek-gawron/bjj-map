@@ -25,7 +25,10 @@ export function daysAgo(key: string): number {
   return Math.round((today.getTime() - fromDateKey(key).getTime()) / 86_400_000);
 }
 
-/** "dziś", "wczoraj", "3 dni temu", or "12.09" for older dates. */
+/** Day of the month and 0-based month of a date key. */
+const dayAndMonth = (key: string) => [Number(key.slice(8)), Number(key.slice(5, 7)) - 1] as const;
+
+/** "dziś", "wczoraj", "3 dni temu", or "12.09" / "Sep 12" for older dates. */
 export function relativeDay(key: string): string {
   const t = currentT().dates;
   const n = daysAgo(key);
@@ -35,14 +38,20 @@ export function relativeDay(key: string): string {
   return shortDate(key);
 }
 
-/** "12.09" */
+/** "12.09" / "Sep 12" */
 export function shortDate(key: string): string {
-  return `${key.slice(8)}.${key.slice(5, 7)}`;
+  return currentT().dates.shortDate(...dayAndMonth(key));
 }
 
-/** "sob 27.09" */
+/** "12.09.2026" / "Sep 12, 2026" */
+export function fullDate(key: string): string {
+  return currentT().dates.fullDate(...dayAndMonth(key), Number(key.slice(0, 4)));
+}
+
+/** "sob 27.09" / "Sat, Sep 27" */
 export function dayLabel(key: string): string {
-  return `${currentT().dates.weekdays[fromDateKey(key).getDay()]} ${shortDate(key)}`;
+  const t = currentT().dates;
+  return t.dayLabel(t.weekdays[fromDateKey(key).getDay()], ...dayAndMonth(key));
 }
 
 /** The last `n` days as date keys, today first. */
@@ -55,11 +64,9 @@ export function recentDays(n: number): string[] {
   });
 }
 
-/** "22.09 – 28.09" for the week starting on `weekStart`. */
+/** "22.09 – 28.09" / "Sep 22 – 28" for the week starting on `weekStart`. */
 export function weekRangeLabel(weekStart: string): string {
-  const end = fromDateKey(weekStart);
-  end.setDate(end.getDate() + 6);
-  return `${shortDate(weekStart)} – ${shortDate(toDateKey(end))}`;
+  return currentT().dates.range(...dayAndMonth(weekStart), ...dayAndMonth(addDays(weekStart, 6)));
 }
 
 /** "wrzesień 2026" for a YYYY-MM month key. */

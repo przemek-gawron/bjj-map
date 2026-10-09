@@ -1,5 +1,7 @@
 import { plPlural } from './plural';
 
+const pad = (n: number) => String(n).padStart(2, '0');
+
 export const pl = {
   common: {
     back: 'Wstecz',
@@ -59,6 +61,15 @@ export const pl = {
     calendarWeekdays: ['pn', 'wt', 'śr', 'cz', 'pt', 'so', 'nd'],
     months: ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'],
     monthsShort: ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru'],
+    /** "12.09"; months are 0–11 here and below. */
+    shortDate: (day: number, month: number) => `${pad(day)}.${pad(month + 1)}`,
+    /** "sob 27.09" */
+    dayLabel: (weekday: string, day: number, month: number) => `${weekday} ${pad(day)}.${pad(month + 1)}`,
+    /** "22.09 – 28.09" */
+    range: (fromDay: number, fromMonth: number, toDay: number, toMonth: number) =>
+      `${pad(fromDay)}.${pad(fromMonth + 1)} – ${pad(toDay)}.${pad(toMonth + 1)}`,
+    /** "12.09.2026" */
+    fullDate: (day: number, month: number, year: number) => `${pad(day)}.${pad(month + 1)}.${year}`,
     previousMonth: 'Poprzedni miesiąc',
     nextMonth: 'Następny miesiąc',
     previousYear: 'Poprzedni rok',
