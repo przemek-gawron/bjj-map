@@ -12,6 +12,7 @@ import { dayLabel, recentDays, toDateKey } from '@/data/dates';
 import { searchMatcher } from '@/data/search';
 import { DEFAULT_SESSION_MINUTES, formatHours, SESSION_MINUTES } from '@/data/stats';
 import { useStore } from '@/data/store';
+import { useConfirmDiscard } from '@/hooks/use-confirm-discard';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
 import { useT } from '@/i18n';
@@ -36,6 +37,7 @@ export default function JournalEntryScreen() {
   // unset until picked: saving onto a day that already has a training keeps that training's length
   // instead of resetting it to the default
   const [duration, setDuration] = useState(existing?.durationMin);
+  const allowLeave = useConfirmDiscard({ date, picked, pickedDrills, note, duration });
   const [query, setQuery] = useState('');
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [month, setMonth] = useState(date.slice(0, 7));
@@ -57,6 +59,7 @@ export default function JournalEntryScreen() {
   const save = () => {
     if (!canSave) return;
     saveSession({ id: existing?.id, date, techniqueIds: picked, drillIds: pickedDrills, note: note.trim() || undefined, durationMin: duration });
+    allowLeave();
     router.back();
   };
 
@@ -64,6 +67,7 @@ export default function JournalEntryScreen() {
     if (!existing) return;
     confirm(tr.journal.deleteTitle, tr.journal.deleteMessage(dayLabel(existing.date)), tr.common.delete, () => {
       removeSession(existing.id);
+      allowLeave();
       router.back();
     });
   };

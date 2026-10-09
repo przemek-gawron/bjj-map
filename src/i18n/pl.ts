@@ -10,6 +10,10 @@ export const pl = {
     save: 'Zapisz',
     searchYoutube: '🔍 Szukaj na YouTube',
     edit: 'Edytuj',
+    discardTitle: 'Odrzucić zmiany?',
+    discardMessage: 'Masz niezapisane zmiany. Jeśli zamkniesz formularz, przepadną.',
+    discard: 'Odrzuć',
+    keepEditing: 'Edytuj dalej',
   },
   tabs: {
     map: 'Mapa',

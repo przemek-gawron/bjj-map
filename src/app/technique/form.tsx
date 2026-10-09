@@ -8,6 +8,7 @@ import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useStore } from '@/data/store';
 import type { Status, TechniqueType } from '@/data/types';
+import { useConfirmDiscard } from '@/hooks/use-confirm-discard';
 import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
@@ -35,6 +36,7 @@ export default function TechniqueFormScreen() {
   const [status, setStatus] = useState<Status>(existing?.status ?? 'seen');
   const [videoUrl, setVideoUrl] = useState(existing?.videoUrl ?? '');
   const [notes, setNotes] = useState(existing?.notes ?? '');
+  const allowLeave = useConfirmDiscard({ name, type, from, to, status, videoUrl, notes });
 
   const isSubmission = type === 'submission';
   const canSave = name.trim().length > 0 && from !== '' && (isSubmission || to !== null);
@@ -53,6 +55,7 @@ export default function TechniqueFormScreen() {
     };
     if (existing) updateTechnique(existing.id, data);
     else addTechnique(data);
+    allowLeave();
     router.back();
   };
 
@@ -60,6 +63,7 @@ export default function TechniqueFormScreen() {
     if (!existing) return;
     confirm(tr.techniques.deleteTitle, tr.techniques.deleteMessage(existing.name), tr.common.delete, () => {
       removeTechnique(existing.id);
+      allowLeave();
       // back past the (now deleted) technique's detail screen
       router.dismissAll();
     });

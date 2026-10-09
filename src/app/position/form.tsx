@@ -6,6 +6,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useStore } from '@/data/store';
+import { useConfirmDiscard } from '@/hooks/use-confirm-discard';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n';
 
@@ -19,11 +20,13 @@ export default function PositionFormScreen() {
 
   const [name, setName] = useState(position?.name ?? '');
   const [notes, setNotes] = useState(position?.notes ?? '');
+  const allowLeave = useConfirmDiscard({ name, notes });
 
   const canSave = !!position && name.trim().length > 0;
   const save = () => {
     if (!canSave) return;
     updatePosition(position.id, { name: name.trim(), notes: notes.trim() || undefined });
+    allowLeave();
     router.back();
   };
 

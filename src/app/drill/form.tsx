@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useStore } from '@/data/store';
+import { useConfirmDiscard } from '@/hooks/use-confirm-discard';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
 import { useT } from '@/i18n';
@@ -29,6 +30,7 @@ export default function DrillFormScreen() {
   const [techniqueIds, setTechniqueIds] = useState<string[]>(existing?.techniqueIds ?? (technique ? [technique] : []));
   const [videoUrl, setVideoUrl] = useState(existing?.videoUrl ?? '');
   const [notes, setNotes] = useState(existing?.notes ?? '');
+  const allowLeave = useConfirmDiscard({ name, dose, positionIds, techniqueIds, videoUrl, notes });
 
   const canSave = name.trim().length > 0;
   const toggle = (ids: string[], x: string) => (ids.includes(x) ? ids.filter((i) => i !== x) : [...ids, x]);
@@ -46,6 +48,7 @@ export default function DrillFormScreen() {
     };
     if (existing) updateDrill(existing.id, data);
     else addDrill(data);
+    allowLeave();
     router.back();
   };
 
@@ -53,6 +56,7 @@ export default function DrillFormScreen() {
     if (!existing) return;
     confirm(tr.drills.deleteTitle, tr.drills.deleteMessage(existing.name), tr.common.delete, () => {
       removeDrill(existing.id);
+      allowLeave();
       // back past the (now deleted) drill's detail screen
       router.dismissAll();
     });

@@ -11,6 +11,10 @@ export const en: Dict = {
     save: 'Save',
     searchYoutube: '🔍 Search YouTube',
     edit: 'Edit',
+    discardTitle: 'Discard changes?',
+    discardMessage: 'You have unsaved changes. They will be lost if you close the form.',
+    discard: 'Discard',
+    keepEditing: 'Keep editing',
   },
   tabs: {
     map: 'Map',
