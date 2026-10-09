@@ -318,17 +318,29 @@ Podczas testów nagrywamy najważniejsze przepływy do `e2e/flows/` (`agent-devi
 
 | # | ID scen. | Platforma | Waga | Opis | Status | Commit |
 |---|---|---|---|---|---|---|
-| | | | | | | |
+| 1 | P2 | Android | Krytyczny | Brak `android.package` — `expo run:android` nie budował aplikacji | naprawione | `06aa064` |
+| 2 | 2.2 | obie | Drobny | Pakiety Expo za wersjami SDK 57 (expo-doctor) | naprawione | `2c8656f` |
+| 3 | DRL-01 / H4 | obie | Poważny | Wyszukiwanie nie znajdowało nazw bez polskich znaków (`krecenie` → „Kręcenie…”) | naprawione | `110e1fe` |
+| 4 | SET-04 / H9 | obie | Poważny | Po angielsku daty w polskim formacie | naprawione | `8dc9ee6` |
+| 5 | NAV-02 / H10 | obie | Poważny | Zamknięcie formularza gubiło niezapisane zmiany bez pytania | naprawione | `a4ce856` |
+| 6 | TEC-12 / H5 | obie | Drobny | Dowolny tekst zapisywany jako link do wideo; otwierał pustą stronę | naprawione | `88a7a4f` |
+| 7 | SET-07 / H3 | obie | Poważny | Ponowne „wczytaj bibliotekę” („nic nowego”) i tak porządkowało mapę, kasując ręczny układ | naprawione | `9463a42` |
+| 8 | PLN-08 / H6 | obie | Poważny | React Compiler zapamiętywał `toDateKey()` — po nocy w tle plan pokazywał stary tydzień, odhaczenie trafiało na wczoraj | naprawione (weryfikacja: skompilowany kod + smoke; bez zmiany zegara) | `b2982b7` |
+| 9 | P1 | — | — | `.gitignore`: `/ios` i `/android` były już ignorowane; dodany duplikat cofnięty | — | `cdca35d`, `6dc91bf` |
+
+Nie-błędy (sprawdzone): H7 (cel = start jest wykluczony w formularzu), H8 (kontrast w jasnym motywie OK), klawiatura w wyszukiwarce chowa się przy przewijaniu, etykiety checkboxów w Planie (akcja + stan „checked”).
+
+Uwagi o narzędziu: `agent-device open <deep link>` nie dostarczał linku na Androidzie (przez `adb shell am start` działa); drzewo dostępności i zrzuty Androida bywają opóźnione o kilka sekund; `find` domyślnie klika.
 
 ## 12. Wyniki
 
 | Sekcja | iOS K1 | Android K1 | K2 | K3 | K4 | Uwagi |
 |---|---|---|---|---|---|---|
-| 5.1 Ustawienia | | | | | | |
-| 5.2 Mapa | | | | | | |
-| 5.3 Techniki | | | | | | |
-| 5.4 Drille | | | | | | |
-| 5.5 Plan | | | | | | |
-| 5.6 Dziennik | | | | | | |
-| 5.7 Przekrojowe | | | | | | |
-| 5.8 Release | | | | | | |
+| 5.1 Ustawienia | ✅ (SET-03, 04, 06, 07) | ✅ (SET-04, 06, 07, 09) | ✅ EN/jasny iOS | ⏭ | ⏭ | SET-05, 08, 10 nie wykonane |
+| 5.2 Mapa | ✅ (MAP-05, 06, 09, 14) | ✅ (MAP-06, 07, 12, 16) | ✅ jasny iOS | ⏭ | ⏭ | MAP-13 (odmowa zdjęć) nie wykonane |
+| 5.3 Techniki | ✅ (TEC-05, 09, 10, 12) | ✅ (TEC-07, 12) | ✅ EN iOS | ⏭ | ⏭ | TEC-04 częściowo, TEC-08 i TEC-14 nie wykonane |
+| 5.4 Drille | ✅ (DRL-01) | ✅ (walidacja w DRL-02) | — | ⏭ | ⏭ | DRL-03, DRL-04 nie wykonane |
+| 5.5 Plan | ✅ (PLN-02, 03, 04) | ✅ (PLN-01, wyszukiwarka) | ✅ jasny iOS | ⏭ | ⏭ | PLN-06/07/08 wymagają zmiany zegara — nie wykonane na urządzeniu |
+| 5.6 Dziennik | ✅ (JRN-06, 07, 08, 09) | — | ✅ EN/jasny iOS | ⏭ | ⏭ | |
+| 5.7 Przekrojowe | ✅ (NAV-02, NAV-04, X-01) | ✅ (NAV-02, NAV-04 przez adb, X-01, X-07) | — | ⏭ | ⏭ | X-03/K3/K4 wymagają zmian ustawień systemu — pominięte |
+| 5.8 Release | ⏭ | ⏭ | — | — | — | nie wykonane; przepływy `.ad` (sekcja 8) nie nagrane |
