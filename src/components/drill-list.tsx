@@ -6,6 +6,7 @@ import { SwipeToDelete } from '@/components/swipe-to-delete';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { relativeDay } from '@/data/dates';
+import { searchMatcher } from '@/data/search';
 import { drillIdsOf, trainingStats } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
@@ -23,8 +24,8 @@ export function DrillList() {
   const [query, setQuery] = useState('');
 
   const stats = useMemo(() => trainingStats(sessions, drillIdsOf), [sessions]);
-  const q = query.trim().toLowerCase();
-  const visible = drills.filter((d) => !q || d.name.toLowerCase().includes(q));
+  const matches = searchMatcher(query);
+  const visible = drills.filter((d) => matches(d.name));
 
   const where = (positionIds: string[]) => {
     const names = positions.filter((p) => positionIds.includes(p.id)).map((p) => p.name);
@@ -77,7 +78,7 @@ export function DrillList() {
 
       {visible.length === 0 && (
         <ThemedText themeColor="textSecondary" style={styles.empty}>
-          {q ? tr.drills.noneForSearch : tr.drills.empty}
+          {query.trim() ? tr.drills.noneForSearch : tr.drills.empty}
         </ThemedText>
       )}
     </View>

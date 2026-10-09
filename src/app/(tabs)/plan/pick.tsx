@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { toDateKey, weekStartOf } from '@/data/dates';
+import { searchMatcher } from '@/data/search';
 import { useStore } from '@/data/store';
 import type { Technique } from '@/data/types';
 import { useStatusColors } from '@/hooks/use-status-colors';
@@ -29,10 +30,10 @@ export default function PlanPickScreen() {
   const isCurrent = plan.weekStart === weekStartOf(toDateKey());
   const planned = isCurrent ? plan.techniqueIds : [];
   const plannedDrills = isCurrent ? (plan.drillIds ?? []) : [];
-  const q = query.trim().toLowerCase();
-  const matches = (t: Technique) => !q || t.name.toLowerCase().includes(q);
+  const matchesName = searchMatcher(query);
+  const matches = (t: Technique) => matchesName(t.name);
   const drilling = techniques.filter((t) => t.status === 'drilling' && matches(t));
-  const visibleDrills = drills.filter((d) => !q || d.name.toLowerCase().includes(q));
+  const visibleDrills = drills.filter((d) => matchesName(d.name));
 
   const chip = (t: Technique) => (
     <Chip key={t.id} label={t.name} selected={planned.includes(t.id)} onPress={() => togglePlanned(t.id)} />

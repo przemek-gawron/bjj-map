@@ -9,6 +9,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { HeaderButtonPadding, MaxContentWidth, Spacing } from '@/constants/theme';
 import { dayLabel, recentDays, toDateKey } from '@/data/dates';
+import { searchMatcher } from '@/data/search';
 import { DEFAULT_SESSION_MINUTES, formatHours, SESSION_MINUTES } from '@/data/stats';
 import { useStore } from '@/data/store';
 import { useTheme } from '@/hooks/use-theme';
@@ -46,12 +47,12 @@ export default function JournalEntryScreen() {
   const clash = sessions.find((s) => s.date === date && s.id !== existing?.id);
   const shownDuration = duration ?? clash?.durationMin ?? DEFAULT_SESSION_MINUTES;
   const canSave = picked.length > 0 || pickedDrills.length > 0 || note.trim().length > 0;
-  const q = query.trim().toLowerCase();
+  const matches = searchMatcher(query);
 
   const toggle = (tid: string) => setPicked(picked.includes(tid) ? picked.filter((x) => x !== tid) : [...picked, tid]);
   const toggleDrill = (did: string) =>
     setPickedDrills(pickedDrills.includes(did) ? pickedDrills.filter((x) => x !== did) : [...pickedDrills, did]);
-  const visibleDrills = drills.filter((d) => !q || d.name.toLowerCase().includes(q));
+  const visibleDrills = drills.filter((d) => matches(d.name));
 
   const save = () => {
     if (!canSave) return;
@@ -145,7 +146,7 @@ export default function JournalEntryScreen() {
           style={[styles.input, { backgroundColor: theme.backgroundElement, color: theme.text }]}
         />
         {positions.map((p) => {
-          const list = techniques.filter((t) => t.from === p.id && (!q || t.name.toLowerCase().includes(q)));
+          const list = techniques.filter((t) => t.from === p.id && matches(t.name));
           if (list.length === 0) return null;
           return (
             <View key={p.id} style={styles.group}>
