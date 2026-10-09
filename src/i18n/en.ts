@@ -15,6 +15,7 @@ export const en: Dict = {
     discardMessage: 'You have unsaved changes. They will be lost if you close the form.',
     discard: 'Discard',
     keepEditing: 'Keep editing',
+    badVideoUrl: "That doesn't look like a link. Paste the video's address, e.g. youtube.com/watch?v=…",
   },
   tabs: {
     map: 'Map',

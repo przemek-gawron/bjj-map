@@ -10,6 +10,7 @@ import { useStore } from '@/data/store';
 import { useConfirmDiscard } from '@/hooks/use-confirm-discard';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
+import { parseVideoUrl } from '@/utils/video-url';
 import { useT } from '@/i18n';
 
 /** Add a drill, or edit one when opened with `?id=`. `?position=` / `?technique=` preselect a link. */
@@ -32,18 +33,18 @@ export default function DrillFormScreen() {
   const [notes, setNotes] = useState(existing?.notes ?? '');
   const allowLeave = useConfirmDiscard({ name, dose, positionIds, techniqueIds, videoUrl, notes });
 
-  const canSave = name.trim().length > 0;
+  const video = parseVideoUrl(videoUrl);
+  const canSave = name.trim().length > 0 && video !== null;
   const toggle = (ids: string[], x: string) => (ids.includes(x) ? ids.filter((i) => i !== x) : [...ids, x]);
 
   const save = () => {
     if (!canSave) return;
-    const url = videoUrl.trim();
     const data = {
       name: name.trim(),
       dose: dose.trim() || undefined,
       positionIds,
       techniqueIds,
-      videoUrl: url ? (/^https?:\/\//.test(url) ? url : `https://${url}`) : undefined,
+      videoUrl: video ?? undefined,
       notes: notes.trim() || undefined,
     };
     if (existing) updateDrill(existing.id, data);
@@ -165,6 +166,11 @@ export default function DrillFormScreen() {
             keyboardType="url"
             style={inputStyle}
           />
+          {video === null && (
+            <ThemedText type="small" themeColor="textSecondary">
+              {tr.common.badVideoUrl}
+            </ThemedText>
+          )}
         </Field>
 
         <Field label={tr.drills.notesOptional}>

@@ -12,6 +12,7 @@ import { useConfirmDiscard } from '@/hooks/use-confirm-discard';
 import { useStatusColors } from '@/hooks/use-status-colors';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/utils/confirm';
+import { parseVideoUrl } from '@/utils/video-url';
 import { useT } from '@/i18n';
 
 const TYPES: TechniqueType[] = ['submission', 'sweep', 'escape', 'pass', 'takedown', 'transition'];
@@ -39,18 +40,18 @@ export default function TechniqueFormScreen() {
   const allowLeave = useConfirmDiscard({ name, type, from, to, status, videoUrl, notes });
 
   const isSubmission = type === 'submission';
-  const canSave = name.trim().length > 0 && from !== '' && (isSubmission || to !== null);
+  const video = parseVideoUrl(videoUrl);
+  const canSave = name.trim().length > 0 && from !== '' && (isSubmission || to !== null) && video !== null;
 
   const save = () => {
     if (!canSave) return;
-    const url = videoUrl.trim();
     const data = {
       name: name.trim(),
       type,
       from,
       to: isSubmission ? null : to,
       status,
-      videoUrl: url ? (/^https?:\/\//.test(url) ? url : `https://${url}`) : undefined,
+      videoUrl: video ?? undefined,
       notes: notes.trim() || undefined,
     };
     if (existing) updateTechnique(existing.id, data);
@@ -158,6 +159,11 @@ export default function TechniqueFormScreen() {
             keyboardType="url"
             style={inputStyle}
           />
+          {video === null && (
+            <ThemedText type="small" themeColor="textSecondary">
+              {tr.common.badVideoUrl}
+            </ThemedText>
+          )}
         </Field>
 
         <Field label={tr.techniques.notesOptional}>

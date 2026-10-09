@@ -14,6 +14,7 @@ export const pl = {
     discardMessage: 'Masz niezapisane zmiany. Jeśli zamkniesz formularz, przepadną.',
     discard: 'Odrzuć',
     keepEditing: 'Edytuj dalej',
+    badVideoUrl: 'To nie wygląda na link. Wklej adres filmu, np. youtube.com/watch?v=…',
   },
   tabs: {
     map: 'Mapa',
