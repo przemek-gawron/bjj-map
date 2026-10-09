@@ -57,7 +57,7 @@ type Actions = {
   resetAll: () => void;
   /**
    * Adds the sample library's missing positions, techniques and drills (in `language`),
-   * fills in descriptions of starter items that have none, and tidies the map.
+   * fills in descriptions of starter items that have none, and tidies the map when positions were added.
    * Returns how many items were added.
    */
   loadLibrary: (language: Language) => { positions: number; techniques: number; drills: number };
@@ -224,7 +224,8 @@ export const useStore = create<State & Actions>()(
           return i === -1 ? LIBRARY_POSITION_ORDER.length : i;
         };
         const positions = [...s.positions.map(withNotes), ...newPositions].sort((a, b) => rank(a.id) - rank(b.id));
-        const layouts = tidyLayout(positions);
+        // new positions need a place on the map; with none to add, the user's own arrangement stays
+        const layouts = newPositions.length > 0 ? tidyLayout(positions) : {};
 
         const exists = (id: string | null) => id === null || has(positions, id);
         const newTechniques: Technique[] = libraryTechniques
